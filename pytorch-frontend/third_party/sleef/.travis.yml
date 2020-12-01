@@ -1,0 +1,58 @@
+language: c
+
+# Default linux jobs
+os: linux
+sudo: required
+dist: trusty
+
+# Include osx jobs
+matrix:
+  include:
+    - os: osx
+      compiler: clang # use default apple clang
+      env:
+        - LABEL="osx-clang"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - LABEL="x86_64-gcc"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - LABEL="x86_64-clang"
+    - os: linux
+      services: docker
+      env:
+        - LABEL="aarch64-gcc"
+        - ENABLE_DOCKER="true"
+    - os: linux
+      services: docker
+      env:
+        - LABEL="armhf-gcc"
+        - ENABLE_DOCKER="true"
+
+before_install:
+     - export PATH=$PATH:/usr/bin
+     - cd ${TRAVIS_BUILD_DIR}
+     - chmod +x ${TRAVIS_BUILD_DIR}/travis/*.sh
+     - if [[ "${ENABLE_DOCKER}" == "true" ]]; then ${TRAVIS_BUILD_DIR}/travis/setupdocker.sh; fi
+     - if [[ "${ENABLE_DOCKER}" == "true" ]]; then docker exec xenial /build/travis/before_install.${LABEL}.sh; fi
+     - if [[ "${ENABLE_DOCKER}" != "true" ]]; then ${TRAVIS_BUILD_DIR}/travis/before_install.${LABEL}.sh; fi
+
+before_script:
+     - if [[ "${ENABLE_DOCKER}" == "true" ]]; then docker exec xenial /build/travis/before_script.${LABEL}.sh; fi
+     - if [[ "${ENABLE_DOCKER}" != "true" ]]; then ${TRAVIS_BUILD_DIR}/travis/before_script.${LABEL}.sh; fi
+
+script:
+     - if [[ "${ENABLE_DOCKER}" == "true" ]]; then docker exec xenial /build/travis/script.${LABEL}.sh; fi
+     - if [[ "${ENABLE_DOCKER}" != "true" ]]; then ${TRAVIS_BUILD_DIR}/travis/script.${LABEL}.sh; fi

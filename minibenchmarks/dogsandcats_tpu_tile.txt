@@ -1,0 +1,9 @@
+tile_type="FC"
+T_R=1
+T_S=1
+T_C=1
+T_G=1
+T_K=8
+T_N=8
+T_X'=1
+T_Y'=1

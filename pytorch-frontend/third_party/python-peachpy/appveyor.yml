@@ -1,0 +1,12 @@
+version: 0.2.0.{build}
+environment:
+  matrix:
+  - PYTHON: C:\Python27-x64
+  - PYTHON: C:\Python33-x64
+  - PYTHON: C:\Python34-x64
+install:
+- '"%PYTHON%\Scripts\pip" install -r test\requirements.txt'
+build_script:
+- '"%PYTHON%\Scripts\pip" install .'
+test_script:
+- '"%PYTHON%\Scripts\nosetests"'

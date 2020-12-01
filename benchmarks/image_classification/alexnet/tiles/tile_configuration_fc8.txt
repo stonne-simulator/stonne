@@ -1,0 +1,4 @@
+tile_type="FC"
+T_S=8
+T_K=10
+T_N=1

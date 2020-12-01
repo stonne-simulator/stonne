@@ -1,0 +1,9 @@
+tile_type="CONV"
+T_R=11
+T_S=1
+T_C=1
+T_G=1
+T_K=2
+T_N=1
+T_X'=1
+T_Y'=1

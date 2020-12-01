@@ -1,0 +1,464 @@
+MK dimensions: [2, 3]Indices shape: [2, 3]
+M is 2
+K is 3
+N is 3
+NNZ=3
+This last loop is executed
+NEW NNZ IS 5
+Llega al punto 1
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+n_levels: 0
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+SIZE DESDE EL COLLECTIONBUSLINE: 2
+N_bus_lines: 128
+SIZE: 2
+ASwitch 2:1 connected to BUS 0 INPUT 0
+ASwitch 2:2 connected to BUS 0 INPUT 1
+SIZE: 2
+ASwitch 3:1 connected to BUS 1 INPUT 0
+ASwitch 3:2 connected to BUS 1 INPUT 1
+SIZE: 2
+ASwitch 3:3 connected to BUS 2 INPUT 0
+ASwitch 3:4 connected to BUS 2 INPUT 1
+SIZE: 2
+ASwitch 3:5 connected to BUS 3 INPUT 0
+ASwitch 3:6 connected to BUS 3 INPUT 1
+SIZE: 2
+ASwitch 4:1 connected to BUS 4 INPUT 0
+ASwitch 4:2 connected to BUS 4 INPUT 1
+SIZE: 2
+ASwitch 4:3 connected to BUS 5 INPUT 0
+ASwitch 4:4 connected to BUS 5 INPUT 1
+SIZE: 2
+ASwitch 4:5 connected to BUS 6 INPUT 0
+ASwitch 4:6 connected to BUS 6 INPUT 1
+SIZE: 2
+ASwitch 4:7 connected to BUS 7 INPUT 0
+ASwitch 4:8 connected to BUS 7 INPUT 1
+SIZE: 2
+ASwitch 4:9 connected to BUS 8 INPUT 0
+ASwitch 4:10 connected to BUS 8 INPUT 1
+SIZE: 2
+ASwitch 4:11 connected to BUS 9 INPUT 0
+ASwitch 4:12 connected to BUS 9 INPUT 1
+SIZE: 2
+ASwitch 4:13 connected to BUS 10 INPUT 0
+ASwitch 4:14 connected to BUS 10 INPUT 1
+SIZE: 2
+ASwitch 5:1 connected to BUS 11 INPUT 0
+ASwitch 5:2 connected to BUS 11 INPUT 1
+SIZE: 2
+ASwitch 5:3 connected to BUS 12 INPUT 0
+ASwitch 5:4 connected to BUS 12 INPUT 1
+SIZE: 2
+ASwitch 5:5 connected to BUS 13 INPUT 0
+ASwitch 5:6 connected to BUS 13 INPUT 1
+SIZE: 2
+ASwitch 5:7 connected to BUS 14 INPUT 0
+ASwitch 5:8 connected to BUS 14 INPUT 1
+SIZE: 2
+ASwitch 5:9 connected to BUS 15 INPUT 0
+ASwitch 5:10 connected to BUS 15 INPUT 1
+SIZE: 2
+ASwitch 5:11 connected to BUS 16 INPUT 0
+ASwitch 5:12 connected to BUS 16 INPUT 1
+SIZE: 2
+ASwitch 5:13 connected to BUS 17 INPUT 0
+ASwitch 5:14 connected to BUS 17 INPUT 1
+SIZE: 2
+ASwitch 5:15 connected to BUS 18 INPUT 0
+ASwitch 5:16 connected to BUS 18 INPUT 1
+SIZE: 2
+ASwitch 5:17 connected to BUS 19 INPUT 0
+ASwitch 5:18 connected to BUS 19 INPUT 1
+SIZE: 2
+ASwitch 5:19 connected to BUS 20 INPUT 0
+ASwitch 5:20 connected to BUS 20 INPUT 1
+SIZE: 2
+ASwitch 5:21 connected to BUS 21 INPUT 0
+ASwitch 5:22 connected to BUS 21 INPUT 1
+SIZE: 2
+ASwitch 5:23 connected to BUS 22 INPUT 0
+ASwitch 5:24 connected to BUS 22 INPUT 1
+SIZE: 2
+ASwitch 5:25 connected to BUS 23 INPUT 0
+ASwitch 5:26 connected to BUS 23 INPUT 1
+SIZE: 2
+ASwitch 5:27 connected to BUS 24 INPUT 0
+ASwitch 5:28 connected to BUS 24 INPUT 1
+SIZE: 2
+ASwitch 5:29 connected to BUS 25 INPUT 0
+ASwitch 5:30 connected to BUS 25 INPUT 1
+SIZE: 2
+ASwitch 6:1 connected to BUS 26 INPUT 0
+ASwitch 6:2 connected to BUS 26 INPUT 1
+SIZE: 2
+ASwitch 6:3 connected to BUS 27 INPUT 0
+ASwitch 6:4 connected to BUS 27 INPUT 1
+SIZE: 2
+ASwitch 6:5 connected to BUS 28 INPUT 0
+ASwitch 6:6 connected to BUS 28 INPUT 1
+SIZE: 2
+ASwitch 6:7 connected to BUS 29 INPUT 0
+ASwitch 6:8 connected to BUS 29 INPUT 1
+SIZE: 2
+ASwitch 6:9 connected to BUS 30 INPUT 0
+ASwitch 6:10 connected to BUS 30 INPUT 1
+SIZE: 2
+ASwitch 6:11 connected to BUS 31 INPUT 0
+ASwitch 6:12 connected to BUS 31 INPUT 1
+SIZE: 2
+ASwitch 6:13 connected to BUS 32 INPUT 0
+ASwitch 6:14 connected to BUS 32 INPUT 1
+SIZE: 2
+ASwitch 6:15 connected to BUS 33 INPUT 0
+ASwitch 6:16 connected to BUS 33 INPUT 1
+SIZE: 2
+ASwitch 6:17 connected to BUS 34 INPUT 0
+ASwitch 6:18 connected to BUS 34 INPUT 1
+SIZE: 2
+ASwitch 6:19 connected to BUS 35 INPUT 0
+ASwitch 6:20 connected to BUS 35 INPUT 1
+SIZE: 2
+ASwitch 6:21 connected to BUS 36 INPUT 0
+ASwitch 6:22 connected to BUS 36 INPUT 1
+SIZE: 2
+ASwitch 6:23 connected to BUS 37 INPUT 0
+ASwitch 6:24 connected to BUS 37 INPUT 1
+SIZE: 2
+ASwitch 6:25 connected to BUS 38 INPUT 0
+ASwitch 6:26 connected to BUS 38 INPUT 1
+SIZE: 2
+ASwitch 6:27 connected to BUS 39 INPUT 0
+ASwitch 6:28 connected to BUS 39 INPUT 1
+SIZE: 2
+ASwitch 6:29 connected to BUS 40 INPUT 0
+ASwitch 6:30 connected to BUS 40 INPUT 1
+SIZE: 2
+ASwitch 6:31 connected to BUS 41 INPUT 0
+ASwitch 6:32 connected to BUS 41 INPUT 1
+SIZE: 2
+ASwitch 6:33 connected to BUS 42 INPUT 0
+ASwitch 6:34 connected to BUS 42 INPUT 1
+SIZE: 2
+ASwitch 6:35 connected to BUS 43 INPUT 0
+ASwitch 6:36 connected to BUS 43 INPUT 1
+SIZE: 2
+ASwitch 6:37 connected to BUS 44 INPUT 0
+ASwitch 6:38 connected to BUS 44 INPUT 1
+SIZE: 2
+ASwitch 6:39 connected to BUS 45 INPUT 0
+ASwitch 6:40 connected to BUS 45 INPUT 1
+SIZE: 2
+ASwitch 6:41 connected to BUS 46 INPUT 0
+ASwitch 6:42 connected to BUS 46 INPUT 1
+SIZE: 2
+ASwitch 6:43 connected to BUS 47 INPUT 0
+ASwitch 6:44 connected to BUS 47 INPUT 1
+SIZE: 2
+ASwitch 6:45 connected to BUS 48 INPUT 0
+ASwitch 6:46 connected to BUS 48 INPUT 1
+SIZE: 2
+ASwitch 6:47 connected to BUS 49 INPUT 0
+ASwitch 6:48 connected to BUS 49 INPUT 1
+SIZE: 2
+ASwitch 6:49 connected to BUS 50 INPUT 0
+ASwitch 6:50 connected to BUS 50 INPUT 1
+SIZE: 2
+ASwitch 6:51 connected to BUS 51 INPUT 0
+ASwitch 6:52 connected to BUS 51 INPUT 1
+SIZE: 2
+ASwitch 6:53 connected to BUS 52 INPUT 0
+ASwitch 6:54 connected to BUS 52 INPUT 1
+SIZE: 2
+ASwitch 6:55 connected to BUS 53 INPUT 0
+ASwitch 6:56 connected to BUS 53 INPUT 1
+SIZE: 2
+ASwitch 6:57 connected to BUS 54 INPUT 0
+ASwitch 6:58 connected to BUS 54 INPUT 1
+SIZE: 2
+ASwitch 6:59 connected to BUS 55 INPUT 0
+ASwitch 6:60 connected to BUS 55 INPUT 1
+SIZE: 2
+ASwitch 6:61 connected to BUS 56 INPUT 0
+ASwitch 6:62 connected to BUS 56 INPUT 1
+ASwitch 0:0 connected to BUS 114 INPUT 1
+ASwitch 1:0 connected to BUS 115 INPUT 1
+ASwitch 1:1 connected to BUS 116 INPUT 1
+ASwitch 2:0 connected to BUS 117 INPUT 1
+ASwitch 2:3 connected to BUS 118 INPUT 1
+ASwitch 3:0 connected to BUS 119 INPUT 1
+ASwitch 3:7 connected to BUS 120 INPUT 1
+ASwitch 4:0 connected to BUS 121 INPUT 1
+ASwitch 4:15 connected to BUS 122 INPUT 1
+ASwitch 5:0 connected to BUS 123 INPUT 1
+ASwitch 5:31 connected to BUS 124 INPUT 1
+ASwitch 6:0 connected to BUS 125 INPUT 1
+ASwitch 6:63 connected to BUS 126 INPUT 1
+Loading a Sparse multiplied by dense GEMM into STONNE
+Loading metadata
+Loading tile data
+Starting to compute output row 0/2
+Generating ART signals
+Num Ms: 128
+Num VNs: 1
+VN Size: 3
+Generating ART Enabling links signals
+Starting to compute output row 1/2
+Generating ART signals
+Num Ms: 128
+Num VNs: 1
+VN Size: 3
+Generating ART Enabling links signals

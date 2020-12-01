@@ -1,0 +1,5 @@
+python run_benchmarks.py "bert" "../simulation_files/sigma_128mses_64_bw.cfg" "NLP/BERT/tiles/128_mses/" "0.0" ""
+
+python run_benchmarks.py "ssd_mobilenets" "../simulation_files/sigma_128mses_64_bw.cfg" "object_detection/ssd-mobilenets/tiles/128_mses" "0.0" ""
+
+python run_benchmarks.py "bert" "../simulation_files/sigma_128mses_64_bw.cfg" "NLP/BERT/tiles/accumulation_buffer/128_mses/" "0.0" ""

@@ -1,0 +1,379 @@
+CMake Error at cmake/ProtoBuf.cmake:60 (add_subdirectory):
+  add_subdirectory given source
+  "/home/paco/Desktop/PyTorch/pytorch/cmake/../third_party/protobuf/cmake"
+  which is not an existing directory.
+Call Stack (most recent call first):
+  cmake/ProtoBuf.cmake:104 (custom_protobuf_find)
+  cmake/Dependencies.cmake:39 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Warning at cmake/ProtoBuf.cmake:110 (message):
+  Protobuf cannot be found.  Caffe2 will automatically switch to use own
+  protobuf under third_party.  Note that this behavior may change in the
+  future, and you will need to specify -DBUILD_CUSTOM_PROTOBUF=ON explicitly.
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:39 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/ProtoBuf.cmake:60 (add_subdirectory):
+  add_subdirectory given source
+  "/home/paco/Desktop/PyTorch/pytorch/cmake/../third_party/protobuf/cmake"
+  which is not an existing directory.
+Call Stack (most recent call first):
+  cmake/ProtoBuf.cmake:115 (custom_protobuf_find)
+  cmake/Dependencies.cmake:39 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/ProtoBuf.cmake:125 (get_target_property):
+  get_target_property() called with non-existent target
+  "protobuf::libprotobuf".
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:39 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:310 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/pthreadpool
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:313 (set_property):
+  set_property could not find TARGET pthreadpool.  Perhaps it has not yet
+  been created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:353 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/cpuinfo
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:358 (set_property):
+  set_property could not find TARGET cpuinfo.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:380 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/QNNPACK
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:385 (set_property):
+  set_property could not find TARGET qnnpack.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:386 (set_property):
+  set_property could not find TARGET cpuinfo.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:304 (add_subdirectory):
+  add_subdirectory given source
+  "/home/paco/Desktop/PyTorch/pytorch/third_party/cpuinfo/deps/clog" which is
+  not an existing directory.
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:308 (set_property):
+  set_property could not find TARGET clog.  Perhaps it has not yet been
+  created.
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:326 (add_subdirectory):
+  The binary directory
+
+    /home/paco/Desktop/PyTorch/pytorch/build/confu-deps/cpuinfo
+
+  is already used to build a source directory.  It cannot be used to build
+  source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/cpuinfo
+
+  Specify a unique binary directory name.
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:336 (add_subdirectory):
+  The binary directory
+
+    /home/paco/Desktop/PyTorch/pytorch/build/confu-deps/pthreadpool
+
+  is already used to build a source directory.  It cannot be used to build
+  source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/pthreadpool
+
+  Specify a unique binary directory name.
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:362 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/FXdiv
+
+  does not contain a CMakeLists.txt file.
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:377 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/psimd
+
+  does not contain a CMakeLists.txt file.
+
+
+CMake Error at aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt:394 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/FP16
+
+  does not contain a CMakeLists.txt file.
+
+
+CMake Error at cmake/Dependencies.cmake:441 (set_property):
+  set_property could not find TARGET cpuinfo.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/External/nnpack.cmake:71 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/NNPACK
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:471 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/External/nnpack.cmake:76 (set_property):
+  set_property could not find TARGET nnpack.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:471 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/External/nnpack.cmake:77 (set_property):
+  set_property could not find TARGET pthreadpool.  Perhaps it has not yet
+  been created.
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:471 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/External/nnpack.cmake:78 (set_property):
+  set_property could not find TARGET cpuinfo.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:471 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:501 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/XNNPACK
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:505 (set_property):
+  set_property could not find TARGET XNNPACK.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:680 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/fbgemm
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:681 (set_property):
+  set_property could not find TARGET fbgemm_generic.  Perhaps it has not yet
+  been created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:682 (set_property):
+  set_property could not find TARGET fbgemm_avx2.  Perhaps it has not yet
+  been created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:683 (set_property):
+  set_property could not find TARGET fbgemm_avx512.  Perhaps it has not yet
+  been created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:684 (set_property):
+  set_property could not find TARGET fbgemm.  Perhaps it has not yet been
+  created.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:833 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/FP16
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CUDA_TOOLKIT_ROOT_DIR not found or specified
+CMake Warning at cmake/public/cuda.cmake:31 (message):
+  Caffe2: CUDA cannot be found.  Depending on whether you are building Caffe2
+  or a Caffe2 dependent library, the next warning / error will give you more
+  info.
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:1115 (include)
+  CMakeLists.txt:480 (include)
+
+
+CMake Warning at cmake/Dependencies.cmake:1138 (message):
+  Not compiling with CUDA.  Suppress this warning with -DUSE_CUDA=OFF.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Warning at cmake/Dependencies.cmake:1229 (message):
+  Not using CUDA/ROCM, so disabling USE_NCCL.  Suppress this warning with
+  -DUSE_NCCL=OFF.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Warning at cmake/Dependencies.cmake:1350 (message):
+  Metal is only used in ios builds.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:1399 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/onnx
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:1401 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/foxi
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/public/utils.cmake:44 (get_target_property):
+  get_target_property() called with non-existent target "onnx".
+Call Stack (most recent call first):
+  cmake/Dependencies.cmake:1411 (caffe2_interface_library)
+  CMakeLists.txt:480 (include)
+
+
+disabling CUDA because NOT USE_CUDA is set
+disabling ROCM because NOT USE_ROCM is set
+CMake Warning at cmake/Dependencies.cmake:1680 (message):
+  MKLDNN could not be found.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:1738 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/fmt
+
+  does not contain a CMakeLists.txt file.
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+CMake Error at cmake/Dependencies.cmake:1747 (set_target_properties):
+  set_target_properties Can not find target to add properties to:
+  fmt-header-only
+Call Stack (most recent call first):
+  CMakeLists.txt:480 (include)
+
+
+disabling CUDA because USE_CUDA is set false
+CMake Error at aten/src/ATen/CMakeLists.txt:267 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/sleef
+
+  does not contain a CMakeLists.txt file.
+
+
+CMake Error at aten/src/ATen/CMakeLists.txt:271 (set_property):
+  set_property could not find TARGET sleef.  Perhaps it has not yet been
+  created.
+
+
+AT_INSTALL_INCLUDE_DIR include/ATen/core
+core header install: /home/paco/Desktop/PyTorch/pytorch/build/aten/src/ATen/core/TensorBody.h
+CMake Error at caffe2/CMakeLists.txt:100 (add_subdirectory):
+  The source directory
+
+    /home/paco/Desktop/PyTorch/pytorch/third_party/FXdiv
+
+  does not contain a CMakeLists.txt file.
+
+
+CMake Warning at CMakeLists.txt:719 (message):
+  Generated cmake files are only fully tested if one builds with system glog,
+  gflags, and protobuf.  Other settings may generate files that are not well
+  tested.
+
+
+CMake Warning at CMakeLists.txt:771 (message):
+  Generated cmake files are only available when building shared libs.
+
+
+make: *** [Makefile:4: all] Error 1

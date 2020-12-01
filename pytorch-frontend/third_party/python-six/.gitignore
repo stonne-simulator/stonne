@@ -1,0 +1,6 @@
+*.pyc
+dist
+MANIFEST
+documentation/_build
+.tox
+six.egg-info
