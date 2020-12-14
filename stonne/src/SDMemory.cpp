@@ -450,7 +450,8 @@ void SDMemory::cycle() {
                         y_init = y_inputs - 1;
                     }
                     else { //If it is not the last iteration of the window we do not send anything
-                        y_init = y_inputs; //Do not send any activation since all the inputs are already in the fifos.
+                        y_init = y_inputs-1; //Do not send any activation since all the inputs are already in the fifos.
+			//CHECK. There was a bug here because y_init was equals to y_inputs. If true, remove the condition
                     }
                 }
                 else { //If it is the first window interation, we send all the activations in all the iterations of the same window
