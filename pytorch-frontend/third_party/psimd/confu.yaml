@@ -1,0 +1,3 @@
+name: psimd
+title: portable 128-bit SIMD intrinsics
+license: MIT

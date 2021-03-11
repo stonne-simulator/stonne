@@ -1,0 +1,10 @@
+--reset
+
+--inplace=true,false
+--allow-unimpl=true
+
+--dir=FWD_D,BWD_D
+--dt=bf16
+--tag=abx,axb,aBx16b
+--batch=harness_eltwise_all_alg
+

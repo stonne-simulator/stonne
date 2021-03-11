@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>torch.utils.checkpoint</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/jit.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/katex-math.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="torch-utils-checkpoint">
+<h1>torch.utils.checkpoint</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Checkpointing is implemented by rerunning a forward-pass segment for
+each checkpointed segment during backward.  This can cause persistent
+states like the RNG state to be advanced than they would without
+checkpointing.  By default, checkpointing includes logic to juggle
+the RNG state such that checkpointed passes making use of RNG
+(through dropout for example) have deterministic output as
+compared to non-checkpointed passes.  The logic to stash and restore
+RNG states can incur a moderate performance hit depending on the runtime
+of checkpointed operations.  If deterministic output compared to
+non-checkpointed passes is not required, supply <code class="docutils literal notranslate"><span class="pre">preserve_rng_state=False</span></code>
+to <code class="docutils literal notranslate"><span class="pre">checkpoint</span></code> or <code class="docutils literal notranslate"><span class="pre">checkpoint_sequential</span></code> to omit stashing and
+restoring the RNG state during each checkpoint.</p>
+<p>The stashing logic saves and restores the RNG state for the current device
+and the device of all cuda Tensor arguments to the <code class="docutils literal notranslate"><span class="pre">run_fn</span></code>.
+However, the logic has no way to anticipate if the user will move
+Tensors to a new device within the <code class="docutils literal notranslate"><span class="pre">run_fn</span></code> itself.  Therefore, if you move
+Tensors to a new device (“new” meaning not belonging to the set of
+[current device + devices of Tensor arguments]) within <code class="docutils literal notranslate"><span class="pre">run_fn</span></code>, deterministic
+output compared to non-checkpointed passes is never guaranteed.</p>
+</div>
+<dl class="function">
+<dt id="torch.utils.checkpoint.checkpoint">
+<code class="sig-prename descclassname">torch.utils.checkpoint.</code><code class="sig-name descname">checkpoint</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>Checkpoint a model or part of the model</p>
+<p>Checkpointing works by trading compute for memory. Rather than storing all
+intermediate activations of the entire computation graph for computing
+backward, the checkpointed part does <strong>not</strong> save intermediate activations,
+and instead recomputes them in backward pass. It can be applied on any part
+of a model.</p>
+<p>Specifically, in the forward pass, <code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> will run in
+<a class="reference internal" href="generated/torch.no_grad.xhtml#torch.no_grad" title="torch.no_grad"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.no_grad()</span></code></a> manner, i.e., not storing the intermediate
+activations. Instead, the forward pass saves the inputs tuple and the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> parameter. In the backwards pass, the saved inputs and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> is retrieved, and the forward pass is computed on
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> again, now tracking the intermediate activations, and then
+the gradients are calculated using these activation values.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Checkpointing doesn’t work with <a class="reference internal" href="autograd.xhtml#torch.autograd.grad" title="torch.autograd.grad"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.grad()</span></code></a>, but only
+with <a class="reference internal" href="autograd.xhtml#torch.autograd.backward" title="torch.autograd.backward"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.backward()</span></code></a>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> invocation during backward does anything different
+than the one during forward, e.g., due to some global variable, the
+checkpointed version won’t be equivalent, and unfortunately it can’t be
+detected.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If checkpointed segment contains tensors detached from the computational
+graph by <cite>detach()</cite> or <cite>torch.no_grad()</cite>, the backward pass will raise an
+error. This is because <cite>checkpoint</cite> makes all the outputs require
+gradients which causes issues when a tensor is defined to have no
+gradient in the model. To circumvent this, detach the tensors outside of
+the <cite>checkpoint</cite> function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> – describes what to run in the forward pass of the model or
+part of the model. It should also know how to handle the inputs
+passed as the tuple. For example, in LSTM, if user passes
+<code class="docutils literal notranslate"><span class="pre">(activation,</span> <span class="pre">hidden)</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> should correctly use the
+first input as <code class="docutils literal notranslate"><span class="pre">activation</span></code> and the second input as <code class="docutils literal notranslate"><span class="pre">hidden</span></code></p></li>
+<li><p><strong>preserve_rng_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><span class="link-target"> [https://docs.python.org/3/library/functions.html#bool]</span><em>, </em><em>optional</em><em>, </em><em>default=True</em>) – Omit stashing and restoring
+the RNG state during each checkpoint.</p></li>
+<li><p><strong>args</strong> – tuple containing inputs to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output of running <code class="xref py py-attr docutils literal notranslate"><span class="pre">function</span></code> on <code class="xref py py-attr docutils literal notranslate"><span class="pre">*args</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="torch.utils.checkpoint.checkpoint_sequential">
+<code class="sig-prename descclassname">torch.utils.checkpoint.</code><code class="sig-name descname">checkpoint_sequential</code><span class="sig-paren">(</span><em class="sig-param">functions</em>, <em class="sig-param">segments</em>, <em class="sig-param">input</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>A helper function for checkpointing sequential models.</p>
+<p>Sequential models execute a list of modules/functions in order
+(sequentially). Therefore, we can divide such a model in various segments
+and checkpoint each segment. All segments except the last will run in
+<a class="reference internal" href="generated/torch.no_grad.xhtml#torch.no_grad" title="torch.no_grad"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.no_grad()</span></code></a> manner, i.e., not storing the intermediate
+activations. The inputs of each checkpointed segment will be saved for
+re-running the segment in the backward pass.</p>
+<p>See <a class="reference internal" href="#torch.utils.checkpoint.checkpoint" title="torch.utils.checkpoint.checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">checkpoint()</span></code></a> on how checkpointing works.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Checkpointing doesn’t work with <a class="reference internal" href="autograd.xhtml#torch.autograd.grad" title="torch.autograd.grad"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.grad()</span></code></a>, but only
+with <a class="reference internal" href="autograd.xhtml#torch.autograd.backward" title="torch.autograd.backward"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.backward()</span></code></a>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>functions</strong> – A <a class="reference internal" href="generated/torch.nn.Sequential.xhtml#torch.nn.Sequential" title="torch.nn.Sequential"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Sequential</span></code></a> or the list of modules or
+functions (comprising the model) to run sequentially.</p></li>
+<li><p><strong>segments</strong> – Number of chunks to create in the model</p></li>
+<li><p><strong>input</strong> – A Tensor that is input to <code class="xref py py-attr docutils literal notranslate"><span class="pre">functions</span></code></p></li>
+<li><p><strong>preserve_rng_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><span class="link-target"> [https://docs.python.org/3/library/functions.html#bool]</span><em>, </em><em>optional</em><em>, </em><em>default=True</em>) – Omit stashing and restoring
+the RNG state during each checkpoint.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output of running <code class="xref py py-attr docutils literal notranslate"><span class="pre">functions</span></code> sequentially on <code class="xref py py-attr docutils literal notranslate"><span class="pre">*inputs</span></code></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_var</span> <span class="o">=</span> <span class="n">checkpoint_sequential</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">chunks</span><span class="p">,</span> <span class="n">input_var</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90545585-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('js', new Date());
+  gtag('config', 'UA-117752657-2');
+</script>
+
+<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/795629140/?label=txkmCPmdtosBENSssfsC&amp;guid=ON&amp;script=0"/>
+
+  </body>
+</html>

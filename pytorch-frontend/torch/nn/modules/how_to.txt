@@ -1,0 +1,3 @@
+- Copy conv to simulatedConv and change class names
+- Add in __init__ the new classes to import
+- Run in main folder python setup.py install

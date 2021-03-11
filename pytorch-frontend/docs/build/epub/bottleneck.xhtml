@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>torch.utils.bottleneck</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/jit.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/katex-math.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="torch-utils-bottleneck">
+<h1>torch.utils.bottleneck</h1>
+<p><cite>torch.utils.bottleneck</cite> is a tool that can be used as an initial step for
+debugging bottlenecks in your program. It summarizes runs of your script with
+the Python profiler and PyTorch’s autograd profiler.</p>
+<p>Run it on the command line with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">bottleneck</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">script</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">args</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where [args] are any number of arguments to <cite>script.py</cite>, or run
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">torch.utils.bottleneck</span> <span class="pre">-h</span></code> for more usage instructions.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Because your script will be profiled, please ensure that it exits in a
+finite amount of time.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to the asynchronous nature of CUDA kernels, when running against
+CUDA code, the cProfile output and CPU-mode autograd profilers may
+not show correct timings: the reported CPU time reports the amount of time
+used to launch the kernels but does not include the time the kernel
+spent executing on a GPU unless the operation does a synchronize.
+Ops that do synchronize appear to be extremely expensive under regular
+CPU-mode profilers.
+In these case where timings are incorrect, the CUDA-mode autograd profiler
+may be helpful.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To decide which (CPU-only-mode or CUDA-mode) autograd profiler output to
+look at, you should first check if your script is CPU-bound
+(“CPU total time is much greater than CUDA total time”).
+If it is CPU-bound, looking at the results of the CPU-mode autograd
+profiler will help. If on the other hand your script spends most of its
+time executing on the GPU, then it makes sense to start
+looking for responsible CUDA operators in the output of the CUDA-mode
+autograd profiler.</p>
+<p>Of course the reality is much more complicated and your script might not be
+in one of those two extremes depending on the part of the model you’re
+evaluating. If the profiler outputs don’t help, you could try looking at
+the result of <a class="reference internal" href="autograd.xhtml#torch.autograd.profiler.emit_nvtx" title="torch.autograd.profiler.emit_nvtx"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.profiler.emit_nvtx()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">nvprof</span></code>.
+However, please take into account that the NVTX overhead is very high and
+often gives a heavily skewed timeline.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you are profiling CUDA code, the first profiler that <code class="docutils literal notranslate"><span class="pre">bottleneck</span></code> runs
+(cProfile) will include the CUDA startup time (CUDA buffer allocation cost)
+in its time reporting. This should not matter if your bottlenecks result
+in code much slower than the CUDA startup time.</p>
+</div>
+<p>For more complicated uses of the profilers (like in a multi-GPU case),
+please see <a class="reference external" href="https://docs.python.org/3/library/profile.html">https://docs.python.org/3/library/profile.html</a>
+or <a class="reference internal" href="autograd.xhtml#torch.autograd.profiler.profile" title="torch.autograd.profiler.profile"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.profiler.profile()</span></code></a> for more information.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90545585-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('js', new Date());
+  gtag('config', 'UA-117752657-2');
+</script>
+
+<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/795629140/?label=txkmCPmdtosBENSssfsC&amp;guid=ON&amp;script=0"/>
+
+  </body>
+</html>
