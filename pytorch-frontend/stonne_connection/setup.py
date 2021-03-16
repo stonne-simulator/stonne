@@ -3,6 +3,9 @@ from torch.utils import cpp_extension
 import os
 
 stonne_src_dir='../../stonne/src'
+my_pwd=os.path.abspath(".")
+include_dir=my_pwd+'/../../stonne/include/'
+external_dir=my_pwd+'/../../stonne/external/'
 
 
 list_of_src_files_to_link=['torch_stonne.cpp', '../../stonne/stonne_linker_src/stonne_linker.cpp']
@@ -17,5 +20,6 @@ for filename in os.listdir(stonne_src_dir):
 print(list_of_src_files_to_link)
 
 setup(name='torch_stonne',
-      ext_modules=[cpp_extension.CppExtension('torch_stonne', list_of_src_files_to_link, include_dirs=['../../stonne/include', '../../stonne/external'])],
+      ext_modules=[cpp_extension.CppExtension('torch_stonne', list_of_src_files_to_link, include_dirs=[include_dir, external_dir])],
+
       cmdclass={'build_ext': cpp_extension.BuildExtension})
