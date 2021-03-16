@@ -412,5 +412,4 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("simulated_conv_backward", &simulated_conv_backwards, "Simulated convolution backward");
   m.def("simulated_linear_forward", &simulated_linear_forward, "Simulated linear forward");
   m.def("simulated_matmul", &simulated_matmul, "Simulated Matrix multiplication");
-  m.def("simulated_sparsedense_matmul", &simulated_sparsedense_matmul, "Simulated sparse dense matrix multiplication");
 }
