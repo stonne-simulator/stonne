@@ -34,7 +34,6 @@ float* input, float * outputs) {
             }
         }
     }
-
 }
 
 
