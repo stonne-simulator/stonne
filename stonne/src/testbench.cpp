@@ -4,39 +4,6 @@
 #include <assert.h>
 #include "types.h"
 
-void max_pooling_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
-float* input, float * outputs) {
-
-    unsigned int OX=(X - R + strides) / strides;
-    unsigned int OY=(Y - S + strides) / strides;
-    K=K/G;
-    C=C/G;
-    unsigned int output_size_n = G*K*OX*OY;
-    unsigned int input_size_n = G*C*X*Y;
-    unsigned int filter_size=R*S*C;
-    unsigned int size_oy=OY*K*G;
-    unsigned int size_y=Y*G*C;
-    for(int n=0; n<N; n++) {
-        for(int g=0; g<G; g++) {
-            for(int k=0; k<K; k++) {
-                for(int ox=0; ox<OX; ox++) {
-                    for(int oy=0; oy<OY; oy++) {
-                        outputs[n*output_size_n + ox*size_oy + oy*K*G + g*K + k]=0.0;
-                        for(int c=0; c<C;c++) {
-                            for(int r=0;r<R;r++) {
-                                for(int s=0;s<S;s++) {
-                                    outputs[n*output_size_n + ox*size_oy + oy*K*G + g*K + k] += input[n*input_size_n+ ox*strides*size_y + oy*strides*C*G + r*size_y + s*C*G + g*C + c];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
 void sequential_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
 float* input, float* filters, float * outputs) {
 
@@ -83,6 +50,58 @@ void cpu_gemm(float* MK_dense_matrix, float* KN_dense_matrix, float* output, uns
     }
 }
 
+void max_pooling_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
+float* input, float * outputs) {
+
+    unsigned int OX=(X - R + strides) / strides;
+    unsigned int OY=(Y - S + strides) / strides;
+    unsigned int output_size_n = OX*OY;
+    unsigned int input_size_n = C*X*Y;
+    unsigned int size_oy=OY;
+    unsigned int size_y=Y*C;
+    for(int n=0; n<N; n++) {
+        for(int c=0; c<C; c++) {
+            for(int ox=0; ox<OX; ox++) {
+                for(int oy=0; oy<OY; oy++) {
+                    // n*output_size_n + ox*size_oy + oy*K*G + g*K + k
+                    outputs[n*output_size_n + ox*size_oy + oy]=-999.0;
+                    for(int r=0;r<R;r++) {
+                        for(int s=0;s<S;s++) {
+                            // n*input_size_n+ ox*strides*size_y + oy*strides*C*G + r*size_y + s*C*G + g*C + c
+                            outputs[n*output_size_n + ox*size_oy + oy] = std::max(input[n*input_size_n + ox*strides*size_y + oy*strides*C + r*size_y + s*C + c], 
+                                                                                        outputs[n*output_size_n + ox*size_oy + oy]);
+                        }
+                    }
+                }
+            }
+        }  
+    }
+}
+
+void average_pooling_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
+float* input, float * outputs) {
+    unsigned int OX=(X - R + strides) / strides;
+    unsigned int OY=(Y - S + strides) / strides;
+    unsigned int output_size_n = OX*OY;
+    unsigned int input_size_n = C*X*Y;
+    unsigned int size_oy=OY;
+    unsigned int size_y=Y*C;
+    for(int n=0; n<N; n++) {
+        for(int c=0; c<C; c++) {
+            for(int ox=0; ox<OX; ox++) {
+                for(int oy=0; oy<OY; oy++) {
+                    float acc = 0.0;
+                    for(int r=0;r<R;r++) {
+                        for(int s=0;s<S;s++) {
+                            acc += input[n*input_size_n + ox*strides*size_y + oy*strides*C + r*size_y + s*C + c];
+                        }
+                    }
+                    outputs[n*output_size_n + ox*size_oy + oy] = acc / (R*S);
+                }
+            }
+        }
+    }
+}
 
 bool run_single_test_cnn(DNNLayer* dnn_layer, unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, 
 unsigned int T_X_, unsigned int T_Y_, Config stonne_cfg, unsigned int n_test) {

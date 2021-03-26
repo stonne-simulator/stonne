@@ -5,6 +5,12 @@ float* input, float* filters, float * outputs);
 
 void cpu_gemm(float* MK_dense_matrix, float* KN_dense_matrix, float* output, unsigned int M, unsigned int N, unsigned int K);
 
+void max_pooling_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
+float* input, float * outputs);
+
+void average_pooling_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
+float* input, float * outputs);
+
 
 void run_simple_tests();
 
