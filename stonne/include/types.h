@@ -24,7 +24,7 @@ enum direction_t {LEFT, RIGHT};
 enum fl_t {RECEIVE, SEND, NOT_CONFIGURED}; ///forwarding link type
 enum adderconfig_t {ADD_2_1, ADD_3_1, ADD_1_1_PLUS_FW_1_1, FW_2_2, NO_MODE, FOLD}; // To the best of my knowledge, FW_2_2 corresponds with sum left and right and send the result to the FW.
 /////
-enum Layer_t{CONV, POOL, FC, GEMM, SPARSE_DENSE};
+enum Layer_t{CONV, MAX_POOL, FC, GEMM, SPARSE_DENSE};
 enum ReduceNetwork_t{ASNETWORK, FENETWORK, TEMPORALRN};
 enum MultiplierNetwork_t{LINEAR, OS_MESH};
 /////

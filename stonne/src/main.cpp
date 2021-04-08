@@ -19,14 +19,15 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
 
 void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K);
 
-void configMaxPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
+void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
+                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
 
 bool runConvCommand(int argc, char *argv[]);
 bool runSparseGEMMCommand(int argc, char *argv[]);
 bool runDenseGEMMCommand(int argc, char *argv[]);
 bool runSparseDenseCommand(int argc, char *argv[]);
 bool runMaxPoolingCommand(int argc, char *argv[]);
+bool runAveragePoolingCommand(int argc, char *argv[]);
 bool runHelpCommand();
 //float* generateMatrixDense(unsigned int rows, unsigned int cols, unsigned int sparsity);
 
@@ -65,6 +66,10 @@ int main(int argc, char *argv[]) {
 
         else if (arg=="-MaxPooling") {
             runMaxPoolingCommand(argc, argv);
+        }
+
+        else if (arg=="-AvgPooling") {
+            runAveragePoolingCommand(argc, argv);
         }
 
 
@@ -454,14 +459,12 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     unsigned int T_R=1;                                // T_R
     unsigned int T_S=3;                                // T_S
     unsigned int T_C=1;                                // T_C
-    unsigned int T_K=1;                                // T_K
-    unsigned int T_G=1;                                // T_G
     unsigned int T_N=1;                                // T_N
     unsigned int T_X_=1;                               // T_X
     unsigned int T_Y_=1;                               // T_Y   
     Config stonne_cfg; //Hardware parameters
     // stonne_cfg.m_MSNetworkCfg.ms_size=128;
-    configMaxPoolingParameters(argc, argv, stonne_cfg, layer_name, R, S, C, N, X, Y, strides, T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
+    configPoolingParameters(argc, argv, stonne_cfg, layer_name, R, S, C, N, X, Y, strides, T_R, T_S, T_C, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
 
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
@@ -484,6 +487,99 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     //computing CPU version
     // max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap);
     max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu); 
+
+    /** END of generating the inputs and outputs **/
+    //
+    //
+    //
+    /** Configuring and running the accelerator  **/
+    
+    //Computing the CNN Layer with the simulator
+    // TODO : Configure STONNE accordingly
+    Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
+    stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, 1, 1, N, X, Y, strides, ifmap, NULL, ofmap, CNN_DATAFLOW); //Loading the layer
+    stonne_instance->loadTile(T_R, T_S, T_C, 1, 1, T_N, T_X_, T_Y_); //Loading the tile
+    stonne_instance->run(); //Running the simulator
+
+    /** END of configuring and running the accelerator  **/
+    //
+    //
+    //
+    /** CHECKING the results to make sure that the output is correct  **/
+
+    //Comparing the results
+    for(int i=0;i<ofmap_size; i++) {
+        float difference=fabs(ofmap_cpu[i]-ofmap_cpu[i]);
+        if(difference > EPSILON) {
+            std::cout << "ERROR position " << i <<  ": Value ofmap simulator: " << ofmap[i] << ". Value ofmap CPU: " << ofmap_cpu[i] << std::endl;
+            std::cout << "\033[1;31mT test not passed\033[0m" << std::endl;
+            delete[] ifmap;
+            delete[] ofmap;
+            delete[] ofmap_cpu;
+            delete stonne_instance;
+            assert(false); //Always false
+            
+        }
+    }
+
+
+    //If the code does not stop then the TEST is correct
+    std::cout << "\033[1;32mTest passed correctly \033[0m" << std::endl << std::endl;
+
+    delete[] ifmap;
+    delete[] ofmap;
+    delete[] ofmap_cpu;
+    delete stonne_instance; 
+    return true;
+}
+
+bool runAveragePoolingCommand(int argc, char *argv[]) {
+    float EPSILON=0.05;
+    unsigned int MAX_RANDOM=10; //Variable used to generate the random values
+    /** Generating the inputs and outputs **/
+
+    //Layer parameters (See MAERI paper to find out the taxonomy meaning)
+    std::string layer_name="TestLayer";
+    unsigned int R=1;                                  // R
+    unsigned int S=3;                                  // S
+    unsigned int C=1;                                  // C
+    unsigned int N=1;                                  // N
+    unsigned int X=1;                                  // X //TODO CHECK X=1 and Y=1
+    unsigned int Y=3;                                  // Y
+    unsigned int strides=1;                            // Strides
+ 
+    //Tile parameters (See MAERI paper to find out the taxonomy meaning)
+    unsigned int T_R=1;                                // T_R
+    unsigned int T_S=3;                                // T_S
+    unsigned int T_C=1;                                // T_C
+    unsigned int T_N=1;                                // T_N
+    unsigned int T_X_=1;                               // T_X
+    unsigned int T_Y_=1;                               // T_Y   
+    Config stonne_cfg; //Hardware parameters
+    // stonne_cfg.m_MSNetworkCfg.ms_size=128;
+    configPoolingParameters(argc, argv, stonne_cfg, layer_name, R, S, C, N, X, Y, strides, T_R, T_S, T_C, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
+
+    //Calculating output parameters
+    unsigned int X_= (X - R + strides) / strides;      // X_
+    unsigned int Y_=(Y - S + strides) / strides;       // Y_
+    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << ")" << std::endl; 
+
+
+    //Creating arrays to store the ifmap ofmap and weights
+    unsigned int ifmap_size=N*X*Y*C;
+    unsigned int ofmap_size=N*X_*Y_;
+    float* ifmap = new float[ifmap_size];
+    float* ofmap = new float[ofmap_size];
+    float* ofmap_cpu = new float[ofmap_size]; //Used to store the CPU computed values to compare with the simulator version
+
+    //Filling the arrays with random values
+    for(int i=0; i<ifmap_size; i++) {
+        ifmap[i]=rand()%MAX_RANDOM;
+    }
+
+    //computing CPU version
+    // max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap);
+    average_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu); 
 
     /** END of generating the inputs and outputs **/
     //
@@ -1190,8 +1286,8 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
     }
 }
 
-void configMaxPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
+void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
+                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
 
     //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
@@ -1311,16 +1407,6 @@ void configMaxPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std:
            else if(name=="-T_C") {
                 std::cout << "Changing T_C to " << value << std::endl;
                 T_C=value;
-           }
-
-           else if(name=="-T_K") {
-                std::cout << "Changing T_K to " << value << std::endl;
-                T_K=value;
-           }
-
-           else if(name=="-T_G") {
-               std::cout << "Changing T_G to " << value << std::endl;
-               T_G=value;
            }
 
            else if(name=="-T_N") {

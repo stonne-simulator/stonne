@@ -24,6 +24,7 @@ private:
     //Aux functions
     void generate_ms_signals(unsigned int num_ms); //The function in charge to generate the signals for the MSwitches
     void generate_ms_sparse_signals(unsigned int num_ms); //Generate signals for the MSwitches taking into account the different size clusters.
+    void generate_pool_ms_signals();
 
 
     

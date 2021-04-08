@@ -245,6 +245,13 @@ void ASNetwork::addersConfiguration(std::map<std::pair<int,int>, adderconfig_t> 
     }
 }
 
+void ASNetwork::addersOperation(adderoperation_t adder_operation) {
+    for (auto it : aswitchtable)
+    {
+        it.second->setOperationMode(adder_operation);
+    }
+}
+
 void ASNetwork::forwardingConfiguration(std::map<std::pair<int,int>, fl_t> fl_configurations) {
     for(std::map<std::pair<int,int>,fl_t>::iterator it=fl_configurations.begin(); it != fl_configurations.end(); ++it) {
         ASwitch* as = aswitchtable[it->first]; //Pair index
@@ -288,6 +295,10 @@ void ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsign
     std::map<std::pair<int,int>, fl_t> as_fw_signals = compiler_art->get_fwlinks_configuration();
     std::map<std::pair<int,int>, std::pair<bool,bool>> as_childs_enabled = compiler_art->get_childs_enabled();
     std::map<std::pair<int,int>, bool> forwarding_to_memory_enabled = compiler_art->get_forwarding_to_memory_enabled();
+    
+    if (dnn_layer->get_layer_type() == MAX_POOL)
+        this->addersOperation(COMPARATOR);
+    
     this->addersConfiguration(as_signals);
     this->forwardingConfiguration(as_fw_signals);
     this->childsLinksConfiguration(as_childs_enabled);

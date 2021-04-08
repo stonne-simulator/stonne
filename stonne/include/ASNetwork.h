@@ -52,6 +52,7 @@ public:
     std::map<int, Connection*> getLastLevelConnections();
     void setOutputConnection(Connection* outputConnection)  { this->outputConnection = outputConnection; } //This function set the outputConnection with the Prefetch buffer
     void addersConfiguration(std::map<std::pair<int, int>, adderconfig_t> adder_configurations);
+    void addersOperation(adderoperation_t adder_operation);
     void forwardingConfiguration(std::map<std::pair<int,int>, fl_t> fl_configurations); //Configure the forwarding links. Enable the required ones. 
     void childsLinksConfiguration(std::map<std::pair<int,int>, std::pair<bool,bool>> childs_configuration);
     void forwardingToMemoryConfiguration(std::map<std::pair<int,int>, bool> forwarding_to_memory_enabled);

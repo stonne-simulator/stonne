@@ -17,6 +17,8 @@ void CompilerMSN::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsi
     //Configuring Multiplier switches
     this->generate_ms_signals(num_ms);
     
+    if (dnn_layer->get_layer_type() == MAX_POOL)
+        this->generate_pool_ms_signals();
 }
 
 void CompilerMSN::configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLayer* dnn_layer, unsigned int num_ms) {
@@ -162,6 +164,13 @@ void CompilerMSN::generate_ms_sparse_signals(unsigned int num_ms) {
   
 }
 
-
+void CompilerMSN::generate_pool_ms_signals() {
+    for(int i=0; i < this->current_tile->get_Num_VNs(); i++) {
+        for(int j=0; j < this->current_tile->get_VN_Size(); j++) {
+            unsigned int ms_index = i*this->current_tile->get_VN_Size() + j;
+	        direct_forwarding_psum_enabled[ms_index] = true;
+        }
+    }
+}
 
 
