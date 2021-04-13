@@ -11,7 +11,7 @@
 using namespace std;
 
 void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &K, unsigned int &G, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
+                          unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
 
 void configSparseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &KN_sparsity, Dataflow &dataflow, unsigned int &optimize);
 
@@ -20,7 +20,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
 void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K);
 
 void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
+                             unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
 
 bool runConvCommand(int argc, char *argv[]);
 bool runSparseGEMMCommand(int argc, char *argv[]);
@@ -51,17 +51,17 @@ int main(int argc, char *argv[]) {
         if(arg=="-h") {
             runHelpCommand();
         }
-      
+
         else if(arg=="-CONV") {
             runConvCommand(argc, argv);
         }
 
         else if(arg=="-SparseGEMM") {
-                runSparseGEMMCommand(argc, argv);
+            runSparseGEMMCommand(argc, argv);
         }
 
         else if((arg=="-DenseGEMM") || (arg=="-FC")) {
-                runDenseGEMMCommand(argc, argv);
+            runDenseGEMMCommand(argc, argv);
         }
 
         else if (arg=="-MaxPooling") {
@@ -99,7 +99,7 @@ bool runConvCommand(int argc, char *argv[]) {
     unsigned int X=1;                                  // X //TODO CHECK X=1 and Y=1
     unsigned int Y=3;                                  // Y
     unsigned int strides=1;                            // Strides
- 
+
     //Tile parameters (See MAERI paper to find out the taxonomy meaning)
     unsigned int T_R=1;                                // T_R
     unsigned int T_S=3;                                // T_S
@@ -108,15 +108,15 @@ bool runConvCommand(int argc, char *argv[]) {
     unsigned int T_G=1;                                // T_G
     unsigned int T_N=1;                                // T_N
     unsigned int T_X_=1;                               // T_X
-    unsigned int T_Y_=1;                               // T_Y   
+    unsigned int T_Y_=1;                               // T_Y
     Config stonne_cfg; //Hardware parameters
-//    stonne_cfg.m_MSNetworkCfg.ms_size=128;
+    //    stonne_cfg.m_MSNetworkCfg.ms_size=128;
     configConvParameters(argc, argv, stonne_cfg, layer_name, R, S, C, K, G, N, X, Y, strides, T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
 
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
     unsigned int Y_=(Y - S + strides) / strides;       // Y_
-    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << std::endl; 
+    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << std::endl;
 
 
     //Creating arrays to store the ifmap ofmap and weights
@@ -138,7 +138,7 @@ bool runConvCommand(int argc, char *argv[]) {
     }
 
     //computing CPU version
-    sequential_layer(R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap_cpu); 
+    sequential_layer(R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap_cpu);
 
     /** END of generating the inputs and outputs **/
     //
@@ -150,7 +150,7 @@ bool runConvCommand(int argc, char *argv[]) {
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap, CNN_DATAFLOW); //Loading the layer
     stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile
-    stonne_instance->run(); //Running the simulator 
+    stonne_instance->run(); //Running the simulator
 
     /** END of configuring and running the accelerator  **/
     //
@@ -182,7 +182,7 @@ bool runConvCommand(int argc, char *argv[]) {
     delete[] filter;
     delete[] ofmap;
     delete[] ofmap_cpu;
-    delete stonne_instance; 
+    delete stonne_instance;
     return true;
 }
 
@@ -196,14 +196,14 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     unsigned int M=1;                                  // M
     unsigned int K=3;                                  // K
     unsigned int N=1;                                  // N
- 
-    //Tile parameters 
+
+    //Tile parameters
     unsigned int T_M=1;                                // T_M
     unsigned int T_K=1;                                // T_K
     unsigned int T_N=1;                                // T_N
 
     Config stonne_cfg; //Hardware parameters
-//    stonne_cfg.m_MSNetworkCfg.ms_size=128;
+    //    stonne_cfg.m_MSNetworkCfg.ms_size=128;
     configDenseGEMMParameters(argc, argv, stonne_cfg, layer_name, M, K, N, T_M, T_K, T_N); //Modify stonne_cfg and the variables according to user arguments
 
 
@@ -235,8 +235,8 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
         for(int j=0; j<K; j++) {
             std::cout << MK_matrix[i*K+j] << " ";
         }
-	std::cout << std::endl;
-    
+        std::cout << std::endl;
+
     }
 
     std::cout << "Printing KN matrix: " << std::endl;
@@ -256,13 +256,13 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     //
     //
     //
-    /** Configuring and running the accelerator  **/
+    /** 1uring and running the accelerator  **/
     
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDenseGEMM(layer_name, N, K, M, MK_matrix, KN_matrix, output, CNN_DATAFLOW); //Loading the layer
     stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile
-    stonne_instance->run(); //Running the simulator 
+    stonne_instance->run(); //Running the simulator
 
     /** END of configuring and running the accelerator  **/
     //
@@ -294,7 +294,7 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     delete[] KN_matrix;
     delete[] output;
     delete[] output_cpu;
-    delete stonne_instance; 
+    delete stonne_instance;
     return true;
 }
 
@@ -381,7 +381,7 @@ bool runSparseGEMMCommand(int argc, char *argv[]) {
     std::cout << "Running CPU version to compare results" << std::endl;
     //Generating cpu output
     cpu_gemm(MK_dense_matrix_no_organized, KN_dense_matrix_no_organized, cpu_output, M, N, K);
-/*
+    /*
     std::cout << "Output matrix generated by CPU: " << std::endl;
     printDenseMatrix(cpu_output, M, N);
     std::cout << "Output matrix generated by STONNE: " << std::endl;
@@ -395,10 +395,10 @@ bool runSparseGEMMCommand(int argc, char *argv[]) {
             if(difference > EPSILON) {
                 std::cout << "ERROR position (" << i << "," << j <<  "): Value out simulator: " << acc_output[i*N+j] << ". Value out CPU: " << cpu_output[i*N+j] << std::endl;
                 std::cout << "\033[1;31mT test not passed\033[0m" << std::endl;
-		delete[] MK_dense_matrix;
+                delete[] MK_dense_matrix;
                 delete[] KN_dense_matrix;
-		delete[] MK_dense_matrix_no_organized;
-		delete[] KN_dense_matrix_no_organized;
+                delete[] MK_dense_matrix_no_organized;
+                delete[] KN_dense_matrix_no_organized;
                 delete[] MK_bitmap;
                 delete[] KN_bitmap;
                 delete[] MK_sparse_matrix;
@@ -406,8 +406,8 @@ bool runSparseGEMMCommand(int argc, char *argv[]) {
                 delete[] cpu_output;
                 delete[] acc_output;
                 delete[] acc_bitmap;
-		if(optimize)
-		    delete[] order_table;
+                if(optimize)
+                    delete[] order_table;
                 delete stonne_instance;
 
                 assert(false); //Always false
@@ -437,7 +437,7 @@ bool runSparseGEMMCommand(int argc, char *argv[]) {
         delete[] order_table;
     
     delete stonne_instance;
-    return true;    
+    return true;
 }
 
 bool runMaxPoolingCommand(int argc, char *argv[]) {
@@ -454,14 +454,14 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     unsigned int X=1;                                  // X //TODO CHECK X=1 and Y=1
     unsigned int Y=3;                                  // Y
     unsigned int strides=1;                            // Strides
- 
+
     //Tile parameters (See MAERI paper to find out the taxonomy meaning)
     unsigned int T_R=1;                                // T_R
     unsigned int T_S=3;                                // T_S
     unsigned int T_C=1;                                // T_C
     unsigned int T_N=1;                                // T_N
     unsigned int T_X_=1;                               // T_X
-    unsigned int T_Y_=1;                               // T_Y   
+    unsigned int T_Y_=1;                               // T_Y
     Config stonne_cfg; //Hardware parameters
     // stonne_cfg.m_MSNetworkCfg.ms_size=128;
     configPoolingParameters(argc, argv, stonne_cfg, layer_name, R, S, C, N, X, Y, strides, T_R, T_S, T_C, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
@@ -469,7 +469,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
     unsigned int Y_=(Y - S + strides) / strides;       // Y_
-    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << ")" << std::endl; 
+    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << ")" << std::endl;
 
 
     //Creating arrays to store the ifmap ofmap and weights
@@ -486,7 +486,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
 
     //computing CPU version
     // max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap);
-    max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu); 
+    max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu);
 
     /** END of generating the inputs and outputs **/
     //
@@ -496,8 +496,13 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     
     //Computing the CNN Layer with the simulator
     // TODO : Configure STONNE accordingly
+    stonne_cfg.m_SDMemoryCfg.mem_controller_type = POOL_DENSE_WORKLOAD;
+    stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled = false;
+
+    std::cout << "Tipo:" << stonne_cfg.m_ASNetworkCfg.reduce_network_type << std::endl;
+
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
-    stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, 1, 1, N, X, Y, strides, ifmap, NULL, ofmap, CNN_DATAFLOW); //Loading the layer
+    stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, 1, 1, N, X, Y, strides, ifmap, nullptr, ofmap, CNN_DATAFLOW); //Loading the layer
     stonne_instance->loadTile(T_R, T_S, T_C, 1, 1, T_N, T_X_, T_Y_); //Loading the tile
     stonne_instance->run(); //Running the simulator
 
@@ -509,7 +514,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
 
     //Comparing the results
     for(int i=0;i<ofmap_size; i++) {
-        float difference=fabs(ofmap_cpu[i]-ofmap_cpu[i]);
+        float difference=fabs(ofmap_cpu[i]-ofmap[i]);
         if(difference > EPSILON) {
             std::cout << "ERROR position " << i <<  ": Value ofmap simulator: " << ofmap[i] << ". Value ofmap CPU: " << ofmap_cpu[i] << std::endl;
             std::cout << "\033[1;31mT test not passed\033[0m" << std::endl;
@@ -529,7 +534,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     delete[] ifmap;
     delete[] ofmap;
     delete[] ofmap_cpu;
-    delete stonne_instance; 
+    delete stonne_instance;
     return true;
 }
 
@@ -547,14 +552,14 @@ bool runAveragePoolingCommand(int argc, char *argv[]) {
     unsigned int X=1;                                  // X //TODO CHECK X=1 and Y=1
     unsigned int Y=3;                                  // Y
     unsigned int strides=1;                            // Strides
- 
+
     //Tile parameters (See MAERI paper to find out the taxonomy meaning)
     unsigned int T_R=1;                                // T_R
     unsigned int T_S=3;                                // T_S
     unsigned int T_C=1;                                // T_C
     unsigned int T_N=1;                                // T_N
     unsigned int T_X_=1;                               // T_X
-    unsigned int T_Y_=1;                               // T_Y   
+    unsigned int T_Y_=1;                               // T_Y
     Config stonne_cfg; //Hardware parameters
     // stonne_cfg.m_MSNetworkCfg.ms_size=128;
     configPoolingParameters(argc, argv, stonne_cfg, layer_name, R, S, C, N, X, Y, strides, T_R, T_S, T_C, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
@@ -562,7 +567,7 @@ bool runAveragePoolingCommand(int argc, char *argv[]) {
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
     unsigned int Y_=(Y - S + strides) / strides;       // Y_
-    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << ")" << std::endl; 
+    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << ")" << std::endl;
 
 
     //Creating arrays to store the ifmap ofmap and weights
@@ -579,7 +584,7 @@ bool runAveragePoolingCommand(int argc, char *argv[]) {
 
     //computing CPU version
     // max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap);
-    average_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu); 
+    average_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu);
 
     /** END of generating the inputs and outputs **/
     //
@@ -622,7 +627,7 @@ bool runAveragePoolingCommand(int argc, char *argv[]) {
     delete[] ifmap;
     delete[] ofmap;
     delete[] ofmap_cpu;
-    // delete stonne_instance; 
+    // delete stonne_instance;
     return true;
 }
 
@@ -650,7 +655,7 @@ bool runHelpCommand() {
     std::cout << "described the dimensions according to each supported operation." << std::endl;
     std::cout << std::endl;
     std::cout << "[CONV]" << std::endl;
-    std::cout << "-layer_name: Name of the layer to run. The output statistic file will be named accordingly" << std::endl; 
+    std::cout << "-layer_name: Name of the layer to run. The output statistic file will be named accordingly" << std::endl;
     std::cout << "-R: Number of flter rows" << std::endl;
     std::cout << "-S: Number of filter columns" << std::endl;
     std::cout << "-C: Number of filter and input channels" << std::endl;
@@ -715,7 +720,7 @@ bool runHelpCommand() {
 
 //This function modifies the default values of the parameters according to user arguments.
 void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &K, unsigned int &G, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
+                          unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
 
     //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
@@ -750,14 +755,14 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
 
             else if(name=="-rn_bw") {
                 if(!ispowerof2(value)) {
-                    std::cout << "Error: -rn_bw must be power of 2" << std::endl; 
+                    std::cout << "Error: -rn_bw must be power of 2" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing rn_bw to " << value << std::endl;
                 stonne_cfg.m_SDMemoryCfg.n_write_ports=value;
             }
 
-	    else if(name=="-accumulation_buffer") {
+            else if(name=="-accumulation_buffer") {
                 std::cout << "Changing accumulation_buffer to " << value << std::endl;
                 stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=value;
             }
@@ -771,7 +776,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
                     exit(1);
                 }
                 std::cout << "Changing print_stats to " << value << std::endl;
-                stonne_cfg.print_stats_enabled=value; 
+                stonne_cfg.print_stats_enabled=value;
             }
 
             else if(name=="-rn_type") {
@@ -779,108 +784,108 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
                 stonne_cfg.m_ASNetworkCfg.reduce_network_type=get_type_reduce_network_type(value_str);
             }
             //Running configuration parameters (layer and tile)
-   
-           //Layer parameters
-           else if(name=="-layer_name") {
-               std::cout << "Changing layer_name to " << value_str << std::endl;
-               layer_name=value_str; 
-           }
-        
-           else if(name=="-R") {
+
+            //Layer parameters
+            else if(name=="-layer_name") {
+                std::cout << "Changing layer_name to " << value_str << std::endl;
+                layer_name=value_str;
+            }
+
+            else if(name=="-R") {
                 std::cout << "Changing R to " << value << std::endl;
                 R=value;
-           }
+            }
 
-           else if(name=="-S") {
+            else if(name=="-S") {
                 std::cout << "Changing S to " << value << std::endl;
                 S=value;
-           }
+            }
 
-           else if(name=="-C") {
+            else if(name=="-C") {
                 std::cout << "Changing C to " << value << std::endl;
                 C=value;
-           } 
-        
-           else if(name=="-K") {
+            }
+
+            else if(name=="-K") {
                 std::cout << "Changing K to " << value << std::endl;
                 K=value;
-           }
-  
-           else if(name=="-G") {
-               std::cout << "Changing G to " << value << std::endl;
-               G=value;
-           }
-  
-           else if(name=="-N") {
+            }
+
+            else if(name=="-G") {
+                std::cout << "Changing G to " << value << std::endl;
+                G=value;
+            }
+
+            else if(name=="-N") {
                 std::cout << "Changing N to " << value << std::endl;
                 N=value;
-           }
+            }
 
-           else if(name=="-X") {
+            else if(name=="-X") {
                 std::cout << "Changing X to " << value << std::endl;
                 X=value;
-           }
+            }
 
-           else if(name=="-Y") {
+            else if(name=="-Y") {
                 std::cout << "Changing Y to " << value << std::endl;
                 Y=value;
-           }
+            }
 
-           else if(name=="-strides") {
-               std::cout << "Changing strides to " << value << std::endl;
-               strides=value;
-           }
+            else if(name=="-strides") {
+                std::cout << "Changing strides to " << value << std::endl;
+                strides=value;
+            }
 
-           //Tile parameters
-           else if(name=="-T_R") {
+            //Tile parameters
+            else if(name=="-T_R") {
                 std::cout << "Changing T_R to " << value << std::endl;
                 T_R=value;
-           } 
+            }
 
-           else if(name=="-T_S") {
+            else if(name=="-T_S") {
                 std::cout << "Changing T_S to " << value << std::endl;
                 T_S=value;
-           }
+            }
 
-           else if(name=="-T_C") {
+            else if(name=="-T_C") {
                 std::cout << "Changing T_C to " << value << std::endl;
                 T_C=value;
-           }
+            }
 
-           else if(name=="-T_K") {
+            else if(name=="-T_K") {
                 std::cout << "Changing T_K to " << value << std::endl;
                 T_K=value;
-           }
+            }
 
-           else if(name=="-T_G") {
-               std::cout << "Changing T_G to " << value << std::endl;
-               T_G=value;
-           }
+            else if(name=="-T_G") {
+                std::cout << "Changing T_G to " << value << std::endl;
+                T_G=value;
+            }
 
-           else if(name=="-T_N") {
+            else if(name=="-T_N") {
                 std::cout << "Changing T_N to " << value << std::endl;
                 T_N=value;
-           }
+            }
 
-           else if(name=="-T_X_") {
+            else if(name=="-T_X_") {
                 std::cout << "Changing T_X_ to " << value << std::endl;
                 T_X_=value;
-           }
+            }
 
-           else if(name=="-T_Y_") {
+            else if(name=="-T_Y_") {
                 std::cout << "Changing T_Y_ to " << value << std::endl;
                 T_Y_=value;
-           }
+            }
 
-           //Parameter is not recognized
-           else {
+            //Parameter is not recognized
+            else {
                 std::cout << "Error: parameter " << name << " does not exist" << std::endl;
                 exit(1);
             }
 
- 
-    
-           
+
+
+
 
         }
         else {
@@ -893,7 +898,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
 }
 
 void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N) {
-  //Parsing
+    //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
         string arg = argv[i];
         //Spliting using = character
@@ -915,7 +920,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
                 stonne_cfg.m_MSNetworkCfg.ms_size=value;
             }
 
-	    else if(name=="-ms_rows") {
+            else if(name=="-ms_rows") {
                 if(!ispowerof2(value)) {
                     std::cout << "Error: -ms_rows must be power of 2" << std::endl;
                     exit(1);
@@ -926,15 +931,15 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
             }
 
 
-	    else if(name=="-ms_cols") {
-                if(!ispowerof2(value)) {   
+            else if(name=="-ms_cols") {
+                if(!ispowerof2(value)) {
                     std::cout << "Error: -ms_cols must be power of 2" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing ms_cols to " << value << std::endl; //To debug
                 stonne_cfg.m_MSNetworkCfg.ms_cols=value;
 
-	    }
+            }
 
 
             else if(name=="-dn_bw") {
@@ -948,14 +953,14 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
 
             else if(name=="-rn_bw") {
                 if(!ispowerof2(value)) {
-                    std::cout << "Error: -rn_bw must be power of 2" << std::endl; 
+                    std::cout << "Error: -rn_bw must be power of 2" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing rn_bw to " << value << std::endl;
                 stonne_cfg.m_SDMemoryCfg.n_write_ports=value;
             }
 
-	     else if(name=="-accumulation_buffer") {
+            else if(name=="-accumulation_buffer") {
                 std::cout << "Changing accumulation_buffer to " << value << std::endl;
                 stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=value;
             }
@@ -966,20 +971,20 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
                     exit(1);
                 }
                 std::cout << "Changing print_stats to " << value << std::endl;
-                stonne_cfg.print_stats_enabled=value; 
+                stonne_cfg.print_stats_enabled=value;
             }
 
-	     else if(name=="-rn_type") {
+            else if(name=="-rn_type") {
                 std::cout << "Changing rn_type to " << value_str << std::endl;
                 stonne_cfg.m_ASNetworkCfg.reduce_network_type=get_type_reduce_network_type(value_str);
             }
 
-	    else if(name=="-mn_type") {
+            else if(name=="-mn_type") {
                 std::cout << "Changing mn_type to " << value_str << std::endl;
                 stonne_cfg.m_MSNetworkCfg.multiplier_network_type=get_type_multiplier_network_type(value_str);
             }
 
-	    else if(name=="-mem_ctrl") {
+            else if(name=="-mem_ctrl") {
                 std::cout << "Changing mem_ctrl to " << value_str << std::endl;
                 stonne_cfg.m_SDMemoryCfg.mem_controller_type=get_type_memory_controller_type(value_str);
             }
@@ -988,54 +993,54 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
 
 
             //Running configuration parameters (layer)
-   
-           //Layer parameters
-           else if(name=="-layer_name") {
-               std::cout << "Changing layer_name to " << value_str << std::endl;
-               layer_name=value_str; 
-           }
-        
-           else if(name=="-M") {
+
+            //Layer parameters
+            else if(name=="-layer_name") {
+                std::cout << "Changing layer_name to " << value_str << std::endl;
+                layer_name=value_str;
+            }
+
+            else if(name=="-M") {
                 std::cout << "Changing M to " << value << std::endl;
                 M=value;
-           }
+            }
 
-           else if(name=="-N") {
+            else if(name=="-N") {
                 std::cout << "Changing N to " << value << std::endl;
                 N=value;
-           }
+            }
 
-           else if(name=="-K") {
+            else if(name=="-K") {
                 std::cout << "Changing K to " << value << std::endl;
                 K=value;
-           } 
-        
-           else if(name=="-T_M") {
+            }
+
+            else if(name=="-T_M") {
                 std::cout << "Changing T_M to " << value << std::endl;
                 T_M=value;
-           }
-  
-           else if(name=="-T_N") {
-               std::cout << "Changing T_N to " << value << std::endl;
-               T_N=value;
-           }
-  
-	    else if(name=="-T_K") {
-               std::cout << "Changing T_K to " << value << std::endl;
-               T_K=value;
-           }
+            }
+
+            else if(name=="-T_N") {
+                std::cout << "Changing T_N to " << value << std::endl;
+                T_N=value;
+            }
+
+            else if(name=="-T_K") {
+                std::cout << "Changing T_K to " << value << std::endl;
+                T_K=value;
+            }
 
 
 
-           //Parameter is not recognized
-           else {
+            //Parameter is not recognized
+            else {
                 std::cout << "Error: parameter " << name << " does not exist" << std::endl;
                 exit(1);
             }
 
- 
-    
-           
+
+
+
 
         }
         else {
@@ -1044,7 +1049,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
             exit(1);
 
         }
-    }  
+    }
 
 }
 
@@ -1084,7 +1089,7 @@ void configSparseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std:
 
             else if(name=="-rn_bw") {
                 if(!ispowerof2(value)) {
-                    std::cout << "Error: -rn_bw must be power of 2" << std::endl; 
+                    std::cout << "Error: -rn_bw must be power of 2" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing rn_bw to " << value << std::endl;
@@ -1099,63 +1104,63 @@ void configSparseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std:
                     exit(1);
                 }
                 std::cout << "Changing print_stats to " << value << std::endl;
-                stonne_cfg.print_stats_enabled=value; 
+                stonne_cfg.print_stats_enabled=value;
             }
 
             //Running configuration parameters (layer)
-   
-           //Layer parameters
-           else if(name=="-layer_name") {
-               std::cout << "Changing layer_name to " << value_str << std::endl;
-               layer_name=value_str; 
-           }
-        
-           else if(name=="-M") {
+
+            //Layer parameters
+            else if(name=="-layer_name") {
+                std::cout << "Changing layer_name to " << value_str << std::endl;
+                layer_name=value_str;
+            }
+
+            else if(name=="-M") {
                 std::cout << "Changing M to " << value << std::endl;
                 M=value;
-           }
+            }
 
-           else if(name=="-N") {
+            else if(name=="-N") {
                 std::cout << "Changing N to " << value << std::endl;
                 N=value;
-           }
+            }
 
-           else if(name=="-K") {
+            else if(name=="-K") {
                 std::cout << "Changing K to " << value << std::endl;
                 K=value;
-           } 
-        
-           else if(name=="-MK_sparsity") {
+            }
+
+            else if(name=="-MK_sparsity") {
                 std::cout << "Changing MK_sparsity to " << value << std::endl;
                 MK_sparsity=value;
-           }
-  
-           else if(name=="-KN_sparsity") {
-               std::cout << "Changing KN_sparsity to " << value << std::endl;
-               KN_sparsity=value;
-           }
-  
-	   else if(name=="-dataflow") {
+            }
+
+            else if(name=="-KN_sparsity") {
+                std::cout << "Changing KN_sparsity to " << value << std::endl;
+                KN_sparsity=value;
+            }
+
+            else if(name=="-dataflow") {
                 std::cout << "Changing dataflow to " << value_str << std::endl;
                 dataflow=get_type_dataflow_type(value_str);
             }
 
-	    else if(name=="-optimize") {
-               std::cout << "Changing optimize " << value << std::endl;
-               optimize=value;
-           }
+            else if(name=="-optimize") {
+                std::cout << "Changing optimize " << value << std::endl;
+                optimize=value;
+            }
 
 
 
-           //Parameter is not recognized
-           else {
+            //Parameter is not recognized
+            else {
                 std::cout << "Error: parameter " << name << " does not exist" << std::endl;
                 exit(1);
             }
 
- 
-    
-           
+
+
+
 
         }
         else {
@@ -1201,7 +1206,7 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
 
             else if(name=="-rn_bw") {
                 if(!ispowerof2(value)) {
-                    std::cout << "Error: -rn_bw must be power of 2" << std::endl; 
+                    std::cout << "Error: -rn_bw must be power of 2" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing rn_bw to " << value << std::endl;
@@ -1216,65 +1221,65 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
                     exit(1);
                 }
                 std::cout << "Changing print_stats to " << value << std::endl;
-                stonne_cfg.print_stats_enabled=value; 
+                stonne_cfg.print_stats_enabled=value;
             }
 
             //Running configuration parameters (layer)
-   
-           //Layer parameters
-           else if(name=="-layer_name") {
-               std::cout << "Changing layer_name to " << value_str << std::endl;
-               layer_name=value_str; 
-           }
-        
-           else if(name=="-M") {
+
+            //Layer parameters
+            else if(name=="-layer_name") {
+                std::cout << "Changing layer_name to " << value_str << std::endl;
+                layer_name=value_str;
+            }
+
+            else if(name=="-M") {
                 std::cout << "Changing M to " << value << std::endl;
                 M=value;
-           }
+            }
 
-           else if(name=="-N") {
+            else if(name=="-N") {
                 std::cout << "Changing N to " << value << std::endl;
                 N=value;
-           }
+            }
 
-           else if(name=="-K") {
+            else if(name=="-K") {
                 std::cout << "Changing K to " << value << std::endl;
                 K=value;
-           } 
-        
-           else if(name=="-MK_sparsity") {
+            }
+
+            else if(name=="-MK_sparsity") {
                 std::cout << "Changing MK_sparsity to " << value << std::endl;
                 MK_sparsity=value;
-           }
-  
-           else if(name=="-T_N") {
-               std::cout << "Changing T_N to " << value << std::endl;
-               T_N=value;
-           }
+            }
 
-	    else if(name=="-T_K") {
-               std::cout << "Changing T_K to " << value << std::endl;
-               T_K=value;
-           }
-           
-           else if(name=="-accumulation_buffer") {
+            else if(name=="-T_N") {
+                std::cout << "Changing T_N to " << value << std::endl;
+                T_N=value;
+            }
+
+            else if(name=="-T_K") {
+                std::cout << "Changing T_K to " << value << std::endl;
+                T_K=value;
+            }
+
+            else if(name=="-accumulation_buffer") {
                 std::cout << "Changing accumulation_buffer to " << value << std::endl;
                 stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=value;
             }
 
-	   else if(name=="-rn_type") {
+            else if(name=="-rn_type") {
                 std::cout << "Changing rn_type to " << value_str << std::endl;
                 stonne_cfg.m_ASNetworkCfg.reduce_network_type=get_type_reduce_network_type(value_str);
             }
 
-           //Parameter is not recognized
-           else {
+            //Parameter is not recognized
+            else {
                 std::cout << "Error: parameter " << name << " does not exist" << std::endl;
                 exit(1);
             }
 
-    
-           
+
+
 
         }
         else {
@@ -1287,7 +1292,7 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
 }
 
 void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
+                             unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
 
     //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
@@ -1322,14 +1327,14 @@ void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::st
 
             else if(name=="-rn_bw") {
                 if(!ispowerof2(value)) {
-                    std::cout << "Error: -rn_bw must be power of 2" << std::endl; 
+                    std::cout << "Error: -rn_bw must be power of 2" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing rn_bw to " << value << std::endl;
                 stonne_cfg.m_SDMemoryCfg.n_write_ports=value;
             }
 
-	    else if(name=="-accumulation_buffer") {
+            else if(name=="-accumulation_buffer") {
                 std::cout << "Changing accumulation_buffer to " << value << std::endl;
                 stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=value;
             }
@@ -1343,7 +1348,7 @@ void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::st
                     exit(1);
                 }
                 std::cout << "Changing print_stats to " << value << std::endl;
-                stonne_cfg.print_stats_enabled=value; 
+                stonne_cfg.print_stats_enabled=value;
             }
 
             else if(name=="-rn_type") {
@@ -1351,81 +1356,81 @@ void configPoolingParameters(int argc, char *argv[], Config &stonne_cfg, std::st
                 stonne_cfg.m_ASNetworkCfg.reduce_network_type=get_type_reduce_network_type(value_str);
             }
             //Running configuration parameters (layer and tile)
-   
-           //Layer parameters
-           else if(name=="-layer_name") {
-               std::cout << "Changing layer_name to " << value_str << std::endl;
-               layer_name=value_str; 
-           }
-        
-           else if(name=="-R") {
+
+            //Layer parameters
+            else if(name=="-layer_name") {
+                std::cout << "Changing layer_name to " << value_str << std::endl;
+                layer_name=value_str;
+            }
+
+            else if(name=="-R") {
                 std::cout << "Changing R to " << value << std::endl;
                 R=value;
-           }
+            }
 
-           else if(name=="-S") {
+            else if(name=="-S") {
                 std::cout << "Changing S to " << value << std::endl;
                 S=value;
-           }
+            }
 
-           else if(name=="-C") {
+            else if(name=="-C") {
                 std::cout << "Changing C to " << value << std::endl;
                 C=value;
-           } 
-  
-           else if(name=="-N") {
+            }
+
+            else if(name=="-N") {
                 std::cout << "Changing N to " << value << std::endl;
                 N=value;
-           }
+            }
 
-           else if(name=="-X") {
+            else if(name=="-X") {
                 std::cout << "Changing X to " << value << std::endl;
                 X=value;
-           }
+            }
 
-           else if(name=="-Y") {
+            else if(name=="-Y") {
                 std::cout << "Changing Y to " << value << std::endl;
                 Y=value;
-           }
+            }
 
-           else if(name=="-strides") {
-               std::cout << "Changing strides to " << value << std::endl;
-               strides=value;
-           }
+            else if(name=="-strides") {
+                std::cout << "Changing strides to " << value << std::endl;
+                strides=value;
+            }
 
-           //Tile parameters
-           else if(name=="-T_R") {
+            //Tile parameters
+            else if(name=="-T_R") {
                 std::cout << "Changing T_R to " << value << std::endl;
                 T_R=value;
-           } 
+            }
 
-           else if(name=="-T_S") {
+            else if(name=="-T_S") {
                 std::cout << "Changing T_S to " << value << std::endl;
                 T_S=value;
-           }
+            }
 
-           else if(name=="-T_C") {
+            else if(name=="-T_C") {
                 std::cout << "Changing T_C to " << value << std::endl;
                 T_C=value;
-           }
+            }
 
-           else if(name=="-T_N") {
+            else if(name=="-T_N") {
                 std::cout << "Changing T_N to " << value << std::endl;
                 T_N=value;
-           }
+            }
 
-           else if(name=="-T_X_") {
+            else if(name=="-T_X_") {
                 std::cout << "Changing T_X_ to " << value << std::endl;
                 T_X_=value;
-           }
+            }
 
-           else if(name=="-T_Y_") {
+            else if(name=="-T_Y_") {
                 std::cout << "Changing T_Y_ to " << value << std::endl;
                 T_Y_=value;
-           }
+            }
 
-           //Parameter is not recognized
-           else {
+            //Parameter is not recognized
+            else {
                 std::cout << "Error: parameter " << name << " does not exist" << std::endl;
                 exit(1);
             }

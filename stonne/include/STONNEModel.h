@@ -21,6 +21,7 @@
 #include "TemporalRN.h"
 #include "OSMeshSDMemory.h"
 #include "OSMeshMN.h"
+#include "PoolSDMemory.h"
 
 class Stonne {
 private:

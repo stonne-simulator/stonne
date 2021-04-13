@@ -20,14 +20,14 @@ Stonne::Stonne(Config stonne_cfg) {
     this->outputASConnection = new Connection(stonne_cfg.m_SDMemoryCfg.port_width);
     this->outputLTConnection = new Connection(stonne_cfg.m_LookUpTableCfg.port_width);
     switch(stonne_cfg.m_MSNetworkCfg.multiplier_network_type) {
-        case LINEAR: 
-	    this->msnet = new MSNetwork(2, "MSNetwork", stonne_cfg);
-	    break;
-	case OS_MESH:
-	    this->msnet = new OSMeshMN(2, "OSMesh", stonne_cfg);
-	    break;
-	default:
-	    assert(false);
+    case LINEAR:
+        this->msnet = new MSNetwork(2, "MSNetwork", stonne_cfg);
+        break;
+    case OS_MESH:
+        this->msnet = new OSMeshMN(2, "OSMesh", stonne_cfg);
+        break;
+    default:
+        assert(false);
     }
     //switch(DistributionNetwork). It is possible to create instances of other DistributionNetworks.h
     this->dsnet = new DSNetworkTop(1, "DSNetworkTop", stonne_cfg);
@@ -35,41 +35,44 @@ Stonne::Stonne(Config stonne_cfg) {
     //Creating the ReduceNetwork according to the parameter specified by the user
     switch(stonne_cfg.m_ASNetworkCfg.reduce_network_type) {
     case ASNETWORK:
-        this->asnet = new ASNetwork(3, "ASNetwork", stonne_cfg, outputASConnection); 
+        this->asnet = new ASNetwork(3, "ASNetwork", stonne_cfg, outputASConnection);
         break;
     case FENETWORK:
         this->asnet = new FENetwork(3, "FENetwork", stonne_cfg, outputASConnection);
         break;
     case TEMPORALRN:
-	this->asnet = new TemporalRN(3, "TemporalRN", stonne_cfg, outputASConnection);
-	break;
+        this->asnet = new TemporalRN(3, "TemporalRN", stonne_cfg, outputASConnection);
+        break;
     default:
-	assert(false);
+        assert(false);
     }
 
-    this->collectionBus = new Bus(4, "CollectionBus", stonne_cfg); 
+    this->collectionBus = new Bus(4, "CollectionBus", stonne_cfg);
     this->lt = new LookupTable(5, "LookUpTable", stonne_cfg, outputASConnection, outputLTConnection);
 
     //switch(MemoryController). It is possible to create instances of other MemoryControllers
     switch(stonne_cfg.m_SDMemoryCfg.mem_controller_type) {
-	case SIGMA_SPARSE_GEMM:
-            this->mem = new SparseSDMemory(0, "SparseSDMemory", stonne_cfg, this->outputLTConnection);
-	    break;
-	case MAERI_DENSE_WORKLOAD:
-	    this->mem = new  SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection);
-	    break;
-	case TPU_OS_DENSE:
-	    this->mem = new  OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
-	    break;
-	default:
-	    assert(false);
+    case SIGMA_SPARSE_GEMM:
+        this->mem = new SparseSDMemory(0, "SparseSDMemory", stonne_cfg, this->outputLTConnection);
+        break;
+    case MAERI_DENSE_WORKLOAD:
+        this->mem = new  SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection);
+        break;
+    case TPU_OS_DENSE:
+        this->mem = new  OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
+        break;
+    case POOL_DENSE_WORKLOAD:
+        this->mem = new PoolSDMemory(0, "PoolSDMemory", stonne_cfg, this->outputLTConnection);
+        break;
+    default:
+        assert(false);
     }
     //Adding to the memory controller the asnet and msnet to reconfigure them if needed
     this->mem->setReduceNetwork(asnet);
-    this->mem->setMultiplierNetwork(msnet); 
+    this->mem->setMultiplierNetwork(msnet);
 
     //Calculating n_adders
-    this->n_adders=this->ms_size-1; 
+    this->n_adders=this->ms_size-1;
     //rsnet
     this->connectMemoryandDSN();
     this->connectMSNandDSN();
@@ -77,7 +80,7 @@ Stonne::Stonne(Config stonne_cfg) {
 
     this->connectASNandBus();
     this->connectBusandMemory();
-  
+
     //DEBUG PARAMETERS
     this->time_ds = 0;
     this->time_ms = 0;
@@ -102,10 +105,10 @@ Stonne::~Stonne() {
     if(layer_loaded) {
         delete this->dnn_layer;
     }
-  
+
     if(tile_loaded) {
         delete this->current_tile;
-    } 
+    }
 }
 
 //Connecting the DSNetworkTop input ports with the read ports of the memory. These connections have been created
@@ -122,7 +125,7 @@ void Stonne::connectMemoryandDSN() {
 void Stonne::connectMSNandDSN() {
     std::map<int, Connection*> DNConnections = this->dsnet->getLastLevelConnections(); //Map with the DS connections
     this->msnet->setInputConnections(DNConnections);
-     
+
 }
 //Connect the multiplier switches with the Adder switches. Note the number of ASs connection connectionss and MSs must be the identical
 
@@ -133,17 +136,17 @@ void Stonne::connectMSNandASN() {
 }
 
 void Stonne::connectASNandBus() {
-        std::vector<std::vector<Connection*>> connectionsBus = this->collectionBus->getInputConnections(); //Getting the CollectionBus Connections
-        this->asnet->setMemoryConnections(connectionsBus); //Send the connections to the ReduceNetwork to be connected according to its algorithm
-   
-   
+    std::vector<std::vector<Connection*>> connectionsBus = this->collectionBus->getInputConnections(); //Getting the CollectionBus Connections
+    this->asnet->setMemoryConnections(connectionsBus); //Send the connections to the ReduceNetwork to be connected according to its algorithm
+
+
     
 }
 
 void Stonne::connectBusandMemory() {
     std::vector<Connection*> write_port_connections = this->collectionBus->getOutputConnections();
     this->mem->setWriteConnections(write_port_connections);
-       
+
 }
 
 void Stonne::loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow) {
@@ -153,8 +156,8 @@ void Stonne::loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned i
     assert(Y>=S);
     if((layer_type==FC) || (layer_type==GEMM)) {
         //assert((R==1) && (C==1) && (G==1) && (Y==S) && (X==1)); //Ensure the mapping is correct
-    } 
-    this->dnn_layer = new DNNLayer(layer_type, layer_name, R,S, C, K, G, N, X, Y, strides);   
+    }
+    this->dnn_layer = new DNNLayer(layer_type, layer_name, R,S, C, K, G, N, X, Y, strides);
     this->layer_loaded = true;
     this->mem->setLayer(this->dnn_layer, input_address, filter_address, output_address, dataflow);
 }
@@ -165,7 +168,7 @@ void Stonne::loadCONVLayer(std::string layer_name, unsigned int R, unsigned int 
 }
 
 void Stonne::loadFCLayer(std::string layer_name, unsigned int N, unsigned int S, unsigned int K, address_t input_address, address_t filter_address, address_t output_address)  {
-     //loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, N, 1, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
+    //loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, N, 1, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
     loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, 1, N, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
     std::cout << "Loading a FC layer into STONNE" << std::endl;
 }
@@ -175,11 +178,11 @@ void Stonne::loadGEMM(std::string layer_name, unsigned int N, unsigned int K, un
     //N=N
     //S and X in CNN =K in SIGMA
     //K in CNN = M in SIGMA
-    //input_matrix=KN 
+    //input_matrix=KN
     //filter_matrix = MK
     loadDNNLayer(GEMM, layer_name, 1, K, 1, M, 1, 1, N, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
-    this->mem->setSparseMetadata(MK_metadata, KN_metadata, output_metadata); 
+    this->mem->setSparseMetadata(MK_metadata, KN_metadata, output_metadata);
     std::cout << "Loading metadata" << std::endl;
 }
 
@@ -199,7 +202,7 @@ void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned in
     //K in CNN=N here
     //C in CNN =K here
     //N in CNN = M here
-    //input_matrix=MK 
+    //input_matrix=MK
     //filter_matrix = KN
     loadDNNLayer(SPARSE_DENSE, layer_name, 1, 1, K, N, 1, M, 1, 1, 1, MK_matrix, KN_matrix, output_matrix, SPARSE_DENSE_DATAFLOW);
     std::cout << "Loading a Sparse multiplied by dense GEMM into STONNE" << std::endl;
@@ -232,10 +235,10 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
         assert((this->stonne_cfg.m_MSNetworkCfg.ms_rows*this->stonne_cfg.m_MSNetworkCfg.ms_cols) >= (T_R*T_S*T_C*T_K*T_G*T_N*T_X_*T_Y_));
     }
     //Checking if the dimensions fit the DNN layer. i.e., the tile is able to calculate the whole layer.
-    std::cout << "Loading Tile: <T_R=" << T_R << ", T_S=" << T_S << ", T_C=" << T_C << ", T_K=" << T_K << ", T_G=" << T_G << ", T_N=" << T_N << ", T_X'=" << T_X_ << ", T_Y'=" << T_Y_ << ">" << std::endl; 
- 
-    //Remove these lines if we want the architeture to compute the layer even if the tile does not fit. 
-    // This will mean that some row, columns or output channels would remain without calculating. 
+    std::cout << "Loading Tile: <T_R=" << T_R << ", T_S=" << T_S << ", T_C=" << T_C << ", T_K=" << T_K << ", T_G=" << T_G << ", T_N=" << T_N << ", T_X'=" << T_X_ << ", T_Y'=" << T_Y_ << ">" << std::endl;
+
+    //Remove these lines if we want the architeture to compute the layer even if the tile does not fit.
+    // This will mean that some row, columns or output channels would remain without calculating.
     if(stonne_cfg.m_SDMemoryCfg.mem_controller_type==MAERI_DENSE_WORKLOAD) { //Just for this maeri controller
         assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
         assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
@@ -244,24 +247,24 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
         assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
         assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
         assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
-        assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
+        assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_
     }
 
     //End check
     unsigned int n_folding = (this->dnn_layer->get_R() / T_R)*(this->dnn_layer->get_S() / T_S) * (this->dnn_layer->get_C() / T_C) ;
-    bool folding_enabled = false; //Condition to use extra multiplier. Note that if folding is enabled but some type of accumulation buffer is needed this is false as no fw ms is needed. 
+    bool folding_enabled = false; //Condition to use extra multiplier. Note that if folding is enabled but some type of accumulation buffer is needed this is false as no fw ms is needed.
     if((n_folding > 1) && (this->stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled==0) && (this->stonne_cfg.m_ASNetworkCfg.reduce_network_type != FENETWORK)) { //If there is folding and the RN is not able to acumulate itself, we have to use an extra MS to accumulate
-        folding_enabled = true; 
+        folding_enabled = true;
         //When there is folding we leave one MS free per VN aiming at suming the psums. In next line we check if there are
-        // enough mswitches in the array to support the folding. 
+        // enough mswitches in the array to support the folding.
         assert(this->ms_size >= ((T_R*T_S*T_C*T_K*T_G*T_N*T_X_*T_Y_) + (T_K*T_G*T_N*T_X_*T_Y_))); //We sum one mswitch per VN
     }
     this->current_tile = new Tile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_, folding_enabled);
     
     //Generating the signals for the reduceNetwork and configuring it. The asnet->configureSignals will call its corresponding compiler to generate the signals and allocate all of them
     if(this->stonne_cfg.m_MSNetworkCfg.multiplier_network_type != OS_MESH) { //IN TPU the configuration is done in the mem controller
-        this->asnet->configureSignals(this->current_tile, this->dnn_layer, this->ms_size, n_folding); //Calling the ART to configure the signals with them previously generated 
-    //Getting MN signals
+        this->asnet->configureSignals(this->current_tile, this->dnn_layer, this->ms_size, n_folding); //Calling the ART to configure the signals with them previously generated
+        //Getting MN signals
         this->msnet->configureSignals(this->current_tile, this->dnn_layer, this->ms_size, n_folding);
     }
     //Setting the signals to the corresponding networks
@@ -299,11 +302,11 @@ void Stonne::cycle() {
         //this->lt->cycle();
         end = std::chrono::steady_clock::now();
         this->time_lt+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        this->collectionBus->cycle(); 
+        this->collectionBus->cycle();
         start = std::chrono::steady_clock::now();
         this->asnet->cycle();
         this->lt->cycle();
-//        this->collectionBus->cycle(); //This order since these are connections that have to be seen in next cycle
+        //        this->collectionBus->cycle(); //This order since these are connections that have to be seen in next cycle
         end = std::chrono::steady_clock::now();
         this->time_as+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
         start = std::chrono::steady_clock::now();
@@ -335,7 +338,7 @@ void Stonne::cycle() {
 void Stonne::printStats() {
     std::cout << "Printing stats" << std::endl;
 
-    std::ofstream out; 
+    std::ofstream out;
     unsigned int num_ms = this->stonne_cfg.m_MSNetworkCfg.ms_size;
     unsigned int dn_bw = this->stonne_cfg.m_SDMemoryCfg.n_read_ports;
     unsigned int rn_bw = this->stonne_cfg.m_SDMemoryCfg.n_write_ports;
@@ -350,43 +353,43 @@ void Stonne::printStats() {
     unsigned int indent=IND_SIZE;
     out << "{" << std::endl;
 
-        //Printing input parameters
-        this->stonne_cfg.printConfiguration(out, indent);
-        out << "," << std::endl;
+    //Printing input parameters
+    this->stonne_cfg.printConfiguration(out, indent);
+    out << "," << std::endl;
 
-        //Printing layer configuration parameters
-        this->dnn_layer->printConfiguration(out, indent);
-        out << "," << std::endl;
+    //Printing layer configuration parameters
+    this->dnn_layer->printConfiguration(out, indent);
+    out << "," << std::endl;
 
-        //Printing tile configuration parameters
-       // this->current_tile->printConfiguration(out, indent);
-        //out << "," << std::endl;   
-        
-        //Printing ASNetwork configuration parameters (i.e., ASwitches configuration for these VNs, flags, etc)
-        this->asnet->printConfiguration(out, indent);
-        out << "," << std::endl;
-  
-        this->msnet->printConfiguration(out, indent);
-        out << "," << std::endl;
+    //Printing tile configuration parameters
+    // this->current_tile->printConfiguration(out, indent);
+    //out << "," << std::endl;
 
-        
-        //Printing global statistics
-        this->printGlobalStats(out, indent);
-        out << "," << std::endl;        
+    //Printing ASNetwork configuration parameters (i.e., ASwitches configuration for these VNs, flags, etc)
+    this->asnet->printConfiguration(out, indent);
+    out << "," << std::endl;
 
-        //Printing all the components
-        this->dsnet->printStats(out, indent);  //DSNetworkTop //DSNetworks //DSwitches
-        out << "," << std::endl;
-        this->msnet->printStats(out, indent);
-        out << "," << std::endl;
-        this->asnet->printStats(out, indent);
-        out << "," << std::endl;
-        this->mem->printStats(out, indent);
-        out << "," << std::endl;
-        this->collectionBus->printStats(out, indent);
-        out << std::endl;
-        
-     
+    this->msnet->printConfiguration(out, indent);
+    out << "," << std::endl;
+
+
+    //Printing global statistics
+    this->printGlobalStats(out, indent);
+    out << "," << std::endl;
+
+    //Printing all the components
+    this->dsnet->printStats(out, indent);  //DSNetworkTop //DSNetworks //DSwitches
+    out << "," << std::endl;
+    this->msnet->printStats(out, indent);
+    out << "," << std::endl;
+    this->asnet->printStats(out, indent);
+    out << "," << std::endl;
+    this->mem->printStats(out, indent);
+    out << "," << std::endl;
+    this->collectionBus->printStats(out, indent);
+    out << std::endl;
+
+
     
     out << "}" << std::endl;
     out.close();
@@ -438,11 +441,11 @@ void Stonne::printGlobalStats(std::ofstream& out, unsigned int indent) {
 }
 
 void Stonne::testMemory(unsigned int num_ms) {
-   for(int i=0; i<20; i++) {
-    this->mem->cycle();
-    this->dsnet->cycle();
-    this->msnet->cycle();
-   }
+    for(int i=0; i<20; i++) {
+        this->mem->cycle();
+        this->dsnet->cycle();
+        this->msnet->cycle();
+    }
 
 
     
@@ -461,7 +464,7 @@ void Stonne::testTile(unsigned int num_ms) {
 
 void Stonne::testDSNetwork(unsigned int num_ms) {
     //BRoadcast test
-     /*
+    /*
     DataPackage* data_to_send = new DataPackage(32, 1, IACTIVATION, 0, BROADCAST);
     std::vector<DataPackage*> vector_to_send;
     vector_to_send.push_back(data_to_send);
@@ -469,21 +472,21 @@ void Stonne::testDSNetwork(unsigned int num_ms) {
     */
 
     //Unicast test
-    /* 
+    /*
     DataPackage* data_to_send = new DataPackage(32, 500, IACTIVATION, 0, UNICAST, 6);
     std::vector<DataPackage*> vector_to_send;
     vector_to_send.push_back(data_to_send);
     this->inputConnection->send(vector_to_send);
     */
 
-    //Multicast test 
+    //Multicast test
     
     bool* dests = new bool[num_ms]; //16 MSs
     for(int i=0;i<num_ms; i++) {
         dests[i]=false;
     }
     
-    //Enabling Destinations 
+    //Enabling Destinations
     for(int i=0; i<6; i++)
         dests[i]=true;
 
@@ -507,16 +510,16 @@ void Stonne::testDSNetwork(unsigned int num_ms) {
     switches_configuration[switch2]=ADD_3_1;
     fwlinks_configuration[switch2]=RECEIVE;
 
-//    asnet->addersConfiguration(switches_configuration);
- //   asnet->forwardingConfiguration(fwlinks_configuration);
+    //    asnet->addersConfiguration(switches_configuration);
+    //   asnet->forwardingConfiguration(fwlinks_configuration);
 
 
- 
+
     this->dsnet->cycle(); //TODO REVERSE THE ORDER!!!
     this->msnet->cycle();
     for(int i=0; i<7; i++) {
-       this->lt->cycle();
-       this->asnet->cycle(); // 2 to 1
+        this->lt->cycle();
+        this->asnet->cycle(); // 2 to 1
     }
     
     delete[] dests;

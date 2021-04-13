@@ -39,7 +39,7 @@ ASNetwork::ASNetwork(id_t id, std::string name, Config stonne_cfg, Connection* o
 
     
             if(i==0) {  //The first node is connected to the outputConnection. 
-                as->setOutputConnection(outputConnection);
+                as->setOutputConnection(this->outputConnection);
                 this->single_switches.push_back(as); //The first node is a single reduction switch since it has no forwarding links.
             }
 
@@ -296,9 +296,6 @@ void ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsign
     std::map<std::pair<int,int>, std::pair<bool,bool>> as_childs_enabled = compiler_art->get_childs_enabled();
     std::map<std::pair<int,int>, bool> forwarding_to_memory_enabled = compiler_art->get_forwarding_to_memory_enabled();
     
-    if (dnn_layer->get_layer_type() == MAX_POOL)
-        this->addersOperation(COMPARATOR);
-    
     this->addersConfiguration(as_signals);
     this->forwardingConfiguration(as_fw_signals);
     this->childsLinksConfiguration(as_childs_enabled);
@@ -306,8 +303,13 @@ void ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsign
     if(this->accumulation_buffer_enabled > 0) {
         this->accumulationBuffer->configureSignals(current_tile, dnn_layer, ms_size, n_folding);
     }
-    delete compiler_art;
 
+    if (dnn_layer->get_layer_type() == MAX_POOL) {
+        this->addersOperation(COMPARATOR);
+        this->aswitchtable[this->aswitchtable.begin()->first]->setForwardingToMemoryEnabled(false);
+    }
+
+    delete compiler_art;
 } 
 
 void ASNetwork::configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLayer* dnn_layer, unsigned int ms_size) {

@@ -17,6 +17,11 @@ void LookupTable::cycle() {
     if(this->inputConnection->existPendingData()) {
         //std::cout << "LookupTABLE is executing" << std::endl;
         std::vector<DataPackage*> pck_to_receive = this->inputConnection->receive(); 
+
+        for (auto pck : pck_to_receive)
+            std::cout << "Pck from lt: " << pck->get_data() << std::endl;
+
+
         //TODO apply activation function
         this->outputConnection->send(pck_to_receive);
         //for(int i=0; i<pck_to_receive.size(); i++) {

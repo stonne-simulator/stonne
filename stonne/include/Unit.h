@@ -8,7 +8,7 @@
 
 class Unit {
 private:
-    id_t id;  //Id of the component
+
     std::string name; //Name of the component
 
 public:
@@ -16,6 +16,8 @@ public:
         this->id=id;
         this->name=name;
     }
+
+    id_t id;  //Id of the component
 
     virtual void printStats(std::ofstream& out, unsigned int indent) {} //Print the stats of the component
     virtual void printEnergy(std::ofstream& out, unsigned int indent) {} //Print the counters to get the consumption of the unit
