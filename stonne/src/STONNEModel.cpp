@@ -164,7 +164,61 @@ void Stonne::loadCONVLayer(std::string layer_name, unsigned int R, unsigned int 
     std::cout << "Loading a convolutional layer into STONNE" << std::endl;
 }
 
+unsigned int* Stonne::snapeaOrderFilters(unsigned int K, unsigned int n_filters, address_t filter_address) {
+    unsigned int *table_filters = new unsigned int[K*n_filters];
+    for(int nf = 0; nf < n_filters; nf++) {
+        for(int i=0; i<K; i++) {
+		table_filters[nf*K+i]=i;
+	}
+    }
+
+
+    int i, j;
+    for(int nf = 0; nf < n_filters; nf++) {
+	float* curr_arr = &filter_address[nf*K];
+	unsigned int* curr_tf = &table_filters[nf*K];
+        for (i = 0; i < K-1; i++) {
+
+        // Last i elements are already in place
+            for (j = 0; j < K-i-1; j++) {
+                if (curr_arr[curr_tf[j]] < curr_arr[curr_tf[j+1]]) {
+                    //swap(&arr[j], &arr[j+1]);
+		    unsigned int temp = curr_tf[j];
+		    curr_tf[j] = curr_tf[j+1];
+		    curr_tf[j+1] = temp;
+	        }
+	    }
+	}
+
+	//Once all elements have been ordered from greatest to least we invert the negatives
+	i=0;
+	while((i < K) && (curr_arr[curr_tf[i]]>=0.0)) {
+		i++;
+	}
+
+        j = K-1;
+	while(i<j) {
+	   unsigned int temp = curr_tf[i];
+	   curr_tf[i]=curr_tf[j];
+	   curr_tf[j] = temp;
+           i++;
+	   j--;
+	}
+	//Printing values
+	std::cout << "Row " << nf << ": ";
+	for(i=0; i<K; i++) {
+            std::cout << curr_arr[curr_tf[i]] << " ";
+	}
+	std::cout << std::endl;
+    }
+
+    //Printing values
+    return table_filters;
+}
+
 void Stonne::loadFCLayer(std::string layer_name, unsigned int N, unsigned int S, unsigned int K, address_t input_address, address_t filter_address, address_t output_address)  {
+      //Snapea software implementation
+      unsigned int* table_filters = this->snapeaOrderFilters(S,K,filter_address);
      //loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, N, 1, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
     loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, 1, N, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
     std::cout << "Loading a FC layer into STONNE" << std::endl;
@@ -190,6 +244,8 @@ void Stonne::loadDenseGEMM(std::string layer_name, unsigned int N, unsigned int 
     //K in CNN = M in SIGMA
     //input_matrix=KN
     //filter_matrix = MK
+    std::cout << "Applying Snapea Reordering for CAL Paper" << std::endl;
+    unsigned int* table_filters = this->snapeaOrderFilters(K, N, KN_matrix);
     loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
 }

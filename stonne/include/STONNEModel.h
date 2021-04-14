@@ -98,6 +98,7 @@ public:
 
     void loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_); //Load general and CONV tile
     void loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K); //VNSize = T_S, NumVNs= T_N*T_K
+    unsigned int* snapeaOrderFilters(unsigned int K, unsigned int n_filters, address_t filter_address);
     void run();
     
 };

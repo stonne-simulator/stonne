@@ -206,11 +206,19 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
 
     //Filling the arrays with random values
     for(int i=0; i<MK_size; i++) {
-        MK_matrix[i]=rand()%MAX_RANDOM;
+	int value = rand()%MAX_RANDOM*2;
+	if(value < MAX_RANDOM) {
+            value = value*(-1);
+	}
+        MK_matrix[i]=value;
     }
 
     for(int i=0;i<KN_size; i++) {
-        KN_matrix[i]=rand()%MAX_RANDOM;
+	int value = rand()%MAX_RANDOM*2;
+	if(value < MAX_RANDOM) {
+            value = value*(-1);
+        }
+        KN_matrix[i]=value;
     }
 
 
