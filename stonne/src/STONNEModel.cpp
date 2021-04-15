@@ -11,6 +11,7 @@
 #include "utility.h"
 #include "Config.h"
 #include <time.h>
+#include "SnapeaSDMemory.h"
 
 Stonne::Stonne(Config stonne_cfg) {
     this->stonne_cfg=stonne_cfg;
@@ -61,6 +62,9 @@ Stonne::Stonne(Config stonne_cfg) {
 	case TPU_OS_DENSE:
 	    this->mem = new  OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
 	    break;
+	case SNAPEA_OS_DENSE:
+	    this->mem = new SnapeaSDMemory(0, "SnapeaSDMemory", stonne_cfg, this->outputLTConnection);
+	    break;
 	default:
 	    assert(false);
     }
@@ -87,6 +91,7 @@ Stonne::Stonne(Config stonne_cfg) {
 
     //STATISTICS
     this->n_cycles = 0;
+    this->snapea_filter_order = NULL;
 
 }
 
@@ -106,6 +111,11 @@ Stonne::~Stonne() {
     if(tile_loaded) {
         delete this->current_tile;
     } 
+
+    if(this->snapea_filter_order != NULL) {
+        delete[] snapea_filter_order;
+    }
+
 }
 
 //Connecting the DSNetworkTop input ports with the read ports of the memory. These connections have been created
@@ -172,11 +182,12 @@ unsigned int* Stonne::snapeaOrderFilters(unsigned int K, unsigned int n_filters,
 	}
     }
 
-
+   
     int i, j;
     for(int nf = 0; nf < n_filters; nf++) {
-	float* curr_arr = &filter_address[nf*K];
+	float* curr_arr = &(filter_address[nf*K]);
 	unsigned int* curr_tf = &table_filters[nf*K];
+	
         for (i = 0; i < K-1; i++) {
 
         // Last i elements are already in place
@@ -189,8 +200,10 @@ unsigned int* Stonne::snapeaOrderFilters(unsigned int K, unsigned int n_filters,
 	        }
 	    }
 	}
+	
 
 	//Once all elements have been ordered from greatest to least we invert the negatives
+	
 	i=0;
 	while((i < K) && (curr_arr[curr_tf[i]]>=0.0)) {
 		i++;
@@ -207,20 +220,25 @@ unsigned int* Stonne::snapeaOrderFilters(unsigned int K, unsigned int n_filters,
 	//Printing values
 	std::cout << "Row " << nf << ": ";
 	for(i=0; i<K; i++) {
-            std::cout << curr_arr[curr_tf[i]] << " ";
+            //std::cout << curr_arr[curr_tf[i]] << " ";
+		std::cout << curr_tf[i] << " ";
 	}
 	std::cout << std::endl;
+
     }
 
     //Printing values
+    
     return table_filters;
 }
 
-void Stonne::loadFCLayer(std::string layer_name, unsigned int N, unsigned int S, unsigned int K, address_t input_address, address_t filter_address, address_t output_address)  {
+void Stonne::loadFCLayer(std::string layer_name, unsigned int N, unsigned int S, unsigned int K, address_t filter_address, address_t input_address, address_t output_address)  {
       //Snapea software implementation
       unsigned int* table_filters = this->snapeaOrderFilters(S,K,filter_address);
      //loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, N, 1, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
-    loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, 1, N, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
+    loadDNNLayer(FC, layer_name, 1, S, 1, N, 1, 1, K, S, 1, filter_address, input_address, output_address, CNN_DATAFLOW); //For snapea
+    this->mem->setValueBasedMetadata(table_filters);
+     this->snapea_filter_order = table_filters;
     std::cout << "Loading a FC layer into STONNE" << std::endl;
 }
 
@@ -245,9 +263,11 @@ void Stonne::loadDenseGEMM(std::string layer_name, unsigned int N, unsigned int 
     //input_matrix=KN
     //filter_matrix = MK
     std::cout << "Applying Snapea Reordering for CAL Paper" << std::endl;
-    unsigned int* table_filters = this->snapeaOrderFilters(K, N, KN_matrix);
+    unsigned int* table_filters = this->snapeaOrderFilters(K, M, MK_matrix);
     loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
+    this->mem->setValueBasedMetadata(table_filters);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
+    this->snapea_filter_order = table_filters;
 }
 
 void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer, address_t output_matrix, unsigned int T_N, unsigned int T_K) {

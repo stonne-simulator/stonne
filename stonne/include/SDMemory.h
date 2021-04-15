@@ -125,6 +125,7 @@ private:
     unsigned int row_output_size;
     unsigned int output_size;
     unsigned int group_size;
+    unsigned int* snapea_filter_order;
 
     std::list<DataPackage*> packages_created; // Vector used to track the packages and delete them at the end of the execution
    std::vector<Connection*> write_port_connections; 
@@ -150,6 +151,7 @@ public:
     void setReduceNetwork(ReduceNetwork* reduce_network) {this->reduce_network=reduce_network;}
     //Used to configure the MultiplierNetwork according to the controller if needed
     void setMultiplierNetwork(MultiplierNetwork* multiplier_network) {this->multiplier_network = multiplier_network;}
+    void setValueBasedMetadata(unsigned int* filter_metadata) {this->snapea_filter_order = filter_metadata;}
 
 
     void cycle();

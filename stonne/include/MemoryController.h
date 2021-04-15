@@ -24,6 +24,7 @@ public:
     virtual void setReadConnections(std::vector<Connection*> read_connections) {assert(false);}
     virtual void setWriteConnections(std::vector<Connection*> write_port_connections) {assert(false);} //All the write connections must be set at a time
     virtual void setSparseMetadata(metadata_address_t MK_metadata, metadata_address_t KN_metadata, metadata_address_t output_metadata) {assert(false);}
+    virtual void setValueBasedMetadata(unsigned int* filter_metadata) {assert(false);};
     //Used to configure the ReduceNetwork according to the controller if needed
     virtual void setReduceNetwork(ReduceNetwork* reduce_network) {assert(false);}
     //Used to configure the MultiplierNetwork according to the controller if needed

@@ -316,7 +316,7 @@ void simulateDenseGemmForward(std::string layer_name, float* KN_matrix_raw, floa
 
 
            Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating the instance of the simulator
-           stonne_instance->loadFCLayer(layer_name_group, gemm_M_grouped, gemm_K_grouped, gemm_N_grouped, (address_t) pointer_MK_dense_matrix, (address_t) pointer_KN_dense_matrix, (address_t) acc_output);
+           stonne_instance->loadFCLayer(layer_name_group, gemm_N_grouped, gemm_K_grouped, gemm_M_grouped, (address_t) pointer_MK_dense_matrix, (address_t) pointer_KN_dense_matrix, (address_t) acc_output);
            stonne_instance->loadFCTile(T_K, T_M, T_N);
            stonne_instance->run(); //Running the accelerator and generates the output in ofmap_raw
 

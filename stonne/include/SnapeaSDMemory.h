@@ -1,5 +1,5 @@
-#ifndef __OSMESHSDMEMORY__H__
-#define __OSMESHSDMEMORY__H__
+#ifndef __SNAPEASDMEMORY__H__
+#define __SNAPEASDMEMORY__H__
 
 #include <list>
 #include "Tile.h"
@@ -16,7 +16,7 @@
 #include "ReduceNetwork.h"
 
 
-class OSMeshSDMemory : public MemoryController {
+class SnapeaSDMemory : public MemoryController {
 private:
     DNNLayer* dnn_layer; // Layer loaded in the accelerator
     ReduceNetwork* reduce_network; //Reduce network used to be reconfigured
@@ -25,91 +25,119 @@ private:
     unsigned int M;
     unsigned int N;
 
+    unsigned int dim_sta;   //Number of vectors sta matrix. Extracted from dnn_layer->get_K(); (See equivalence with CNN)
     unsigned int K;   //Number of columns MK matrix and rows KN matrix. Extracted from dnn_layer->get_C(); 
+    unsigned int dim_str;   //Number of vectors str matrix. Extracted from dnn_layer->get_N()
+    unsigned int STA_DIST_ELEM;  //Distance in bitmap memory between two elements of the same vector
+    unsigned int STA_DIST_VECTOR; //Disctance in bitmap memory between two elements of differ vectors.
+
+    unsigned int STR_DIST_ELEM;   //Idem than before but with the STR matrix
+    unsigned int STR_DIST_VECTOR;
 
     unsigned int OUT_DIST_VN;  //To calculate the output memory address
     unsigned int OUT_DIST_VN_ITERATION; //To calculate the memory address
     Connection* write_connection;
-    OSMeshControllerState current_state; //Stage to control what to do according to the state
+    SparsityControllerState current_state; //Stage to control what to do according to the state
     std::vector<SparseVN> configurationVNs; //A set of each VN size mapped onto the architecture.
-    std::vector<unsigned int> vnat_table; //Every element is a VN, indicating the column that is calculating
+    std::vector<unsigned int> vnat_table_itern; //Every element is a VN, indicating the column that is calculating
+    std::vector<unsigned int> vnat_table_iterm; //Iden but for row
     //Connection* read_connection;
     std::vector<Connection*> read_connections; //Input port connections. There are as many connections as n_read_ports are specified.
-  
+
     //Input parameters
-    unsigned int ms_rows;
-    unsigned int ms_cols;
+    unsigned int num_ms;
     unsigned int n_read_ports;
-    unsigned int n_write_ports; 
+    unsigned int n_write_ports;
     unsigned int write_buffer_capacity;
     unsigned int port_width;
-
-    unsigned int rows_used;
-    unsigned int cols_used;
 
     unsigned int ms_size_per_input_port;
     //Fifos
     Fifo* write_fifo; //Fifo uses to store the writes before going to the memory
-    
+
     std::vector<Fifo*> input_fifos; //Fifos used to store the inputs before being fetched
     std::vector<Fifo*> psum_fifos; //Fifos used to store partial psums before being fetched
     //Fifo* read_fifo; //Fifo used to store the inputs before being fetched
     //Fifo* psums_fifo; //Fifo used to store partial psums before being fetched
- 
+
     //Addresses
     address_t MK_address;
     address_t KN_address;
     address_t output_address;
-    unsigned int* snapea_filter_order;
 
 
+
+    //Metadata addresses
+    metadata_address_t MK_col_id;
+    metadata_address_t MK_row_pointer;
 
     //Tile parameters
+    unsigned int T_N_min;       //Minimum value of T_N
     unsigned int T_N;           //Actual value of T_N if adaptive tiling is used
-    unsigned int T_K; //This is the actual value of tile of K. This is just 1 in this case
-    unsigned int T_M;
+    unsigned int T_K_max;       //This is the maximum value of tile of K
+    unsigned int T_K; //This is the actual value of tile of K
     unsigned int iter_N;
-    unsigned int iter_K;  
+    unsigned int iter_K;  //This one will change for every value of V (vertex)
     unsigned int iter_M;
-    
+
     //Current parameters
     unsigned int current_M;
     unsigned int current_N;
-    unsigned int current_K;    
-    
+    unsigned int current_K_nnz;
+    unsigned int K_nnz;
+
+    //Counters to calculate SRC and DST
+    unsigned int* sta_counters_table; //Matrix of size rows*columns to figure out the dst of each sta value
+    unsigned int* str_counters_table; //Matrix of size rows*columns of the str matrix to calculate the source of each bit enabled.
+
+    //Pointers
+    unsigned int str_current_index; //Streaming current index to calculate the next values to stream 
+    unsigned int sta_current_index_metadata; //Stationary matrix current index (e.g., row in MK)
+    unsigned int sta_current_index_matrix; //Index to next element in the sparse matrix
+    unsigned int sta_current_j_metadata; //Index to current element in the same cluster. Used to manage folding
+    unsigned int sta_last_j_metadata;  //Indext to last element in the same cluster. Used to manage folding
+    unsigned int STA_base;
+    //the boundaries of a certain fold is sta_current_j_metadata and sta_last_j_metadata
 
     //Signals
     bool configuration_done; //Indicates whether the architecture has been configured to perform the delivering
+    bool stationary_distributed; //Indicates if the stationary values has been distributed for a certain iteration
+    bool stationary_finished; //Flag that indicates that all the stationary values have been delivered
+    bool stream_finished;  //Flag that indicates that all the streaming values have been delivered
     bool execution_finished; //Flag that indicates when the execution is over. This happens when all the output values have been calculated.
-    bool iteration_completed;
-    
+    bool sta_iter_completed; //Indicates if the pending psums have been writen back
+    bool STA_complete;
+
     bool metadata_loaded;   //Flag that indicates whether the metadata has been loaded 
     bool layer_loaded; //Flag that indicates whether the layer has been loaded.
-   
+
 
    unsigned int current_output;
-   unsigned int output_size; 
+   unsigned int output_size;
 
    unsigned int current_output_iteration;
-   unsigned int n_iterations_completed;
    unsigned int output_size_iteration;
 
    //For stats
-   std::vector<Connection*> write_port_connections; 
+   unsigned int n_ones_sta_matrix;
+   unsigned int n_ones_str_matrix;
+   unsigned int* snapea_filter_order;
+   std::vector<Connection*> write_port_connections;
    cycles_t local_cycle;
    SDMemoryStats sdmemoryStats; //To track information
-   
+
    //Aux functions
    void receive();
    void send();
    void sendPackageToInputFifos(DataPackage* pck);
    std::vector<Connection*> getWritePortConnections()    const {return this->write_port_connections;}
+
    
     
     
 public:
-    OSMeshSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection);
-    ~OSMeshSDMemory();
+    SnapeaSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection);
+    ~SnapeaSDMemory();
     void setLayer(DNNLayer* dnn_layer,  address_t KN_address, address_t MK_address, address_t output_address, Dataflow dataflow);
     void setTile(Tile* current_tile);
     void setReadConnections(std::vector<Connection*> read_connections);

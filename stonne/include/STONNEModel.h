@@ -21,6 +21,7 @@
 #include "TemporalRN.h"
 #include "OSMeshSDMemory.h"
 #include "OSMeshMN.h"
+#include "SnapeaSDMemory.h"
 
 class Stonne {
 private:
@@ -38,6 +39,7 @@ private:
     Connection* outputLTConnection; //Output of the lookup table connection and write port to the SDMemory
     Connection** addersBusConnections; //Array of output connections between the adders and the bus
     Connection** BusMemoryConnections; //Array of output Connections between the bus and the memory. (Write output ports)
+    unsigned int* snapea_filter_order;
 
     //Software parameters
     DNNLayer* dnn_layer; 
