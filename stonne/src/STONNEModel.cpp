@@ -249,7 +249,7 @@ void Stonne::loadGEMM(std::string layer_name, unsigned int N, unsigned int K, un
     //K in CNN = M in SIGMA
     //input_matrix=KN 
     //filter_matrix = MK
-    loadDNNLayer(GEMM, layer_name, 1, K, 1, M, 1, 1, N, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
+    loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
     this->mem->setSparseMetadata(MK_metadata, KN_metadata, output_metadata); 
     std::cout << "Loading metadata" << std::endl;
