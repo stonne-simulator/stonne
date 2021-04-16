@@ -105,11 +105,11 @@ void ASwitch::resetSignals() {
     this->right_child_enabled = false;
     this->fw_enabled = false; 
     this->forward_to_memory=false;
-          while(!input_psum_left_fifo->isEmpty()) {
+    while(!input_psum_left_fifo->isEmpty()) {
         input_psum_left_fifo->pop();
-    }
+     }
 
-      while(!input_psum_right_fifo->isEmpty()) {
+    while(!input_psum_right_fifo->isEmpty()) {
         input_psum_right_fifo->pop();
     }
 

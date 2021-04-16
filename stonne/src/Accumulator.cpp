@@ -29,6 +29,7 @@ Accumulator::Accumulator(id_t id, std::string name, Config stonne_cfg, unsigned 
     this->current_psum=0;
     this->n_psums=0;
     this->operation_mode=ADDER;
+    this->snapea_activated = false;
    
 }
 
@@ -48,6 +49,17 @@ void Accumulator::resetSignals() {
     this->current_psum=0;
     this->operation_mode=ADDER;
     this->n_psums=0;
+    this->snapea_activated = false;
+    this->receive();
+    while(!output_fifo->isEmpty()) {
+        DataPackage* pck = output_fifo->pop();
+	delete pck;
+    }
+    while(!input_fifo->isEmpty()) {
+         DataPackage* pck = input_fifo->pop(); 
+	 delete pck;
+    }
+
 
 }
 
@@ -147,11 +159,18 @@ void Accumulator::route() {
 	    this->accumulatorStats.n_register_writes++;  //To track the stats
         }
 
-        if(this->current_psum == (this->n_psums-1)) {
+        if((this->current_psum == (this->n_psums-1))) {
+	//if((this->current_psum == (this->n_psums-1))) {
             this->output_fifo->push(this->temporal_register);
             this->current_psum = 0;
             
         }
+
+	else if(this->temporal_register->get_data() < 0.0) {
+            this->snapea_activated = true;
+	    this->output_fifo->push(this->temporal_register);
+	    this->current_psum = 0;
+	}
         else {
             this->current_psum++;
         }
@@ -165,7 +184,9 @@ void Accumulator::cycle() {
     this->local_cycle+=1; 
     this->accumulatorStats.total_cycles++;  //To track the stats
     this->receive(); //Receive input
-    this->route();
+    if(!snapea_activated) {
+        this->route();
+    }
     this->send(); //Send towards the memory
 
 }

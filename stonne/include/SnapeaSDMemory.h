@@ -125,6 +125,7 @@ private:
    std::vector<Connection*> write_port_connections;
    cycles_t local_cycle;
    SDMemoryStats sdmemoryStats; //To track information
+   Tile* tile_to_configure;
 
    //Aux functions
    void receive();

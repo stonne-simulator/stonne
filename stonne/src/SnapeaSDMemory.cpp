@@ -149,9 +149,9 @@ void SnapeaSDMemory::cycle() {
 	
 	 this->multiplier_network->resetSignals();
 	 this->reduce_network->resetSignals();
-	 Tile* tile1 = new Tile(1, 1, T_K, T_N, 1, 1, 1, 1, false);
-	this->multiplier_network->configureSignals(tile1, this->dnn_layer, this->num_ms, this->iter_K);
-	this->reduce_network->configureSignals(tile1, this->dnn_layer, this->num_ms, this->iter_K);
+	 this->tile_to_configure = new Tile(1, 1, T_K, T_N, 1, 1, 1, 1, false);
+	this->multiplier_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
+	this->reduce_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
 	this->current_K_nnz = 0;
 	STA_complete=false;
     }
@@ -267,9 +267,17 @@ void SnapeaSDMemory::cycle() {
             }
 
 	    int N_and_pad = iter_N*T_N; 
-	    if(current_output == M*N_and_pad) {
+	    if(current_output_iteration == M*N_and_pad) {
 	       execution_finished=true;
 	    }
+	    if((current_output_iteration % T_N) == 0) {
+                //RESET SIGNALS TO CLEAN THE PIPELINE AND REMOVE TRASH VALUES
+		this->multiplier_network->resetSignals();
+                this->reduce_network->resetSignals();
+                this->multiplier_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
+                this->reduce_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
+
+	    } 
 	    current_output_iteration++;
 	    if(current_output_iteration==N_and_pad) { //Later this would be N*T_M?
                 current_output_iteration = 0;

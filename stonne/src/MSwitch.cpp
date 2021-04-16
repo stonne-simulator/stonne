@@ -61,17 +61,28 @@ void MSwitch::resetSignals() {
     this->inputForwardingEnabled = false;
     this->outputForwardingEnabled = false;
 
-    this->current_n_windows = 0;
-    this->current_n_folding = 0;
+    //this->current_n_windows = 0;
+    //this->current_n_folding = 0;
     this->forward_psum = false; 
     this->direct_forward_psum = false;
-    this->n_windows = 0;
-    this->n_folding = 0;
+    //this->n_windows = 0;
+    //this->n_folding = 0;
 
     this->VN=-1; //Not configured 
-        while(!weight_fifo->isEmpty()) {
-        weight_fifo->pop();
+        //while(!weight_fifo->isEmpty()) {
+        //weight_fifo->pop();
+    //}
+    //Ordering the filters again
+    while(current_n_folding == n_folding) {
+	if(!weight_fifo->isEmpty()) {
+            DataPackage* weight = weight_fifo->pop(); //get the weight and then pushing again at the end of the fifo
+            weight_fifo->push(weight);
+            current_n_folding+=1;
+	}
     }
+
+    current_n_folding = 0;
+    current_n_windows = 0;
 
     while(!activation_fifo->isEmpty()) {
         activation_fifo->pop();

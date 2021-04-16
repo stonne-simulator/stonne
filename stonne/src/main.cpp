@@ -267,6 +267,14 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
 
     //Comparing the results
     for(int i=0;i<output_size; i++) {
+	float value_output = output[i];
+	float value_cpu = output_cpu[i];
+	if(value_output < 0.0) {
+            value_output = 0.0;
+	}
+	if(value_cpu < 0.0) {
+            value_cpu = 0.0;
+	}
         float difference=fabs(output[i]-output_cpu[i]);
         if(difference > EPSILON) {
             std::cout << "ERROR position " << i <<  ": Value ofmap simulator: " << output[i] << ". Value ofmap CPU: " << output_cpu[i] << std::endl;
