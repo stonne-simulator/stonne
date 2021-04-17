@@ -164,6 +164,7 @@ void SnapeaSDMemory::cycle() {
 	       if(index_K<K_nnz)
 	       {					//This may solve zero remainder constraint too
 	       	     data = this->MK_address[current_M*this->K+this->snapea_filter_order[current_M*this->K+index_K]];
+		     std::cout << "Sending weight" << data << std::endl;
 		     //data = this->MK_address[current_M*this->K + index_K]; 
 	       	     sdmemoryStats.n_SRAM_weight_reads++;
 	       	     this->n_ones_sta_matrix++;
@@ -262,12 +263,14 @@ void SnapeaSDMemory::cycle() {
                 vnat_table_iterm[vn]++;
             } 
             current_output++;
+	    current_output_iteration++;
+	    std::cout << "Reciving output " << std::endl;
 	    if((current_output % 100) == 0) {
                 std::cout << "Output completed " << current_output << "/" << M*N << ")" << std::endl;
             }
 
 	    int N_and_pad = iter_N*T_N; 
-	    if(current_output_iteration == M*N_and_pad) {
+	    if(current_output == M*N_and_pad) {
 	       execution_finished=true;
 	    }
 	    if((current_output_iteration % T_N) == 0) {
@@ -276,9 +279,21 @@ void SnapeaSDMemory::cycle() {
                 this->reduce_network->resetSignals();
                 this->multiplier_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
                 this->reduce_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
+		this->current_K_nnz = 0;
+                this->current_N+=1;
+                if(this->current_N == iter_N) {
+                    this->current_N = 0;
+                    this->current_M+=1;
+                    this->STA_complete=true;
+                } //end iter_N
+		std::cout << "CONFIGURING IN THE END OF THE CONTROLLER" << std::endl;
+		for(int i=0; i<this->n_read_ports; i++) {
+	            while(!input_fifos[i]->isEmpty()) {
+                        input_fifos[i]->pop(); //cleaning
+		    }
+		}
 
 	    } 
-	    current_output_iteration++;
 	    if(current_output_iteration==N_and_pad) { //Later this would be N*T_M?
                 current_output_iteration = 0;
 		if(current_state == WAITING_FOR_NEXT_STA_ITER) {

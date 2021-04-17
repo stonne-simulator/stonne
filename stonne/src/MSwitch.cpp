@@ -73,12 +73,12 @@ void MSwitch::resetSignals() {
         //weight_fifo->pop();
     //}
     //Ordering the filters again
-    while(current_n_folding == n_folding) {
+    while(current_n_folding < n_folding) {
 	if(!weight_fifo->isEmpty()) {
             DataPackage* weight = weight_fifo->pop(); //get the weight and then pushing again at the end of the fifo
             weight_fifo->push(weight);
-            current_n_folding+=1;
 	}
+	current_n_folding++;
     }
 
     current_n_folding = 0;
@@ -156,6 +156,7 @@ void MSwitch::send() { //Send the result through the outputConnection
 #ifdef DEBUG_MSWITCH_FUNC
             std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", MSwitch " << this->num << " has sent a psum to the parent" << std::endl;
 #endif
+	    std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", MSwitch " << this->num << " has sent a psum to the parent" << std::endl;
             vector_to_send.push_back(data_to_send);
         }
         this->outputConnection->send(vector_to_send); //Send the result to the output towards the RN
@@ -276,6 +277,7 @@ DataPackage* MSwitch::perform_operation_2_operands(DataPackage* pck_left, DataPa
 #ifdef DEBUG_MSWITCH_FUNC
     std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", MSwitch " << this->num << " has performed a multiplication" << std::endl;
 #endif
+    std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ",computing  MSwitch " << this->num << " has performed a multiplication " << pck_left->get_data() << "   " << pck_right->get_data()   << std::endl;
 
     
     //Creating the result package with the output

@@ -215,9 +215,9 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
 
     for(int i=0;i<KN_size; i++) {
 	int value = rand()%MAX_RANDOM*2;
-	if(value < MAX_RANDOM) {
-            value = value*(-1);
-        }
+	//if(value < MAX_RANDOM) {
+         //   value = value*(-1);
+        //}
         KN_matrix[i]=value;
     }
 
@@ -275,9 +275,9 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
 	if(value_cpu < 0.0) {
             value_cpu = 0.0;
 	}
-        float difference=fabs(output[i]-output_cpu[i]);
+        float difference=fabs(value_output-value_cpu);
         if(difference > EPSILON) {
-            std::cout << "ERROR position " << i <<  ": Value ofmap simulator: " << output[i] << ". Value ofmap CPU: " << output_cpu[i] << std::endl;
+            std::cout << "ERROR position " << i <<  ": Value ofmap simulator: " << value_output << ". Value ofmap CPU: " << value_cpu << std::endl;
             std::cout << "\033[1;31mT test not passed\033[0m" << std::endl;
             delete[] MK_matrix;
             delete[] KN_matrix;
