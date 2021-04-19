@@ -97,6 +97,8 @@ ASwitch::~ASwitch() {
 
 void ASwitch::resetSignals() {
     //End collecting parameters from the configuration file
+    this->receive_childs();
+    this->receive_fwlink();
     this->current_capacity = 0;
     this->fl_direction = NOT_CONFIGURED;  //This is configured in the first step of the execution
     this->config_mode = ADD_2_1;  //This is configured in the first step of the execution

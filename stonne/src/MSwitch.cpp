@@ -57,6 +57,8 @@ MSwitch::~MSwitch() {
 
 void MSwitch::resetSignals() {
 
+
+    this->receive(inputConnection);
     //Signals
     this->inputForwardingEnabled = false;
     this->outputForwardingEnabled = false;

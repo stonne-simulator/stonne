@@ -1,0 +1,10 @@
+./stonne -DenseGEMM -M=5 -N=2 -K=2 -ms_rows=4 -ms_cols=4 -dn_bw=8 -rn_bw=16  -T_N=4 -T_M=4 -T_K=1 -accumulation_buffer=1 -rn_type="TEMPORALRN" -mn_type="OS_MESH" -mem_ctrl="TPU_OS_DENSE"
+
+./stonne -DenseGEMM -M=5 -N=2 -K=8 -num_ms=32 -dn_bw=8 -rn_bw=16  -T_N=1 -T_M=1 -T_K=1 -accumulation_buffer=1 -rn_type="TEMPORALRN" -mn_type="LINEAR" -mem_ctrl="MAERI_DENSE_WORKLOAD"
+
+./stonne -DenseGEMM -M=5 -N=2 -K=2 -num_ms=32 -dn_bw=8 -rn_bw=16  -T_N=2 -T_K=1 -accumulation_buffer=1 -rn_type="TEMPORALRN" -mn_type="LINEAR" -mem_ctrl="SNAPEA_OS_DENSE"
+
+qmrp8754
+./stonne -DenseGEMM -M=1 -N=1 -K=8 -num_ms=32 -dn_bw=8 -rn_bw=16  -T_N=1 -T_K=1 -accumulation_buffer=1 -rn_type="TEMPORALRN" -mn_type="LINEAR" -mem_ctrl="SNAPEA_OS_DENSE"
+
+./stonne -DenseGEMM -M=10 -N=16 -K=8 -num_ms=32 -dn_bw=32 -rn_bw=32  -T_N=2 -T_K=1 -accumulation_buffer=1 -rn_type="TEMPORALRN" -mn_type="LINEAR" -mem_ctrl="SNAPEA_OS_DENSE"  
