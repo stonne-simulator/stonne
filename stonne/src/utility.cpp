@@ -163,6 +163,9 @@ std::string get_string_memory_controller_type(MemoryController_t memory_controll
 	case TPU_OS_DENSE:
 	    return "TPU_OS_DENSE";
 	    break;
+	case POOL_DENSE_WORKLOAD:
+	    return "POOL_DENSE_WORKLOAD";
+	    break;
         default:
             assert(false);
             break;
@@ -181,6 +184,10 @@ MemoryController_t get_type_memory_controller_type(std::string memory_controller
 	else if(memory_controller_type=="TPU_OS_DENSE") {
             return TPU_OS_DENSE;
         }
+
+	else if(memory_controller_type=="POOL_DENSE_WORKLOAD") {
+            return POOL_DENSE_WORKLOAD;
+	}
         else {
             std::cout << memory_controller_type << " Not found" << std::endl;
             assert(false);

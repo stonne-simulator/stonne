@@ -497,7 +497,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     //Computing the CNN Layer with the simulator
     // TODO : Configure STONNE accordingly
     stonne_cfg.m_SDMemoryCfg.mem_controller_type = POOL_DENSE_WORKLOAD;
-    stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled = false;
+    stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled = true;
 
     std::cout << "Tipo:" << stonne_cfg.m_ASNetworkCfg.reduce_network_type << std::endl;
 

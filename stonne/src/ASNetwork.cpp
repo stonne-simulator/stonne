@@ -306,7 +306,6 @@ void ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsign
 
     if (dnn_layer->get_layer_type() == MAX_POOL) {
         this->addersOperation(COMPARATOR);
-        this->aswitchtable[this->aswitchtable.begin()->first]->setForwardingToMemoryEnabled(false);
     }
 
     delete compiler_art;

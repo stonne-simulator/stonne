@@ -43,6 +43,7 @@ void AccumulationBuffer::setInputConnections(std::vector<Connection*> inputConne
     }
 }
 
+
 void AccumulationBuffer::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsigned int ms_size, unsigned int n_folding) {
 
     this->NPSumsConfiguration(n_folding); //All the accumulation buffers have the same folding iteration numbers which means that in this case all the VNs are similar

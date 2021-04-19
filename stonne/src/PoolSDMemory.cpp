@@ -348,6 +348,7 @@ void PoolSDMemory::cycle() {
             else { //If it is the first window interation, we send all the activations in all the iterations of the same window
                 y_init = 0;
             }
+	    y_init = 0;
         }
 
         for(unsigned x=0; x<x_inputs; x++) {
