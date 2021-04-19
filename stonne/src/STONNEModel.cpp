@@ -218,12 +218,13 @@ unsigned int* Stonne::snapeaOrderFilters(unsigned int K, unsigned int n_filters,
 	   j--;
 	}
 	//Printing values
-	std::cout << "Row " << nf << ": ";
+/*	std::cout << "Row " << nf << ": ";
 	for(i=0; i<K; i++) {
             //std::cout << curr_arr[curr_tf[i]] << " ";
 		std::cout << curr_tf[i] << " ";
 	}
 	std::cout << std::endl;
+	*/
 
     }
 
