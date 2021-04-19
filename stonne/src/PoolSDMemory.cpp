@@ -528,7 +528,6 @@ void PoolSDMemory::cycle() {
     //Receiving output data from write_connection
     this->receive();
     if(!write_fifo->isEmpty()) {
-        std::cout << "Package recibido" << std::endl;
         //Index the data by using the VN Address Table and the VN id of the packages
         for(int i=0; i<write_fifo->size(); i++) {
             DataPackage* pck_received = write_fifo->pop();

@@ -16,8 +16,8 @@
 
 class Accumulator : public Unit {
 private:
-    unsigned int input_ports;                        // Input port 
-    unsigned int output_ports;                       // output port 
+    unsigned int input_ports;                        // Input port
+    unsigned int output_ports;                       // output port
     unsigned int buffers_capacity;                   //Buffers size in bytes
     unsigned int port_width;                         //Bit width of each port
 
@@ -26,7 +26,7 @@ private:
 
     //Inputs fifos
     Fifo* input_fifo;                          // Array of packages that are received from the adders
-   
+
     // Output Fifos
     Fifo* output_fifo;                      // Output fifo to the parent
 
@@ -58,13 +58,14 @@ private:
 
 
 public:
-    Accumulator(id_t id, std::string name, Config stonne_cfg, unsigned int n_accumulator); 
+    Accumulator(id_t id, std::string name, Config stonne_cfg, unsigned int n_accumulator);
     Accumulator(id_t id, std::string name, Config stonne_cfg, unsigned int n_accumulator, Connection* inputConnection, Connection* outputConnection);
     ~Accumulator();
 
     //Connection setters
     void setInputConnection(Connection* inputLeftConnection);                       // Set the input left connection of the Adder
     void setOutputConnection(Connection* outputConnection);                             // Set the output connection of the Adder
+    void setOperationMode(adderoperation_t opmode);
     void setNPSums(unsigned int n_psums);
     void resetSignals();
 
@@ -73,16 +74,16 @@ public:
     const unsigned int getOutputPorts() const {return this->output_ports;}                          // Get the output ports
 
     // Functionality
-    void send(); //Packages of data to be sent depending on routing. 
+    void send(); //Packages of data to be sent depending on routing.
     void receive(); //take data from connections
 
 
-    void cycle();   //Computing a cycle. Based on routing the AS decides where the data goes. 
+    void cycle();   //Computing a cycle. Based on routing the AS decides where the data goes.
 
     void printConfiguration(std::ofstream& out, unsigned int indent);  //This function prints the configuration of FEASwitch such as  the operation mode, augmented link enabled, etc
     void printStats(std::ofstream& out, unsigned int indent);
     void printEnergy(std::ofstream& out, unsigned int indent);
-	
+
 
 };
 

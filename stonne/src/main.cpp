@@ -499,8 +499,6 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     stonne_cfg.m_SDMemoryCfg.mem_controller_type = POOL_DENSE_WORKLOAD;
     stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled = true;
 
-    std::cout << "Tipo:" << stonne_cfg.m_ASNetworkCfg.reduce_network_type << std::endl;
-
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, 1, 1, N, X, Y, strides, ifmap, nullptr, ofmap, CNN_DATAFLOW); //Loading the layer
     stonne_instance->loadTile(T_R, T_S, T_C, 1, 1, T_N, T_X_, T_Y_); //Loading the tile

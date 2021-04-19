@@ -31,6 +31,7 @@ public:
     void setInputConnections(std::vector<Connection*> inputConnections);
     void resetSignals();
     void NPSumsConfiguration(unsigned int n_psums);
+    void setOperationMode(adderoperation_t opmode);
 
     void configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsigned int ms_size, unsigned int n_folding);
     //Cycle function

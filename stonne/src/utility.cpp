@@ -28,6 +28,8 @@ std::string getstr(std::istringstream& instr) {
       continue;
     }
   }
+
+  return "";
 }
 
 bool ispowerof2(unsigned int x) {

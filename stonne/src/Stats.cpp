@@ -187,6 +187,7 @@ void AccumulatorStats::reset() {
 void AccumulatorStats::print(std::ofstream& out, unsigned int indent) {
     out << ind(indent) << "\"Total_cycles\" : " << this->total_cycles << "," << std::endl;
     out << ind(indent) << "\"N_adds\" : " << this->n_adds << "," << std::endl; //calculated statistic
+    out << ind(indent) << "\"N_comps\" : " << this->n_comps << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_memory_send\" : " << this->n_memory_send << "," << std::endl;
     out << ind(indent) << "\"N_receives\" : " << this->n_receives << "," << std::endl;
     out << ind(indent) << "\"N_register_reads\" : " << this->n_register_reads << "," << std::endl;

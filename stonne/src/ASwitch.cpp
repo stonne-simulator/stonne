@@ -237,7 +237,6 @@ void ASwitch::send() {
 #ifdef DEBUG_ASWITCH_FUNC
             std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", ASwitch " << this->level << ":" << this->num_in_level << " has sent a psum to the parent" << std::endl;
 #endif
-            std::cout << "El AS con id " << this->id << std::endl;
             this->aswitchStats.n_parent_send++; //Track the information
             this->outputConnection->send(vector_to_send_parent); //Send the data to the corresponding output
         }

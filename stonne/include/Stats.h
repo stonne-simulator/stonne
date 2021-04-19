@@ -128,6 +128,7 @@ class AccumulatorStats: public Stats {
 public:
     counter_t total_cycles;                             //N cycles
     counter_t n_adds;                                   //N cycles the Accumulator performs a sum
+    counter_t n_comps;
     counter_t n_memory_send;                            //N cycles the Accumulator sends a data directly to memory (to the buses)
     counter_t n_receives;                               //N cycles the Accumulator receives a data from the ASNetwork
     counter_t n_register_reads;                         //N cycles the Accumulator reads from its local register

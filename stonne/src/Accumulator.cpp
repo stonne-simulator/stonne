@@ -29,7 +29,7 @@ Accumulator::Accumulator(id_t id, std::string name, Config stonne_cfg, unsigned 
     this->current_psum=0;
     this->n_psums=0;
     this->operation_mode=ADDER;
-   
+
 }
 
 
@@ -39,8 +39,8 @@ Accumulator::~Accumulator() {
 }
 
 void Accumulator::setNPSums(unsigned int n_psums) {
-	this->n_psums=n_psums;
-	this->accumulatorStats.n_configurations++; //To track the stats
+    this->n_psums=n_psums;
+    this->accumulatorStats.n_configurations++; //To track the stats
 }
 
 
@@ -62,32 +62,37 @@ void Accumulator::setOutputConnection(Connection* outputConnection) {
     this->outputConnection = outputConnection;
 }
 
+void Accumulator::setOperationMode(adderoperation_t opmode)
+{
+    this->operation_mode = opmode;
+}
+
 
 //Configuration settings (control signals)
 
 void Accumulator::send() {
-        if(!output_fifo->isEmpty()) {
-            std::vector<DataPackage*> vector_to_send_parent;
-            while(!output_fifo->isEmpty()) {
-                 DataPackage* pck = output_fifo->pop();
-                 vector_to_send_parent.push_back(pck);
-            }
+    if(!output_fifo->isEmpty()) {
+        std::vector<DataPackage*> vector_to_send_parent;
+        while(!output_fifo->isEmpty()) {
+            DataPackage* pck = output_fifo->pop();
+            vector_to_send_parent.push_back(pck);
+        }
 
         //Sending if there is something
 #ifdef DEBUG_ASWITCH_FUNC
-            std::cout << "[ACCUMULATOR_FUNC] Cycle " << local_cycle << ", Accumulator " << this->n_accumulator << " has sent a psum to memory (FORWARDING DATA)" << std::endl;
+        std::cout << "[ACCUMULATOR_FUNC] Cycle " << local_cycle << ", Accumulator " << this->n_accumulator << " has sent a psum to memory (FORWARDING DATA)" << std::endl;
 #endif
 
-	    this->accumulatorStats.n_memory_send++;
-            this->outputConnection->send(vector_to_send_parent); //Send the data to the corresponding output
-        }
+        this->accumulatorStats.n_memory_send++;
+        this->outputConnection->send(vector_to_send_parent); //Send the data to the corresponding output
+    }
     
 }
 
 void Accumulator::receive() { 
     if(this->inputConnection->existPendingData()) { //If there is data to receive on the left
-    	std::vector<DataPackage*> data_received = this->inputConnection->receive(); //Copying the data to receive
-	this->accumulatorStats.n_receives++;    //To track the stats
+        std::vector<DataPackage*> data_received = this->inputConnection->receive(); //Copying the data to receive
+        this->accumulatorStats.n_receives++;    //To track the stats
         for(int i=0; i<data_received.size(); i++) {
 #ifdef DEBUG_ASWITCH_FUNC
             std::cout << "[ACCUMULATOR_FUNC] Cycle " << local_cycle << ", Accumulator " << this->n_accumulator << " has received a psum" << std::endl;
@@ -106,24 +111,28 @@ DataPackage* Accumulator::perform_operation_2_operands(DataPackage* pck_left, Da
     
     data_t result; // Result of the operation
     switch(this->operation_mode) {
-        case ADDER: //SUM
-            result = pck_left->get_data() +  pck_right->get_data();
-	    this->accumulatorStats.n_adds++;      //To track the stats
-            //this->aswitchStats.n_2_1_sums++;  //Track the information
+    case ADDER: //SUM
+        result = pck_left->get_data() +  pck_right->get_data();
+        this->accumulatorStats.n_adds++;      //To track the stats
+        //this->aswitchStats.n_2_1_sums++;  //Track the information
 #ifdef DEBUG_ASWITCH_FUNC
-            std::cout << "[ACCUMULATOR] Cycle " << local_cycle << ", Accumulator " << this->n_accumulator << " has performed an accumulation operation" << std::endl;
+        std::cout << "[ACCUMULATOR] Cycle " << local_cycle << ", Accumulator " << this->n_accumulator << " has performed an accumulation operation" << std::endl;
 #endif
 
-            break;
-        default:
-            assert(false); // This case must not occur in this type of configuration adder
+        break;
+    case COMPARATOR:
+        result = (pck_left->get_data() > pck_right->get_data()) ? pck_left->get_data() : pck_right->get_data();
+        this->accumulatorStats.n_comps++;
+        break;
+    default:
+        assert(false); // This case must not occur in this type of configuration adder
     }
     //Creating the result package with the output
     DataPackage* result_pck = new DataPackage (sizeof(data_t), result, PSUM, 0, pck_left->get_vn(), this->operation_mode);  //TODO the size of the package corresponds with the data size
     //Adding to the creation list to be deleted afterward
-//    this->psums_created.push_back(result_pck);
+    //    this->psums_created.push_back(result_pck);
     return result_pck;
-     
+
 
 }
 
@@ -135,16 +144,16 @@ void Accumulator::route() {
         if(current_psum == 0) {  //There is no package yet to sum in this iteration
             //Creating package 0
             this->temporal_register = pck_received;
-	    this->accumulatorStats.n_register_writes++;   //To track the stats
-                 
+            this->accumulatorStats.n_register_writes++;   //To track the stats
+
         }
         else {
             result = perform_operation_2_operands(this->temporal_register, pck_received);
-	    this->accumulatorStats.n_register_reads++; //To track the stats
+            this->accumulatorStats.n_register_reads++; //To track the stats
             delete this->temporal_register;
             delete pck_received;
             this->temporal_register = result;
-	    this->accumulatorStats.n_register_writes++;  //To track the stats
+            this->accumulatorStats.n_register_writes++;  //To track the stats
         }
 
         if(this->current_psum == (this->n_psums-1)) {
@@ -157,12 +166,12 @@ void Accumulator::route() {
         }
 
     }
-        
+
 }
 
 //TODO
 void Accumulator::cycle() {
-    this->local_cycle+=1; 
+    this->local_cycle+=1;
     this->accumulatorStats.total_cycles++;  //To track the stats
     this->receive(); //Receive input
     this->route();
@@ -193,11 +202,11 @@ void Accumulator::printStats(std::ofstream& out, unsigned int indent) {
     //Printing Fifos
 
     out << ind(indent+IND_SIZE) << ",\"InputFifo\" : {" << std::endl;
-        this->input_fifo->printStats(out, indent+IND_SIZE+IND_SIZE);
+    this->input_fifo->printStats(out, indent+IND_SIZE+IND_SIZE);
     out << ind(indent+IND_SIZE) << "}," << std::endl; //Take care. Do not print endl here. This is parent responsability
 
     out << ind(indent+IND_SIZE) << "\"OutputFifo\" : {" << std::endl;
-        this->output_fifo->printStats(out, indent+IND_SIZE+IND_SIZE);
+    this->output_fifo->printStats(out, indent+IND_SIZE+IND_SIZE);
     out << ind(indent+IND_SIZE) << "}" << std::endl; //Take care. Do not print endl here. This is parent responsability
 
     out << ind(indent) << "}"; //TODO put ID
@@ -205,11 +214,11 @@ void Accumulator::printStats(std::ofstream& out, unsigned int indent) {
 }
 
 void Accumulator::printEnergy(std::ofstream& out, unsigned int indent){
-    /* 
+    /*
      This component prints:
          - Number of accumulator reads
          - Number of accumulator writes
-	 - Number of sums performed by the accumulator
+     - Number of sums performed by the accumulator
          - Number of reads and writes to the next fifos:
              * input_fifo: fifo to receive data
              * output_fifo: fifo to send data to memory
