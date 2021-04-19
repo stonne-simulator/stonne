@@ -164,7 +164,6 @@ void SnapeaSDMemory::cycle() {
 	       if(index_K<K_nnz)
 	       {					//This may solve zero remainder constraint too
 	       	     data = this->MK_address[current_M*this->K+this->snapea_filter_order[current_M*this->K+index_K]];
-		     std::cout << "Sending weight" << data << std::endl;
 		     //data = this->MK_address[current_M*this->K + index_K]; 
 	       	     sdmemoryStats.n_SRAM_weight_reads++;
 	       	     this->n_ones_sta_matrix++;
@@ -198,7 +197,6 @@ void SnapeaSDMemory::cycle() {
     else if(current_state == DIST_STR_MATRIX) {//Dense matrix
        unsigned int dest=0;
        unsigned int index_N=current_N*T_N;
-       std::cout << "Sending current_N: " << current_N << std::endl;
        for(int i=0;i<T_N;i++)
        {
         unsigned int index_K=current_K_nnz*T_K;
@@ -265,7 +263,6 @@ void SnapeaSDMemory::cycle() {
             } 
             current_output++;
 	    current_output_iteration++;
-	    std::cout << "Reciving output " << std::endl;
 	    if((current_output % 100) == 0) {
                 std::cout << "Output completed " << current_output << "/" << M*N << ")" << std::endl;
             }
@@ -287,7 +284,6 @@ void SnapeaSDMemory::cycle() {
                 //    this->current_M+=1;
                 //    this->STA_complete=true;
                 //} //end iter_N
-		std::cout << "CONFIGURING IN THE END OF THE CONTROLLER" << std::endl;
 		for(int i=0; i<this->n_read_ports; i++) {
 	            while(!input_fifos[i]->isEmpty()) {
                         input_fifos[i]->pop(); //cleaning

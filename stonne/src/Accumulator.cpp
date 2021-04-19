@@ -168,7 +168,6 @@ void Accumulator::route() {
 
 	else if(this->temporal_register->get_data() < 0.0) {
             this->snapea_activated = true;
-	    std::cout << "Activating snapea opt" << std::endl;
 	    this->output_fifo->push(this->temporal_register);
 	    this->current_psum = 0;
 	}
@@ -187,9 +186,6 @@ void Accumulator::cycle() {
     this->receive(); //Receive input
     if(!snapea_activated) {
         this->route();
-    }
-    else {
-        std::cout << "Accumulation buffer is not computing" << std::endl;
     }
     this->send(); //Send towards the memory
 
