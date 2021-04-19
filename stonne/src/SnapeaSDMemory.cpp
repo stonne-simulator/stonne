@@ -198,6 +198,7 @@ void SnapeaSDMemory::cycle() {
     else if(current_state == DIST_STR_MATRIX) {//Dense matrix
        unsigned int dest=0;
        unsigned int index_N=current_N*T_N;
+       std::cout << "Sending current_N: " << current_N << std::endl;
        for(int i=0;i<T_N;i++)
        {
         unsigned int index_K=current_K_nnz*T_K;
@@ -280,12 +281,12 @@ void SnapeaSDMemory::cycle() {
                 this->multiplier_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
                 this->reduce_network->configureSignals(this->tile_to_configure, this->dnn_layer, this->num_ms, this->iter_K);
 		this->current_K_nnz = 0;
-                this->current_N+=1;
-                if(this->current_N == iter_N) {
-                    this->current_N = 0;
-                    this->current_M+=1;
-                    this->STA_complete=true;
-                } //end iter_N
+                //this->current_N+=1;
+                //if(this->current_N == iter_N) {
+                //    this->current_N = 0;
+                //    this->current_M+=1;
+                //    this->STA_complete=true;
+                //} //end iter_N
 		std::cout << "CONFIGURING IN THE END OF THE CONTROLLER" << std::endl;
 		for(int i=0; i<this->n_read_ports; i++) {
 	            while(!input_fifos[i]->isEmpty()) {
