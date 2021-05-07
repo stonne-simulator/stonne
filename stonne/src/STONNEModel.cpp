@@ -1,15 +1,15 @@
 //
 // Created by Francisco Munoz-Martinez on 18/06/19.
 //
-#include "STONNEModel.h"
+#include "../include/STONNEModel.h"
 
 #include <assert.h>
 #include <chrono>
-#include "types.h"
+#include "../include/types.h"
 #include <vector>
-#include "Tile.h"
-#include "utility.h"
-#include "Config.h"
+#include "../include/Tile.h"
+#include "../include/utility.h"
+#include "../include/Config.h"
 #include <time.h>
 
 Stonne::Stonne(Config stonne_cfg) {

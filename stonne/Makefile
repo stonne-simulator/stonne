@@ -22,9 +22,7 @@ $(OBJSDIR):
 $(OBJSDIR)/%.o: src/%.cpp $(INCLUDES)
 	$(CXX) $(CXXFLAGS) $(DEBUGFLAGS) -c $< -o $@  #-ltcmalloc
 
-
-
 clean:
-	rm -rf $(OBJSDIR) && rm stonne
+	rm -rf $(OBJSDIR) && rm stonne && rm output_stats_layer*
 
 

@@ -3,6 +3,7 @@
 #include "STONNEModel.h"
 #include <assert.h>
 #include "types.h"
+#include <limits>
 
 void sequential_layer(unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, 
 float* input, float* filters, float * outputs) {
@@ -55,21 +56,19 @@ float* input, float * outputs) {
 
     unsigned int OX=(X - R + strides) / strides;
     unsigned int OY=(Y - S + strides) / strides;
-    unsigned int output_size_n = OX*OY;
+    unsigned int output_size_n = C*OX*OY;
     unsigned int input_size_n = C*X*Y;
-    unsigned int size_oy=OY;
+    unsigned int size_oy=OY*C;
     unsigned int size_y=Y*C;
     for(int n=0; n<N; n++) {
-        for(int ox=0; ox<OX; ox++) {
-            for(int oy=0; oy<OY; oy++) {
-                // n*output_size_n + ox*size_oy + oy*K*G + g*K + k
-                outputs[n*output_size_n + ox*size_oy + oy]=-999.0;
-                for(int c=0; c<C; c++) {
-                    for(int r=0;r<R;r++) {
-                        for(int s=0;s<S;s++) {
-                            // n*input_size_n+ ox*strides*size_y + oy*strides*C*G + r*size_y + s*C*G + g*C + c
-                            outputs[n*output_size_n + ox*size_oy + oy] = std::max(input[n*input_size_n + ox*strides*size_y + oy*strides*C + r*size_y + s*C + c], 
-                                                                                        outputs[n*output_size_n + ox*size_oy + oy]);
+        for(int c=0; c<C; c++) {
+            for(int ox=0; ox<OX; ox++) {
+                for(int oy=0; oy<OY; oy++) {
+                    outputs[n*output_size_n + ox*size_oy + oy*C + c]=-std::numeric_limits<float>::infinity();
+                        for(int r=0;r<R;r++) {
+                            for(int s=0;s<S;s++) {
+                                outputs[n*output_size_n + ox*size_oy + oy*C + c] = std::max(input[n*input_size_n + ox*strides*size_y + oy*strides*C + r*size_y + s*C + c], 
+                                                                                            outputs[n*output_size_n + ox*size_oy + oy*C + c]);
                         }
                     }
                 }

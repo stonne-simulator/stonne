@@ -1,12 +1,12 @@
 #include <iostream>
-#include "STONNEModel.h"
-#include "types.h"
+#include "../include/STONNEModel.h"
+#include "../include/types.h"
 #include <chrono>
 #include <assert.h>
-#include "testbench.h"
+#include "../include/testbench.h"
 #include <string>
 #include <math.h>
-#include <utility.h>
+#include "../include/utility.h"
 
 using namespace std;
 
@@ -474,7 +474,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
 
     //Creating arrays to store the ifmap ofmap and weights
     unsigned int ifmap_size=N*X*Y*C;
-    unsigned int ofmap_size=N*X_*Y_;
+    unsigned int ofmap_size=N*X_*Y_*C;
     float* ifmap = new float[ifmap_size];
     float* ofmap = new float[ofmap_size];
     float* ofmap_cpu = new float[ofmap_size]; //Used to store the CPU computed values to compare with the simulator version
@@ -485,7 +485,6 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     }
 
     //computing CPU version
-    // max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap);
     max_pooling_layer(R, S, C, N, X, Y, strides, ifmap, ofmap_cpu);
 
     /** END of generating the inputs and outputs **/
@@ -500,7 +499,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
     stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled = true;
 
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
-    stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, 1, 1, N, X, Y, strides, ifmap, nullptr, ofmap, CNN_DATAFLOW); //Loading the layer
+    stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, C, C, N, X, Y, strides, ifmap, nullptr, ofmap, CNN_DATAFLOW); //Loading the layer
     stonne_instance->loadTile(T_R, T_S, T_C, 1, 1, T_N, T_X_, T_Y_); //Loading the tile
     stonne_instance->run(); //Running the simulator
 
