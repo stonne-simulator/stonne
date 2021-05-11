@@ -7,8 +7,6 @@
 
 torch::Tensor simulated_linear_forward(std::string layer_name, torch::Tensor input,  torch::Tensor weight, std::string path_to_arch_file, std::string path_to_tile, float sparsity_level, bool transpose) ;
 
-
-
 torch::Tensor simulated_matmul(std::string layer_name, torch::Tensor input,  torch::Tensor other, std::string path_to_arch_file, std::string path_to_tile, float sparsity_level) {
    /*
     * The criteria to carry out the calculation of the N-dimensional matrix multiplication is 
@@ -407,7 +405,43 @@ torch::Tensor simulated_conv_backwards(torch::Tensor z, std::string mi_string) {
     return new_tensor;
 }
 
+torch::Tensor simulated_max_pool_forward(std::string layer_name, torch::Tensor input, c10::ArrayRef<long int> kernel_size, c10::ArrayRef<long int> stride, c10::ArrayRef<long int> padding, c10::ArrayRef<long int> dilation, std::string path_to_arch_file, std::string path_to_tile) {
+    //Here starts the function
+    //Creating config file to find out if we are going to run a dense or sparse simulation
+    Config stonne_cfg; 
+    if(path_to_arch_file != "") {
+        stonne_cfg.loadFile(path_to_arch_file);
+    }
+
+    //Dense piece of code
+    //Getting conv layer parameters
+    int R = kernel_size[0];
+    int S = kernel_size[1];
+    int C = input.sizes()[1]; //All the channels. Note this could not be the same in weight.sizes[1] (i.e., filter channels) as the groups could reduce these last ones.
+    //In this case, we send the complete number of input channels, and the callee
+    //will have to be aware of this and run C/G if  groups exist.;
+    int N = input.sizes()[0];
+    int X = input.sizes()[2]; //Add padding sizes?
+    int Y = input.sizes()[3]; //Add padding sizes?
+    int strides = stride[0];
+	int pad_x = padding[0];
+	int pad_y = padding[1];
+
+    //Getting raw data 
+    float* input_raw = (float*) input.data_ptr();
+
+    //Creating output tensor 
+    int H_out = ((X + 2*padding[0] - dilation[0] * (R-1) - 1) / stride[0]) + 1; 
+    int W_out = ((Y + 2*padding[1] - dilation[1] * (S-1) - 1) / stride[0]) + 1;
+    torch::Tensor output = torch::rand({N,C,H_out, W_out});
+    float* output_raw = (float*) output.data_ptr();
+    
+    simulateMaxPoolingForward(layer_name, input_raw, output_raw, R, S, C, N, X, Y, H_out, W_out, strides, pad_x, pad_y, path_to_tile, stonne_cfg);
+    return output;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
+  m.def("simulated_max_pool_forward", &simulated_max_pool_forward, "Simulated max pool forward");
   m.def("simulated_conv_forward", &simulated_conv_forward, "Simulated convolution forward");
   m.def("simulated_conv_backward", &simulated_conv_backwards, "Simulated convolution backward");
   m.def("simulated_linear_forward", &simulated_linear_forward, "Simulated linear forward");

@@ -13,4 +13,5 @@ void simulateSparseGemmWithBitmapsForward(std::string layer_name, float* KN_matr
 
 void simulateDenseGemmForward(std::string layer_name, float* KN_matrix_raw, float* MK_matrix_raw, float* output_raw, int N, int G, int gemm_M, int gemm_K, int gemm_N, std::string path_to_tile, Config stonne_cfg);
 
+void simulateMaxPoolingForward(std::string layer_name, float* input, float* output, int R, int S, int C, int N, int X, int Y, int X_, int Y_, int strides, int pad_x, int pad_y, std::string path_to_tile, Config stonne_cfg);
 #endif

@@ -58,8 +58,12 @@ Tile::Tile(std::string tile_file) {
         std::cout << "Reading a tile of type FC" << std::endl;
     }
 
+    else if(*tile_type=="MAX_POOL") {
+        std::cout << "Reading a tile of type MAX_POOL" << std::endl;
+    }
+
     else {
-        std::cout << "Error to parse tile_type. Specify a correct type: [CONV, FC, POOL]" << std::endl;
+        std::cout << "Error to parse tile_type. Specify a correct type: [CONV, FC, MAX_POOL]" << std::endl;
         exit(1);
     }
 
@@ -148,7 +152,18 @@ Tile::Tile(std::string tile_file) {
         
 
     }
-   
+    
+    else if(*tile_type=="MAX_POOL") {
+        this->T_R = *T_R;
+        this->T_S = *T_S;
+        this->T_C = *T_C;
+        this->T_K = *T_K;
+        this->T_G = *T_G;
+        this->T_N = *T_N;
+        this->T_X_ = *T_X_;
+        this->T_Y_ = *T_Y_;
+
+    }
     //Folding is not specified in this case since this use case is not to load the tile into the architecture. Rather, it is to load the tile from the file and layer specify all the parameters
     // to the architecture by means of some abstractions like an instruction.
 

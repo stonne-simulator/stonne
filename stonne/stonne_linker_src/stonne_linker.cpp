@@ -1,12 +1,12 @@
 #include <iostream>
 #include "stonne_linker.h"
 #include <unistd.h>
-#include "STONNEModel.h"
-#include "Tile.h"
-#include "Config.h"
-#include "types.h"
-#include "testbench.h"
-#include "utility.h"
+#include "../include/STONNEModel.h"
+#include "../include/Tile.h"
+#include "../include/Config.h"
+#include "../include/types.h"
+#include "../include/testbench.h"
+#include "../include/utility.h"
 #include <string>
 
 float* Transform_Ifmap_Memory (const float* bottom_data, const int C, const int X, const int Y, const int pad_x, const int pad_y);
@@ -324,6 +324,46 @@ void simulateDenseGemmForward(std::string layer_name, float* KN_matrix_raw, floa
        }
    }     
    delete[] sub_KN_dense_matrix;
-
 }
 
+void simulateMaxPoolingForward(std::string layer_name, float* input, float* output, int R, int S, int C, int N, int X, int Y, int X_, int Y_, int strides, int pad_x, int pad_y, std::string path_to_tile, Config stonne_cfg) {
+   //Updating X and Y with pad values
+   //const int pad_y=this->pad_.cpu_data()[0]; //alto
+   const int ifmap_size=C*((X+2*pad_x)*(Y+2*pad_y));
+   const int ofmap_size = C*X_*Y_; //X_ and Y_ include padding
+   std::cout << "Executing layer " << layer_name << std::endl;
+   if(path_to_tile == "") {
+	   std::cout << "Tile file parameters must be specified" << std::endl;
+	   exit(1);
+   }
+
+   //Loading the tile
+   Tile tile(path_to_tile);
+
+   float* ifmap_to_send=Transform_Ifmap_Memory(input, C, X, Y, pad_x, pad_y) ;
+   float* ofmap_raw = new float[ofmap_size];
+
+   //Tile parameters
+   unsigned int T_R = tile.get_T_R();
+   unsigned int T_S = tile.get_T_S();
+   unsigned int T_C = tile.get_T_C();
+   unsigned int T_N = tile.get_T_N();
+   unsigned int T_X_ = tile.get_T_X_();
+   unsigned int T_Y_ = tile.get_T_Y_();
+
+
+   stonne_cfg.m_SDMemoryCfg.mem_controller_type = POOL_DENSE_WORKLOAD;
+   stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled = true;
+
+   Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
+   stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, C, C, N, X, Y, strides, (address_t) ifmap_to_send, nullptr, (address_t) ofmap_raw, CNN_DATAFLOW); //Loading the layer
+   stonne_instance->loadTile(T_R, T_S, 1, 1, T_C, T_N, T_X_, T_Y_); //Loading the tile
+   stonne_instance->run(); //Running the simulator
+
+   Transform_Ofmap_Memory(ofmap_raw, output, C, X_, Y_); // Transform simulator memory format to caffe format.     
+
+   //Deleting objects
+   delete[] ofmap_raw;
+   delete[] ifmap_to_send;
+   delete stonne_instance;
+}

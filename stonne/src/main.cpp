@@ -500,7 +500,7 @@ bool runMaxPoolingCommand(int argc, char *argv[]) {
 
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(MAX_POOL, layer_name, R, S, C, C, C, N, X, Y, strides, ifmap, nullptr, ofmap, CNN_DATAFLOW); //Loading the layer
-    stonne_instance->loadTile(T_R, T_S, T_C, 1, 1, T_N, T_X_, T_Y_); //Loading the tile
+    stonne_instance->loadTile(T_R, T_S, 1, 1, T_C, T_N, T_X_, T_Y_); //Loading the tile
     stonne_instance->run(); //Running the simulator
 
     /** END of configuring and running the accelerator  **/
