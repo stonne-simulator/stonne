@@ -3,15 +3,15 @@
 ## Bibtex
 Please, if you use STONNE, please cite us:
 ```
-@Article{STONNEarxiv,
+@Article{STONNE21,
   author =       {Francisco Mu{\~n}oz Matr{\'i}nez and Jos{\'e} L. Abell{\'a}n and Manuel E. Acacio and Tushar Krishna},
-  title =        {STONNE: A Detailed Architectural Simulator for Flexible Neural Network Accelerators},
-  journal =      {arXiv preprint arXiv:2006.07137v1},
-  year =         {2020},
+  title =        {STONNE: Enabling Cycle-Level Microarchitectural Simulation for DNN Inference Accelerators},
+  journal =      {IEEE Computer Architecture Letters},
+  year =         {2021},
   volume =       {},
-  number =       {},
+  number =       {01},
   pages =        {},
-  month =        Jun,
+  month =        Jul,
 }
 ```
 
