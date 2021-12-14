@@ -7,6 +7,7 @@
 #include <string>
 #include <math.h>
 #include <utility.h>
+#include "mRNA_Adapter.h"
 
 using namespace std;
 
@@ -133,6 +134,34 @@ bool runConvCommand(int argc, char *argv[]) {
     //
     /** Configuring and running the accelerator  **/
     
+///////////////////////////////////////////////////////////////////////
+    // TODO this is only an example, remove it later
+    mRNA_Adapter mrna(stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
+        R, S, C, K, G, N, X, Y, X_, Y_, strides, mRNA::performance);
+    Tile tileMRNA = mrna.getTileConfig();
+    std::cout << "### USING mRNA" << std::endl;
+    std::cout << "T_R = "  << tileMRNA.get_T_R()  << std::endl;
+    std::cout << "T_S = "  << tileMRNA.get_T_S()  << std::endl;
+    std::cout << "T_C = "  << tileMRNA.get_T_C()  << std::endl;
+    std::cout << "T_K = "  << tileMRNA.get_T_K()  << std::endl;
+    std::cout << "T_G = "  << tileMRNA.get_T_G()  << std::endl;
+    std::cout << "T_N = "  << tileMRNA.get_T_N()  << std::endl;
+    std::cout << "T_X' = " << tileMRNA.get_T_X_() << std::endl;
+    std::cout << "T_Y' = " << tileMRNA.get_T_Y_() << std::endl;
+
+//#define MRNA
+#ifdef MRNA
+    T_R  = tileMRNA.get_T_R();
+    T_S  = tileMRNA.get_T_S();
+    T_C  = tileMRNA.get_T_C();
+    T_K  = tileMRNA.get_T_K();
+    T_G  = tileMRNA.get_T_G();
+    T_N  = tileMRNA.get_T_N();
+    T_X_ = tileMRNA.get_T_X_();
+    T_Y_ = tileMRNA.get_T_Y_();
+#endif
+/////////////////////////////////////////////////////////////////////
+
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap, CNN_DATAFLOW); //Loading the layer
