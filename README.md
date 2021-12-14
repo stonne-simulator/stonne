@@ -4,15 +4,14 @@
 ## Bibtex
 Please, if you use STONNE, please cite us:
 ```
-@Article{STONNE21,
-  author =       {Francisco Mu{\~n}oz Matr{\'i}nez and Jos{\'e} L. Abell{\'a}n and Manuel E. Acacio and Tushar Krishna},
+@INPROCEEDINGS{STONNE21,
+  author =       {Francisco Mu{\~n}oz-Matr{\'i}nez and Jos{\'e} L. Abell{\'a}n and Manuel E. Acacio and Tushar Krishna},
   title =        {STONNE: Enabling Cycle-Level Microarchitectural Simulation for DNN Inference Accelerators},
-  journal =      {IEEE Computer Architecture Letters},
+  booktitle =    {2021 IEEE International Symposium on Workload Characterization (IISWC)}, 
   year =         {2021},
   volume =       {},
-  number =       {01},
+  number =       {},
   pages =        {},
-  month =        Jul,
 }
 ```
 
