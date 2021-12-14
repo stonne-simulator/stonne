@@ -1,5 +1,7 @@
 
-#include "DNNModel.h"
+#include "mRNA/DNNModel.h"
+
+using namespace mRNA;
 
 void DNNModel::parseModelName(std::istringstream& instr) {
   std::string str;
