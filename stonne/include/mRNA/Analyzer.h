@@ -3,7 +3,6 @@
 
 #include "define.h"
 #include "DNNModel.h"
-#include "../Tile.h"
 #include "MAERIModel.h"
 #include "MappingStrategy.h"
 #include "utility.h"
@@ -164,10 +163,6 @@ namespace mRNA {
 
         //Output the configuration of MAERI.
         void ConfigGen(std::ofstream &config);
-
-
-        // STONNE integration
-        Tile getTileConfig();
     };
 
 }

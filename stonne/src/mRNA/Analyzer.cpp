@@ -1823,16 +1823,3 @@ void Analyzer::ConfigGen(std::ofstream& config) {
     }
 }
 
-Tile Analyzer::getTileConfig() {
-    return Tile(
-        bestmap->kernel_x,  // T_X
-        bestmap->kernel_y,  // T_Y
-        bestmap->kernel_c,  // T_C
-        bestmap->kernel_n,  // T_K
-        1,                  // T_G (default: 1)
-        bestmap->kernel_in, // T_N
-        bestmap->kernel_ox, // T_X'
-        bestmap->kernel_oy, // T_Y'
-        false             // folding (default: no)
-    );
-}

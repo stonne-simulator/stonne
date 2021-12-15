@@ -135,6 +135,8 @@ bool runConvCommand(int argc, char *argv[]) {
     /** Configuring and running the accelerator  **/
     
 ///////////////////////////////////////////////////////////////////////
+#define MRNA
+#ifdef MRNA
     // TODO this is only an example, remove it later
     mRNA_Adapter mrna(stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
         R, S, C, K, G, N, X, Y, X_, Y_, strides, mRNA::performance);
@@ -149,8 +151,6 @@ bool runConvCommand(int argc, char *argv[]) {
     std::cout << "T_X' = " << tileMRNA.get_T_X_() << std::endl;
     std::cout << "T_Y' = " << tileMRNA.get_T_Y_() << std::endl;
 
-//#define MRNA
-#ifdef MRNA
     T_R  = tileMRNA.get_T_R();
     T_S  = tileMRNA.get_T_S();
     T_C  = tileMRNA.get_T_C();
