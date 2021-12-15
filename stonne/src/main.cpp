@@ -7,7 +7,7 @@
 #include <string>
 #include <math.h>
 #include <utility.h>
-#include "mRNA_Adapter.h"
+#include "mRNA_Generator.h"
 
 using namespace std;
 
@@ -138,9 +138,9 @@ bool runConvCommand(int argc, char *argv[]) {
 #define MRNA
 #ifdef MRNA
     // TODO this is only an example, remove it later
-    mRNA_Adapter mrna(stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
-        R, S, C, K, G, N, X, Y, X_, Y_, strides, mRNA::performance);
-    Tile tileMRNA = mrna.getTileConfig();
+    mRNA_Generator mrna(CONV, stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                        R, S, C, K, G, N, X, Y, X_, Y_, strides, mRNA::performance);
+    Tile tileMRNA = mrna.generateTileConfig();
     std::cout << "### USING mRNA" << std::endl;
     std::cout << "T_R = "  << tileMRNA.get_T_R()  << std::endl;
     std::cout << "T_S = "  << tileMRNA.get_T_S()  << std::endl;
