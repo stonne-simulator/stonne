@@ -279,6 +279,64 @@ void Stonne::loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K)  {
     std::cout << "Loading a FC tile" << std::endl;
 }
 
+// General mRNA generation of a tile
+void Stonne::generateTile(mRNA_Generator &mRNA) {
+    std::cout << "Generating optimum Tile configuration with mRNA" << std::endl;
+
+    // Generate tile and get it's fields
+    Tile tileGenerated = mRNA.generateTileConfig();
+    unsigned int T_R  = tileGenerated.get_T_R();
+    unsigned int T_S  = tileGenerated.get_T_S();
+    unsigned int T_C  = tileGenerated.get_T_C();
+    unsigned int T_K  = tileGenerated.get_T_K();
+    unsigned int T_G  = tileGenerated.get_T_G();
+    unsigned int T_N  = tileGenerated.get_T_N();
+    unsigned int T_X_ = tileGenerated.get_T_X_();
+    unsigned int T_Y_ = tileGenerated.get_T_Y_();
+
+    // Loads the generated tile and checks parameters
+    loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
+}
+
+// Generates a tile using the Stonne CONV parameters
+void Stonne::generateConvTile() {
+    unsigned int R = dnn_layer->get_R();
+    unsigned int S = dnn_layer->get_S();
+    unsigned int C = dnn_layer->get_C();
+    unsigned int K = dnn_layer->get_K();
+    unsigned int G = dnn_layer->get_G();
+    unsigned int N = dnn_layer->get_N();
+    unsigned int X = dnn_layer->get_X();
+    unsigned int Y = dnn_layer->get_Y();
+    unsigned int strides = dnn_layer->get_strides();
+    unsigned int X_ = (X - R + strides) / strides;      // X_
+    unsigned int Y_ = (Y - S + strides) / strides;       // Y_
+
+    mRNA_Generator mRNA_CONV(CONV,
+                             stonne_cfg.m_MSNetworkCfg.ms_size,
+                             stonne_cfg.m_SDMemoryCfg.n_read_ports,
+                             stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                             R, S, C, K, G, N, X, Y, X_, Y_, strides,
+                             mRNA::performance);
+    generateTile(mRNA_CONV);
+}
+
+// Generates a tile using the Stonne FC parameters
+void Stonne::generateFCTile() {
+    // See Stonne::loadDenseGEMM for reference to this map
+    unsigned int K = dnn_layer->get_S();
+    unsigned int M = dnn_layer->get_X();
+    unsigned int N = dnn_layer->get_K();
+
+    mRNA_Generator mRNA_FC(FC,
+                           stonne_cfg.m_MSNetworkCfg.ms_size,
+                           stonne_cfg.m_SDMemoryCfg.n_read_ports,
+                           stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                           M, N, K,
+                           mRNA::performance);
+    generateTile(mRNA_FC);
+}
+
 void Stonne::run() {
     //Execute the cycles
     this->cycle();

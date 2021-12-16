@@ -134,38 +134,13 @@ bool runConvCommand(int argc, char *argv[]) {
     //
     /** Configuring and running the accelerator  **/
     
-///////////////////////////////////////////////////////////////////////
-#define MRNA
-#ifdef MRNA
-    // TODO this is only an example, remove it later
-    mRNA_Generator mrna(CONV, stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
-                        R, S, C, K, G, N, X, Y, X_, Y_, strides, mRNA::performance);
-    Tile tileMRNA = mrna.generateTileConfig();
-    std::cout << "### USING mRNA" << std::endl;
-    std::cout << "T_R = "  << tileMRNA.get_T_R()  << std::endl;
-    std::cout << "T_S = "  << tileMRNA.get_T_S()  << std::endl;
-    std::cout << "T_C = "  << tileMRNA.get_T_C()  << std::endl;
-    std::cout << "T_K = "  << tileMRNA.get_T_K()  << std::endl;
-    std::cout << "T_G = "  << tileMRNA.get_T_G()  << std::endl;
-    std::cout << "T_N = "  << tileMRNA.get_T_N()  << std::endl;
-    std::cout << "T_X' = " << tileMRNA.get_T_X_() << std::endl;
-    std::cout << "T_Y' = " << tileMRNA.get_T_Y_() << std::endl;
-
-    T_R  = tileMRNA.get_T_R();
-    T_S  = tileMRNA.get_T_S();
-    T_C  = tileMRNA.get_T_C();
-    T_K  = tileMRNA.get_T_K();
-    T_G  = tileMRNA.get_T_G();
-    T_N  = tileMRNA.get_T_N();
-    T_X_ = tileMRNA.get_T_X_();
-    T_Y_ = tileMRNA.get_T_Y_();
-#endif
-/////////////////////////////////////////////////////////////////////
-
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap, CNN_DATAFLOW); //Loading the layer
-    stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile
+    if (stonne_cfg.uses_mRNA)
+        stonne_instance->generateConvTile(); //Generating a tile with mRNA and loading it
+    else
+        stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -274,33 +249,13 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     //
     /** Configuring and running the accelerator  **/
 
-    ///////////////////////////////////////////////////////////////////////
-#define MRNA_FC
-#ifdef MRNA_FC
-    // TODO this is only an example, remove it later
-    mRNA_Generator mrna(FC, stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
-                        M, N, K, mRNA::performance);
-    Tile tileMRNA = mrna.generateTileConfig();
-
-    int T_R = tileMRNA.get_T_R();
-    int T_S = tileMRNA.get_T_S();
-    int T_C = tileMRNA.get_T_C();
-    T_K = tileMRNA.get_T_K();
-    int T_G = tileMRNA.get_T_G();
-    T_N= tileMRNA.get_T_N();
-    int T_X_ = tileMRNA.get_T_X_();
-    int T_Y_ = tileMRNA.get_T_Y_();
-#endif
-
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDenseGEMM(layer_name, N, K, M, MK_matrix, KN_matrix, output, CNN_DATAFLOW); //Loading the layer
-#ifndef MRNA_FC
-    stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile
-#else
-    stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
-#endif
-    /////////////////////////////////////////////////////////////////////
+    if (stonne_cfg.uses_mRNA)
+        stonne_instance->generateFCTile();
+    else
+        stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -634,6 +589,16 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
                 std::cout << "Changing rn_type to " << value_str << std::endl;
                 stonne_cfg.m_ASNetworkCfg.reduce_network_type=get_type_reduce_network_type(value_str);
             }
+
+            else if(name=="-mRNA") {
+                if((value != 0) && (value != 1)) {
+                    std::cout << "Error: -mRNA only supports 0 or 1" << std::endl;
+                    exit(1);
+                }
+                std::cout << "Changing mRNA to " << value << std::endl;
+                stonne_cfg.uses_mRNA = value;
+            }
+
             //Running configuration parameters (layer and tile)
    
            //Layer parameters
@@ -840,7 +805,14 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
                 stonne_cfg.m_SDMemoryCfg.mem_controller_type=get_type_memory_controller_type(value_str);
             }
 
-
+            else if(name=="-mRNA") {
+                if((value != 0) && (value != 1)) {
+                    std::cout << "Error: -mRNA only supports 0 or 1" << std::endl;
+                    exit(1);
+                }
+                std::cout << "Changing mRNA to " << value << std::endl;
+                stonne_cfg.uses_mRNA = value;
+            }
 
 
             //Running configuration parameters (layer)
