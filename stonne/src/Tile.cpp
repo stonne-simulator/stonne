@@ -29,7 +29,24 @@ Tile::Tile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_
     }
 }
 
-    
+// Used to create a fully connected tile
+Tile::Tile(unsigned int T_M, unsigned int T_N, unsigned int T_K, bool folding) {
+    this->T_R = 1;
+    this->T_S = T_K;
+    this->T_C = 1;
+    this->T_K = T_N;
+    this->T_G = 1;
+    this->T_N = 1;
+    this->T_X_ = T_M;
+    this->T_Y_ = 1;
+
+    this->VN_Size = T_R*T_S*T_C;
+    this->Num_VNs = T_K*T_G*T_N*T_X_*T_Y_;
+    this->folding = folding;
+    if(this->folding) {
+        this->VN_Size+=1; //1 MS extra to psum accumulation
+    }
+}
 
 
 Tile::Tile(std::string tile_file) {

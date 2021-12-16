@@ -1074,7 +1074,15 @@ void Analyzer::AnalyzeFC(std::ofstream& profile, OptGoal option) {
   int map_num = 0;
   if(dnn_model->cnn_input->input_x <= maeri->pe_size) {
     map->setconfig_num(config_num+1);
-    int vn_num = std::floor(double(maeri->pe_size) / double(dnn_model->cnn_input->input_x));
+
+    // *** Modified for Stonne
+    //int vn_num = std::floor(double(maeri->pe_size) / double(dnn_model->cnn_input->input_x));
+    // It's calculating wrong the number of virtual neurons. It only considered input neurons but not output neurons.
+    // So, it could happen with ms_num=256 input=16 and output=8: ms_num/input=256/16=16 => vn_num > output neurons !!!
+    int vn_num = std::min(std::floor(double(maeri->pe_size) / double(dnn_model->cnn_input->input_x)), (double) dnn_model->cnn_output->output_x);
+    // And we also need to add this line to get the T_N
+    map->kernel_in = std::min(dnn_model->cnn_input->input_x / vn_num, dnn_model->cnn_input->input_batch);
+
     int maxpe = vn_num * dnn_model->cnn_input->input_x;
     double peak_ur = double(maxpe) / double(maeri->pe_size);
     map->setkernel_x(dnn_model->cnn_input->input_x);
@@ -1817,7 +1825,7 @@ void Analyzer::ConfigGen(std::ofstream& config) {
     } else if (dnn_model->layer_type == "MAXPOOL") {
 
     } else if (dnn_model->layer_type == "FC") {
-
+        // TODO: best parameters are not calculated on mRNA?
     } else if (dnn_model->layer_type == "RNN") {
 
     }

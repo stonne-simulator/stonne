@@ -1,15 +1,32 @@
 #include "mRNA_Generator.h"
 #include <cassert>
 
+// Constructor used for CONV layers
 mRNA_Generator::mRNA_Generator(Layer_t layer_type, int _ms_num, int _dn_bw, int _rn_bw, int R, int S, int C, int K, int G,
-                               int N, int X, int Y, int X_, int Y_, int stride, mRNA::OptGoal _opt_goal)
-        : opt_goal(_opt_goal) {
+                               int N, int X, int Y, int X_, int Y_, int stride, mRNA::OptGoal _opt_goal) {
+    init(layer_type, _ms_num, _dn_bw, _rn_bw, R, S, C, K, G, N, X, Y, X_, Y_, stride, _opt_goal);
+}
+
+// Constructor used for FC layers
+mRNA_Generator::mRNA_Generator(Layer_t layer_type, int _ms_num, int _dn_bw, int _rn_bw, int M, int N, int K, mRNA::OptGoal _opt_goal) {
+    // Note: if K > ms_num it will not work and it's not supported yet in mRNA. Maybe it could change in the future
+    assert(K <= _ms_num);
+
+    // Compared with an Model_Parameter.txt example from mRNA/input, we have inverted R and S because in the original it did not work either
+    // Example of FC layer in mRNA/Input/vggnet/Model_parameter_19,txt
+    init(layer_type, _ms_num, _dn_bw, _rn_bw, M, K, 1, 1, 1, N, K, 1, M, 1, 1, _opt_goal);
+}
+
+// Initializes the adapter between STONNE and mRNA
+void mRNA_Generator::init(Layer_t layer_type, int _ms_num, int _dn_bw, int _rn_bw, int R, int S, int C, int K, int G, int N,
+                     int X, int Y, int X_, int Y_, int stride, mRNA::OptGoal _opt_goal) {
+    opt_goal = _opt_goal;
 
     // Stonne actually only supports mRNA for CONV and FC layers
     // mRNA tile generation could be expanded to RNN too in the future
     assert(layer_type == CONV
            || layer_type == FC
-            // || layer_type == RNN
+    // || layer_type == RNN
     );
 
     // *** Create the DNN model and configure the input, filter and output variables
@@ -61,30 +78,43 @@ Tile mRNA_Generator::generateTileConfig() {
     std::ofstream paper_bin;
     // std::ofstream mRNA_output("mRNA_output.txt"); // example redirecting the output to a file
 
-    // Generates the best tile mapping for the layer type
-    if (analyzer->dnn_model->layer_type == layert_mapping[CONV]) { // CONV layer
-        analyzer->AnalyzeCNN(paper_bin, opt_goal);
-    } else if (analyzer->dnn_model->layer_type == layert_mapping[FC]) { // FC layer
-        analyzer->AnalyzeFC(paper_bin, opt_goal);
-        // } else if (analyzer->dnn_model->layer_type == layert_mapping[RNN]) { // RNN layer
-        //     analyzer->AnalyzeRNN(paper_bin, opt_goal);
-    }
-
-    // Returns the best tile mapping for the layer configuration
+    // *** Generates the best tile mapping for the layer type
     // TODO: review if T_G and folding parameters need to be changed
-    if (analyzer->bestmap) {
-        return Tile(
-                analyzer->bestmap->kernel_x,  // T_X
-                analyzer->bestmap->kernel_y,  // T_Y
-                analyzer->bestmap->kernel_c,  // T_C
-                analyzer->bestmap->kernel_n,  // T_K
-                1,                            // T_G (default: 1)
-                analyzer->bestmap->kernel_in, // T_N
-                analyzer->bestmap->kernel_ox, // T_X'
-                analyzer->bestmap->kernel_oy, // T_Y'
-                false                         // folding (default: no)
-        );
-    } else { // Empty tile for error handling
-        return Tile(0, 0, 0, 0, 0, 0, 0, 0, false);
+    if (analyzer->dnn_model->layer_type == layert_mapping[CONV]) { // CONV layer
+        // Executes mRNA algorithm
+        analyzer->AnalyzeCNN(paper_bin, opt_goal);
+        // Recovers and returns the best tile mapping for the layer configuration
+        if (analyzer->bestmap) {
+            return Tile(
+                    analyzer->bestmap->kernel_x,  // T_X
+                    analyzer->bestmap->kernel_y,  // T_Y
+                    analyzer->bestmap->kernel_c,  // T_C
+                    analyzer->bestmap->kernel_n,  // T_K
+                    1,                            // T_G (default: 1)
+                    analyzer->bestmap->kernel_in, // T_N
+                    analyzer->bestmap->kernel_ox, // T_X'
+                    analyzer->bestmap->kernel_oy, // T_Y'
+                    false                         // folding (default: no)
+            );
+        }
+    } else if (analyzer->dnn_model->layer_type == layert_mapping[FC]) { // FC layer
+        // Executes mRNA algorithm
+        analyzer->AnalyzeFC(paper_bin, opt_goal);
+        // Recovers and returns the best tile mapping for the layer configuration
+        if (analyzer->mappings[0]) {
+            return Tile(
+                    analyzer->mappings[0]->kernel_y,  // T_M
+                    analyzer->mappings[0]->kernel_in, // T_N
+                    analyzer->mappings[0]->kernel_x,  // T_K
+                    false                             // folding (default: no)
+            );
+        }
     }
+    // } else if (analyzer->dnn_model->layer_type == layert_mapping[RNN]) { // RNN layer
+    //     analyzer->AnalyzeRNN(paper_bin, opt_goal);
+    // }
+
+    // Empty and wrong tile for error handling
+    std::cerr << "mRNA could NOT generate a tile configuration !" << std::endl;
+    return Tile(0, 0, 0, 0, 0, 0, 0, 0, false);
 }

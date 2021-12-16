@@ -273,11 +273,34 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     //
     //
     /** Configuring and running the accelerator  **/
-    
+
+    ///////////////////////////////////////////////////////////////////////
+#define MRNA_FC
+#ifdef MRNA_FC
+    // TODO this is only an example, remove it later
+    mRNA_Generator mrna(FC, stonne_cfg.m_MSNetworkCfg.ms_size, stonne_cfg.m_SDMemoryCfg.n_read_ports, stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                        M, N, K, mRNA::performance);
+    Tile tileMRNA = mrna.generateTileConfig();
+
+    int T_R = tileMRNA.get_T_R();
+    int T_S = tileMRNA.get_T_S();
+    int T_C = tileMRNA.get_T_C();
+    T_K = tileMRNA.get_T_K();
+    int T_G = tileMRNA.get_T_G();
+    T_N= tileMRNA.get_T_N();
+    int T_X_ = tileMRNA.get_T_X_();
+    int T_Y_ = tileMRNA.get_T_Y_();
+#endif
+
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDenseGEMM(layer_name, N, K, M, MK_matrix, KN_matrix, output, CNN_DATAFLOW); //Loading the layer
+#ifndef MRNA_FC
     stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile
+#else
+    stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
+#endif
+    /////////////////////////////////////////////////////////////////////
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
