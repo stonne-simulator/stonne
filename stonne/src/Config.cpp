@@ -5,6 +5,7 @@
 #include "types.h"
 #include "utility.h"
 #include "cpptoml.h"
+#include "mRNA_Generator.h"
 
 
 Config::Config() {
@@ -183,6 +184,9 @@ void Config::reset() {
 
 //General parameters
     print_stats_enabled=1;
+
+//mRNA parameters
+    mRNA_goal = mRNA::performance;
 
 // ---------------------------------------------------------
 // DSNetwork Configuration Parameters

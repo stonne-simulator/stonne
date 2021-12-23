@@ -124,7 +124,7 @@ class Config {
 public:
     //General parameters
     unsigned int print_stats_enabled;    //Specified whether the statistics must be printed. 
-    unsigned int uses_mRNA;              //Specifies if the tile has to be generated with mRNA (only CONV and FC)
+    unsigned int mRNA_goal;              //Specifies if the tile has to be generated with mRNA (only CONV and FC)
     
     //DSNetwork Configuration
     DSNetworkConfig m_DSNetworkCfg;

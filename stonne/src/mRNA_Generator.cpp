@@ -20,6 +20,11 @@ mRNA_Generator::mRNA_Generator(Layer_t layer_type, int _ms_num, int _dn_bw, int 
 // Initializes the adapter between STONNE and mRNA
 void mRNA_Generator::init(Layer_t layer_type, int _ms_num, int _dn_bw, int _rn_bw, int R, int S, int C, int K, int G, int N,
                      int X, int Y, int X_, int Y_, int stride, mRNA::OptGoal _opt_goal) {
+    if (_opt_goal == mRNA::none) {
+        std::cerr << "Not mRNA goal specified, aborting" << std::endl;
+        assert(false);
+    }
+
     opt_goal = _opt_goal;
 
     // Stonne actually only supports mRNA for CONV and FC layers

@@ -12,10 +12,11 @@
 namespace mRNA {
 
     enum OptGoal {
-        performance = 0,
-        energy = 1,
-        energy_efficiency = 2,
-        all = 3,
+        none = 0, // *** Added for STONNE compatibility ***
+        performance = 1,
+        energy = 2,
+        energy_efficiency = 3,
+        all = 4,
     };
 
     enum Opcode {

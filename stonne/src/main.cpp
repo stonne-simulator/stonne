@@ -137,10 +137,7 @@ bool runConvCommand(int argc, char *argv[]) {
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap, CNN_DATAFLOW); //Loading the layer
-    if (stonne_cfg.uses_mRNA)
-        stonne_instance->generateConvTile(); //Generating a tile with mRNA and loading it
-    else
-        stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile
+    stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile (only if mRNA is not used)
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -252,10 +249,7 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDenseGEMM(layer_name, N, K, M, MK_matrix, KN_matrix, output, CNN_DATAFLOW); //Loading the layer
-    if (stonne_cfg.uses_mRNA)
-        stonne_instance->generateFCTile();
-    else
-        stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile
+    stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile (only if mRNA is not used)
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -591,12 +585,12 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
             }
 
             else if(name=="-mRNA") {
-                if((value != 0) && (value != 1)) {
-                    std::cout << "Error: -mRNA only supports 0 or 1" << std::endl;
+                if((value < 0) || (value > 3)) {
+                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing mRNA to " << value << std::endl;
-                stonne_cfg.uses_mRNA = value;
+                stonne_cfg.mRNA_goal = value;
             }
 
             //Running configuration parameters (layer and tile)
@@ -806,12 +800,12 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
             }
 
             else if(name=="-mRNA") {
-                if((value != 0) && (value != 1)) {
-                    std::cout << "Error: -mRNA only supports 0 or 1" << std::endl;
+                if((value < 0) || (value > 3)) {
+                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
                     exit(1);
                 }
                 std::cout << "Changing mRNA to " << value << std::endl;
-                stonne_cfg.uses_mRNA = value;
+                stonne_cfg.mRNA_goal = value;
             }
 
 

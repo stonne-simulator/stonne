@@ -76,9 +76,13 @@ public:
     Stonne (Config stonne_cfg);
     ~Stonne();
 
-    void loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow); //General constructor
-  
-   //Load CONV Layer. At the end this calls to the general constructor  with all the parameters
+    //General constructor. Generates mRNA configuration if enabled
+    void loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow);
+    //Same general constructor, but using "use_mRNA=false" can force to not generate a tile, even though mRNA is enabled
+    //This is an auxiliary function for loadDenseGEMM(), which has to generate its own mRNA tile but reuses this function
+    void loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow, bool use_mRNA);
+
+    //Load CONV Layer. At the end this calls to the general constructor  with all the parameters
     void loadCONVLayer(std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address);
 
     //Load FC layer just with the appropiate parameters
