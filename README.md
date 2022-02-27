@@ -15,6 +15,13 @@ Please, if you use STONNE, please cite us:
 }
 ```
 
+## UPDATE
+We have created a docker image for STONNE! Everything is installed in the image so using the simulator is much easier. Just type the next docker command to download and run the image:
+
+```
+docker run -it franciscomunoz/stonne_omega_img /bin/bash
+```
+
 ## WHAT IS STONNE
 The design of specialized architectures for accelerating the inference procedure of Deep Neural Networks (DNNs) is a booming area of research nowadays. While first-generation accelerator proposals used simple fixed dataflows tailored for 
 dense DNNs, more recent architectures have argued for flexibility to efficiently support a wide variety of layer types, dimensions, and sparsity. As the complexity of these accelerators grows, it becomes more and more appealing for researchers to have cycle-level simulation tools at their disposal to allow for fast and accurate design-space exploration, and rapid quantification of the efficacy of architectural enhancements during the early stages of a design. To this end, we present STONNE (Simulation TOol of Neural Network Engines), a cycle-level, highly-modular and highly-extensible simulation framework that can plug into any high-level DNN framework as an accelerator device and perform end-to-end evaluation of flexible accelerator microarchitectures with sparsity support, running complete DNN models.
