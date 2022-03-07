@@ -545,7 +545,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") & (name != "-mRNA")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -693,12 +693,8 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
            }
 
             else if(name=="-mRNA") {
-                if((value < 0) || (value > 3)) {
-                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
-                    exit(1);
-                }
                 std::cout << "Changing mRNA to " << value << std::endl;
-                mRNA_goal = parsemRNAGoal(to_string(value));
+                mRNA_goal = parsemRNAGoal(value_str);
             }
 
            //Parameter is not recognized
@@ -731,7 +727,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") && (name != "-mn_type") && (name != "-mem_ctrl")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") && (name != "-mn_type") && (name != "-mem_ctrl") & (name != "-mRNA")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -852,12 +848,8 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
            }
 
             else if(name=="-mRNA") {
-                if((value < 0) || (value > 3)) {
-                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
-                    exit(1);
-                }
                 std::cout << "Changing mRNA to " << value << std::endl;
-                mRNA_goal = parsemRNAGoal(to_string(value));
+                mRNA_goal = parsemRNAGoal(value_str);
             }
 
            //Parameter is not recognized

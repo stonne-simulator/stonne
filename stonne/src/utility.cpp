@@ -47,6 +47,9 @@ mRNA::OptGoal parsemRNAGoal(std::string mRNA_goal) {
         return mRNA::energy_efficiency;
 
     std::cerr << "mRNA goal " << mRNA_goal << " is not recognized" << std::endl;
+    std::cerr << "-mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
+    std::cerr << "Changing mRNA to mRNA::none" << std::endl;
+
     return mRNA::none;
 }
 

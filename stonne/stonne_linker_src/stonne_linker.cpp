@@ -115,30 +115,14 @@ void simulateDenseConvForward(std::string layer_name, float* input, float* weigh
 	   exit(1);
    }
 
-   //Loading the tile
-   Tile tile(path_to_tile);
-
-
    float* ifmap_to_send=Transform_Ifmap_Memory(input, C, X, Y, pad_x, pad_y) ;
    float* filters_to_send=Transform_Filters_Memory(weight, K, G, C, R, S);
    float* ofmap_raw = new float[ofmap_size];
 
-
-   //Tile parameters
-   unsigned int T_R = tile.get_T_R();
-   unsigned int T_S = tile.get_T_S();
-   unsigned int T_C = tile.get_T_C();
-   unsigned int T_K = tile.get_T_K();
-   unsigned int T_G = tile.get_T_G();
-   unsigned int T_N = tile.get_T_N();
-   unsigned int T_X_ = tile.get_T_X_();
-   unsigned int T_Y_ = tile.get_T_Y_();
-
-
    //Executing the accelerator
    Stonne* stonne_instance = new Stonne(stonne_cfg);
    stonne_instance->loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X+2*pad_x, Y+2*pad_y, strides, (address_t) ifmap_to_send, (address_t)filters_to_send, (address_t)ofmap_raw, CNN_DATAFLOW);
-   stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
+   stonne_instance->loadTile(path_to_tile);
    stonne_instance->run(); //Running the accelerator and generates the output in ofmap_raw
    //sequential_layer(R, S, C, K, G, N, X, Y, strides, (address_t)ifmap_to_send, (address_t)filters_to_send, (address_t)ofmap_raw);
 
@@ -272,10 +256,6 @@ void simulateDenseGemmForward(std::string layer_name, float* KN_matrix_raw, floa
        exit(1);
    }
 
-   //Loading the tile
-   Tile tile(path_to_tile);
-
-
    int gemm_M_grouped = gemm_M / G;
    int gemm_K_grouped = gemm_K / G;
    int gemm_N_grouped = gemm_N;
@@ -289,12 +269,6 @@ void simulateDenseGemmForward(std::string layer_name, float* KN_matrix_raw, floa
    //int S = gemm_K_grouped;
    //int K = gemm_N_grouped;
    //int N = gemm_M_grouped;
-   
-
-   //Tile parameters
-   int T_K = tile.get_T_S();
-   int T_N = tile.get_T_K();
-   int T_M = tile.get_T_N();
 
 
    for(int n=0; n<N; n++) {
@@ -317,7 +291,7 @@ void simulateDenseGemmForward(std::string layer_name, float* KN_matrix_raw, floa
 
            Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating the instance of the simulator
            stonne_instance->loadFCLayer(layer_name_group, gemm_M_grouped, gemm_K_grouped, gemm_N_grouped, (address_t) pointer_MK_dense_matrix, (address_t) pointer_KN_dense_matrix, (address_t) acc_output);
-           stonne_instance->loadFCTile(T_K, T_M, T_N);
+           stonne_instance->loadTile(path_to_tile);
            stonne_instance->run(); //Running the accelerator and generates the output in ofmap_raw
 
            delete stonne_instance;

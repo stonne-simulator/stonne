@@ -104,6 +104,9 @@ public:
     void loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_); //Load general and CONV tile
     void loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K); //VNSize = T_S, NumVNs= T_N*T_K
 
+    //Loads a tile configuration from a file
+    void loadTile(std::string tile_file);
+
     // Generates a tile configuration using a mRNA generator
     void generateTile(mRNA_Generator &mRNA);
 

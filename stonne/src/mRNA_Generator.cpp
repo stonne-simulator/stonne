@@ -121,5 +121,6 @@ Tile mRNA_Generator::generateTileConfig() {
 
     // Empty and wrong tile for error handling
     std::cerr << "mRNA could NOT generate a tile configuration !" << std::endl;
-    return Tile(0, 0, 0, 0, 0, 0, 0, 0, false);
+    std::cerr << "This code should not be reached" << std::endl;
+    exit(1);
 }

@@ -11,6 +11,7 @@
 #include "utility.h"
 #include "Config.h"
 #include <time.h>
+#include "cpptoml.h"
 
 Stonne::Stonne(Config stonne_cfg) {
     this->stonne_cfg=stonne_cfg;
@@ -289,6 +290,127 @@ void Stonne::loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K)  {
     loadTile(1, T_S, 1, T_K, 1, 1, T_N, 1);
     assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == FC));   //Force to have the right layer with the FC parameters)
 }
+
+
+void Stonne::loadTile(std::string tile_file) {
+    auto config = cpptoml::parse_file(tile_file); //Creating object to parse
+    auto tile_type=config->get_as<std::string>("tile_type");
+    auto T_R=config->get_as<int32_t>("T_R");
+    auto T_S=config->get_as<int32_t>("T_S");
+    auto T_C=config->get_as<int32_t>("T_C");
+    auto T_K=config->get_as<int32_t>("T_K");
+    auto T_G=config->get_as<int32_t>("T_G");
+    auto T_N=config->get_as<int32_t>("T_N");
+    auto T_X_=config->get_as<int32_t>("T_X'");
+    auto T_Y_=config->get_as<int32_t>("T_Y'");
+    auto mRNA_goal_str=config->get_as<std::string>("mRNA");
+    mRNA::OptGoal mRNA_goal;
+
+    if(!tile_type) {
+        std::cout << "Error to parse tile_type. Parameter not found" << std::endl;
+        exit(1);
+    }
+
+    if(*tile_type=="CONV") { //Actually the architecture does not know about the layer type. This is just to make sure that the user introduces the
+        //appropiate parameters.
+        std::cout << "Reading a tile of type CONV" << std::endl;
+    }
+
+    else if(*tile_type=="FC") {
+        std::cout << "Reading a tile of type FC" << std::endl;
+    }
+
+    else {
+        std::cout << "Error to parse tile_type. Specify a correct type: [CONV, FC, POOL]" << std::endl;
+        exit(1);
+    }
+
+    if(*tile_type=="CONV") {
+        // if mRNA is specified then generate a FC tile configuration for the layer
+        if (mRNA_goal_str && (mRNA_goal = parsemRNAGoal(*mRNA_goal_str)) != mRNA::none) {
+            generateConvTile(mRNA_goal);
+            return;
+        }
+        // in other case, parse all arguments and load the tile
+        else {
+            if(!T_R) {
+                std::cout << "Error to parse T_R. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_S) {
+                std::cout << "Error to parse T_S. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_C) {
+                std::cout << "Error to parse T_C. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_K) {
+                std::cout << "Error to parse T_K. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_G) {
+                std::cout << "Error to parse T_G. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_N) {
+                std::cout << "Error to parse T_N. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_X_) {
+                std::cout << "Error to parse T_X'. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_Y_) {
+                std::cout << "Error to parse T_Y'. Value not found." << std::endl;
+                exit(1);
+            }
+
+            //Filling the parameters
+            loadTile(*T_R, *T_S, *T_C, *T_K, *T_G, *T_N, *T_X_, *T_Y_);
+        }
+
+    }
+
+    else if(*tile_type=="FC") {
+        // if mRNA is specified then generate a FC tile configuration for the layer
+        if (mRNA_goal_str && (mRNA_goal = parsemRNAGoal(*mRNA_goal_str)) != mRNA::none) {
+            generateFCTile(mRNA_goal);
+            return;
+        }
+        // in other case, parse all arguments and load the tile
+        else {
+            if(!T_N) {
+                std::cout << "Error to parse T_N. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_S) {
+                std::cout << "Error to parse T_S. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_K) {
+                std::cout << "Error to parse T_K. Value not found." << std::endl;
+                exit(1);
+            }
+
+            //Filling the parameters
+            loadFCTile(*T_S, *T_N, *T_K);
+        }
+    }
+
+    //Folding is not specified in this case since this use case is not to load the tile into the architecture. Rather, it is to load the tile from the file and layer specify all the parameters
+    // to the architecture by means of some abstractions like an instruction.
+
+} //End parser
 
 // General mRNA generation of a tile
 void Stonne::generateTile(mRNA_Generator &mRNA) {
@@ -591,5 +713,4 @@ void Stonne::testDSNetwork(unsigned int num_ms) {
     delete[] dests;
 
 }
-
 
