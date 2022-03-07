@@ -161,10 +161,6 @@ void Stonne::loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned i
     this->dnn_layer = new DNNLayer(layer_type, layer_name, R,S, C, K, G, N, X, Y, strides);   
     this->layer_loaded = true;
     this->mem->setLayer(this->dnn_layer, input_address, filter_address, output_address, dataflow);
-
-    // If mRNA is specified, then generate a tile configuration
-    if (use_mRNA && stonne_cfg.mRNA_goal != mRNA::none)
-        generateConvTile();
 }
 
 void Stonne::loadCONVLayer(std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address) {
@@ -200,11 +196,6 @@ void Stonne::loadDenseGEMM(std::string layer_name, unsigned int N, unsigned int 
     //filter_matrix = MK
     loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow, false);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
-
-    // If mRNA is specified, then generate a tile configuration
-    // TODO: this function is used for both FC and GEMM, it might not work properly for GEMM as well
-    if (stonne_cfg.mRNA_goal != mRNA::none)
-        generateFCTile();
 }
 
 void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer, address_t output_matrix, unsigned int T_N, unsigned int T_K) {
@@ -319,7 +310,7 @@ void Stonne::generateTile(mRNA_Generator &mRNA) {
 }
 
 // Generates a tile using the Stonne CONV parameters
-void Stonne::generateConvTile() {
+void Stonne::generateConvTile(mRNA::OptGoal mRNA_goal) {
     unsigned int R = dnn_layer->get_R();
     unsigned int S = dnn_layer->get_S();
     unsigned int C = dnn_layer->get_C();
@@ -337,12 +328,12 @@ void Stonne::generateConvTile() {
                              stonne_cfg.m_SDMemoryCfg.n_read_ports,
                              stonne_cfg.m_SDMemoryCfg.n_write_ports,
                              R, S, C, K, G, N, X, Y, X_, Y_, strides,
-                             (mRNA::OptGoal) stonne_cfg.mRNA_goal);
+                             mRNA_goal);
     generateTile(mRNA_CONV);
 }
 
 // Generates a tile using the Stonne FC parameters
-void Stonne::generateFCTile() {
+void Stonne::generateFCTile(mRNA::OptGoal mRNA_goal) {
     // See Stonne::loadDenseGEMM for reference to this map
     unsigned int K = dnn_layer->get_S();
     unsigned int M = dnn_layer->get_X();
@@ -353,7 +344,7 @@ void Stonne::generateFCTile() {
                            stonne_cfg.m_SDMemoryCfg.n_read_ports,
                            stonne_cfg.m_SDMemoryCfg.n_write_ports,
                            M, N, K,
-                           (mRNA::OptGoal) stonne_cfg.mRNA_goal);
+                           mRNA_goal);
     generateTile(mRNA_FC);
 }
 

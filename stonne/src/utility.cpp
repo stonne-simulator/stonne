@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <vector>
 #include <algorithm>
+
 bool isNum(std::string str) {
   std::istringstream sin(str);
   double d;
@@ -28,10 +29,25 @@ std::string getstr(std::istringstream& instr) {
       continue;
     }
   }
+  return str;
 }
 
 bool ispowerof2(unsigned int x) {
     return x && !(x & (x - 1));
+}
+
+mRNA::OptGoal parsemRNAGoal(std::string mRNA_goal) {
+    if(mRNA_goal == "none" || mRNA_goal == "0")
+        return mRNA::none;
+    else if(mRNA_goal == "performance" || mRNA_goal == "1")
+        return mRNA::performance;
+    else if(mRNA_goal == "energy" || mRNA_goal == "2")
+        return mRNA::energy;
+    else if(mRNA_goal == "energy_efficiency" || mRNA_goal == "3")
+        return mRNA::energy_efficiency;
+
+    std::cerr << "mRNA goal " << mRNA_goal << " is not recognized" << std::endl;
+    return mRNA::none;
 }
 
 std::string get_string_adder_configuration(adderconfig_t config) {

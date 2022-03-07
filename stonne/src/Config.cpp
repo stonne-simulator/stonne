@@ -185,9 +185,6 @@ void Config::reset() {
 //General parameters
     print_stats_enabled=1;
 
-//mRNA parameters
-    mRNA_goal = mRNA::performance;
-
 // ---------------------------------------------------------
 // DSNetwork Configuration Parameters
 // ---------------------------------------------------------

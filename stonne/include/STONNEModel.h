@@ -108,10 +108,10 @@ public:
     void generateTile(mRNA_Generator &mRNA);
 
     // Generates a tile configuration with mRNA for a CONV layer
-    void generateConvTile();
+    void generateConvTile(mRNA::OptGoal mRNA_goal);
 
     // Generates a tile configuration with mRNA for a FC layer
-    void generateFCTile();
+    void generateFCTile(mRNA::OptGoal mRNA_goal);
 
     void run();
     

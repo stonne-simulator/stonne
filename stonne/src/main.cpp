@@ -7,16 +7,15 @@
 #include <string>
 #include <math.h>
 #include <utility.h>
-#include "mRNA_Generator.h"
 
 using namespace std;
 
 void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &K, unsigned int &G, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_);
+                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_, mRNA::OptGoal &mRNA_goal);
 
 void configSparseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &KN_sparsity, Dataflow &dataflow, unsigned int &optimize);
 
-void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N);
+void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N, mRNA::OptGoal &mRNA_goal);
 
 void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K);
 
@@ -96,10 +95,14 @@ bool runConvCommand(int argc, char *argv[]) {
     unsigned int T_G=1;                                // T_G
     unsigned int T_N=1;                                // T_N
     unsigned int T_X_=1;                               // T_X
-    unsigned int T_Y_=1;                               // T_Y   
+    unsigned int T_Y_=1;                               // T_Y
+
+    //mRNA parameters
+    mRNA::OptGoal mRNA_goal = mRNA::none;
+
     Config stonne_cfg; //Hardware parameters
 //    stonne_cfg.m_MSNetworkCfg.ms_size=128;
-    configConvParameters(argc, argv, stonne_cfg, layer_name, R, S, C, K, G, N, X, Y, strides, T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Modify stonne_cfg and the variables according to user arguments
+    configConvParameters(argc, argv, stonne_cfg, layer_name, R, S, C, K, G, N, X, Y, strides, T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_, mRNA_goal); //Modify stonne_cfg and the variables according to user arguments
 
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
@@ -137,7 +140,11 @@ bool runConvCommand(int argc, char *argv[]) {
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap, CNN_DATAFLOW); //Loading the layer
-    stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile (only if mRNA is not used)
+    //Loads or generates a tile configuration depending on whether an mRNA goal has been specified
+    if (mRNA_goal == mRNA::none)
+        stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
+    else
+        stonne_instance->generateConvTile(mRNA_goal);
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -190,9 +197,12 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     unsigned int T_K=1;                                // T_K
     unsigned int T_N=1;                                // T_N
 
+    //mRNA parameters
+    mRNA::OptGoal mRNA_goal = mRNA::none;
+
     Config stonne_cfg; //Hardware parameters
 //    stonne_cfg.m_MSNetworkCfg.ms_size=128;
-    configDenseGEMMParameters(argc, argv, stonne_cfg, layer_name, M, K, N, T_M, T_K, T_N); //Modify stonne_cfg and the variables according to user arguments
+    configDenseGEMMParameters(argc, argv, stonne_cfg, layer_name, M, K, N, T_M, T_K, T_N, mRNA_goal); //Modify stonne_cfg and the variables according to user arguments
 
 
 
@@ -249,7 +259,11 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     //Computing the CNN Layer with the simulator
     Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
     stonne_instance->loadDenseGEMM(layer_name, N, K, M, MK_matrix, KN_matrix, output, CNN_DATAFLOW); //Loading the layer
-    stonne_instance->loadGEMMTile(T_N, T_K, T_M); //Loading the tile (only if mRNA is not used)
+    //Loads or generates a tile configuration depending on whether an mRNA goal has been specified
+    if (mRNA_goal == mRNA::none)
+        stonne_instance->loadGEMMTile(T_N, T_K, T_M);
+    else
+        stonne_instance->generateFCTile(mRNA_goal);
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -520,7 +534,7 @@ bool runHelpCommand() {
 
 //This function modifies the default values of the parameters according to user arguments.
 void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &K, unsigned int &G, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_) {
+                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_, mRNA::OptGoal &mRNA_goal) {
 
     //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
@@ -582,15 +596,6 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
             else if(name=="-rn_type") {
                 std::cout << "Changing rn_type to " << value_str << std::endl;
                 stonne_cfg.m_ASNetworkCfg.reduce_network_type=get_type_reduce_network_type(value_str);
-            }
-
-            else if(name=="-mRNA") {
-                if((value < 0) || (value > 3)) {
-                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
-                    exit(1);
-                }
-                std::cout << "Changing mRNA to " << value << std::endl;
-                stonne_cfg.mRNA_goal = value;
             }
 
             //Running configuration parameters (layer and tile)
@@ -687,6 +692,15 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
                 T_Y_=value;
            }
 
+            else if(name=="-mRNA") {
+                if((value < 0) || (value > 3)) {
+                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
+                    exit(1);
+                }
+                std::cout << "Changing mRNA to " << value << std::endl;
+                mRNA_goal = parsemRNAGoal(to_string(value));
+            }
+
            //Parameter is not recognized
            else {
                 std::cout << "Error: parameter " << name << " does not exist" << std::endl;
@@ -707,7 +721,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
     }
 }
 
-void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N) {
+void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N, mRNA::OptGoal &mRNA_goal) {
   //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
         string arg = argv[i];
@@ -799,16 +813,6 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
                 stonne_cfg.m_SDMemoryCfg.mem_controller_type=get_type_memory_controller_type(value_str);
             }
 
-            else if(name=="-mRNA") {
-                if((value < 0) || (value > 3)) {
-                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
-                    exit(1);
-                }
-                std::cout << "Changing mRNA to " << value << std::endl;
-                stonne_cfg.mRNA_goal = value;
-            }
-
-
             //Running configuration parameters (layer)
    
            //Layer parameters
@@ -842,12 +846,19 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
                T_N=value;
            }
   
-	    else if(name=="-T_K") {
+	        else if(name=="-T_K") {
                std::cout << "Changing T_K to " << value << std::endl;
                T_K=value;
            }
 
-
+            else if(name=="-mRNA") {
+                if((value < 0) || (value > 3)) {
+                    std::cout << "Error: -mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
+                    exit(1);
+                }
+                std::cout << "Changing mRNA to " << value << std::endl;
+                mRNA_goal = parsemRNAGoal(to_string(value));
+            }
 
            //Parameter is not recognized
            else {
