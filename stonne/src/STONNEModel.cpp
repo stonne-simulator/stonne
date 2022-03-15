@@ -248,16 +248,18 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
  
     //Remove these lines if we want the architeture to compute the layer even if the tile does not fit. 
     // This will mean that some row, columns or output channels would remain without calculating. 
+    /*
     if(stonne_cfg.m_SDMemoryCfg.mem_controller_type==MAERI_DENSE_WORKLOAD) { //Just for this maeri controller
-        assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
-        assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
-        assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
-        assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
+        //assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
+        //assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
+        //assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
+        //assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
         assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
         assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
         assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
         assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
     }
+    */
 
     //End check
     unsigned int n_folding = (this->dnn_layer->get_R() / T_R)*(this->dnn_layer->get_S() / T_S) * (this->dnn_layer->get_C() / T_C) ;

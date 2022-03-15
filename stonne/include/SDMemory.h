@@ -37,11 +37,19 @@ public:
     unsigned int iter_R;
     unsigned int iter_S;
     unsigned int iter_C;
+
+    //Bases to figure out each vn associated dimensions
+    unsigned int base_N;
+    unsigned int base_G;
+    unsigned int base_K;
+    unsigned int base_X;
+    unsigned int base_Y;
     unsigned int n_psums; //psums per window
     unsigned int current_psum;
     DNNLayer* dnn_layer;
     Tile* current_tile;
     bool finished;
+    bool valid_value; //Zero-remainder constraint 
   
    
     VNAT_Register(unsigned int VN, unsigned int addr, unsigned int N, unsigned int G, unsigned int K, unsigned int X, unsigned int Y,  
@@ -157,6 +165,7 @@ public:
    
     void printStats(std::ofstream& out, unsigned int indent);
     void printEnergy(std::ofstream& out, unsigned int indent);
+    SDMemoryStats getStats() {return this->sdmemoryStats;}
 };
 
 

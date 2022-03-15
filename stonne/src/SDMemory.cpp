@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include "utility.h"
+#include <math.h>
 
 //The memory is ordered setting the channels in consecutive words in memory
 
@@ -27,10 +28,24 @@ VNAT_Register::VNAT_Register(unsigned int VN, unsigned int addr, unsigned int N,
         this->iter_R = iter_R;
         this->iter_S = iter_S;
         this->iter_C = iter_C;
+
+	//Bases
+	this->base_K=K;
+	this->base_N=N;
+	this->base_G=G;
+	this->base_X=X;
+	this->base_Y=Y;
         this->n_psums=iter_R*iter_S*iter_C;
         this->current_psum=0;
         this->dnn_layer = dnn_layer;
         this->current_tile = current_tile;
+	if((base_K < this->dnn_layer->get_K()) && (base_N < this->dnn_layer->get_N()) && (base_G < this->dnn_layer->get_G()) && (base_X < this->dnn_layer->get_X_()) && (base_Y < this->dnn_layer->get_Y_())) {
+	   this->valid_value = true; //Zero-remainder constraint
+	}
+
+	else {
+            this->valid_value = false; //Zero-remainder constraint
+	}
 }
 
 //Return the offset from 0
@@ -80,9 +95,16 @@ void VNAT_Register::update() {
         unsigned index_Y=current_Y*this->current_tile->get_T_Y_();
         unsigned index_K=current_K*this->current_tile->get_T_K();
         unsigned index_G=current_G*this->current_tile->get_T_G();
-     
+   
         this->addr = this->base_addr + (index_N)*dnn_layer->get_X_()*dnn_layer->get_Y_()*dnn_layer->get_K()*dnn_layer->get_G()*word_size + index_X*dnn_layer->get_Y_()*dnn_layer->get_K()*dnn_layer->get_G()*word_size + index_Y*dnn_layer->get_K()*dnn_layer->get_G()*word_size + index_G*dnn_layer->get_K()*word_size + index_K*word_size;
+	if(((base_K+index_K) < this->dnn_layer->get_K()) && ((base_N+index_N) < this->dnn_layer->get_N()) && ((base_G+index_G) < this->dnn_layer->get_G()) && ((base_X+index_X) < this->dnn_layer->get_X_()) && ((base_Y+index_Y) < this->dnn_layer->get_Y_())) {
+	this->valid_value = true;	
         //std::cout << "Address: " << this->addr << std::endl;
+	}
+
+	else {
+            this->valid_value = false;
+        }
   
     
 }
@@ -160,15 +182,15 @@ void SDMemory::setReadConnections(std::vector<Connection*> read_connections) {
 void SDMemory::setTile(Tile* current_tile) {
         //Calculating th enumber of iterations
     //assert(this->write_port_connections.size()==this->n_write_ports);
-    this->iter_R = dnn_layer->get_R() / current_tile->get_T_R(); //Control the number of R iterations in the MemoryController
-    this->iter_S = dnn_layer->get_S() / current_tile->get_T_S(); //Control the number of S iterations in the MemoryController
-    this->iter_C = dnn_layer->get_C() / current_tile->get_T_C(); //Control the number of C iterations in the MemoryController
-    this->iter_N = dnn_layer->get_N() / current_tile->get_T_N(); //Control the number of N iterations in the MemoryController
-    this->iter_G = dnn_layer->get_G() / current_tile->get_T_G(); //Control the number of G iterations in the MemoryController
+    this->iter_R = ceil(dnn_layer->get_R() / (float) current_tile->get_T_R()); //Control the number of R iterations in the MemoryController
+    this->iter_S = ceil(dnn_layer->get_S() / (float) current_tile->get_T_S()); //Control the number of S iterations in the MemoryController
+    this->iter_C = ceil(dnn_layer->get_C() / (float) current_tile->get_T_C()); //Control the number of C iterations in the MemoryController
+    this->iter_N = ceil(dnn_layer->get_N() / (float) current_tile->get_T_N()); //Control the number of N iterations in the MemoryController
+    this->iter_G = ceil(dnn_layer->get_G() / (float) current_tile->get_T_G()); //Control the number of G iterations in the MemoryController
     //std::cout << "iter G en inputs esssss " << iter_G << std::endl;
-    this->iter_K = dnn_layer->get_K() / current_tile->get_T_K(); //Control the number of K iterations in the MemoryController
-    this->iter_X = dnn_layer->get_X_() / current_tile->get_T_X_(); //Control the number of X iterations in the MemoryController
-    this->iter_Y = dnn_layer->get_Y_() / current_tile->get_T_Y_();  //Control the number of Y iterations in the MemoryController
+    this->iter_K = ceil(dnn_layer->get_K() / (float)current_tile->get_T_K()); //Control the number of K iterations in the MemoryController
+    this->iter_X = ceil(dnn_layer->get_X_() / (float) current_tile->get_T_X_()); //Control the number of X iterations in the MemoryController
+    this->iter_Y = ceil(dnn_layer->get_Y_() / (float) current_tile->get_T_Y_());  //Control the number of Y iterations in the MemoryController
     unsigned int VNAT_iter_R = 1; //Control the number of R iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms 
     unsigned int VNAT_iter_S = 1; //Control the number of S iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms 
     unsigned int VNAT_iter_C = 1; //Control the number of C iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms 
@@ -362,8 +384,13 @@ void SDMemory::cycle() {
                                     unsigned index_C=current_C*this->current_tile->get_T_C();
                                     unsigned index_R=current_R*this->current_tile->get_T_R();
                                     unsigned index_S=current_S*this->current_tile->get_T_S();
-                                    this->sdmemoryStats.n_SRAM_weight_reads++; //To track information
-                                    data_t data = filter_address[(index_G+g)*this->group_size*word_size + (index_K+k)*this->filter_size*word_size + (index_R+r)*this->row_filter_size*word_size + (index_S+s)*dnn_layer->get_C()*word_size + (index_C+c)];  //Fetching. Note the distribution in memory is interleaving the channels
+                                    //this->sdmemoryStats.n_SRAM_weight_reads++; //To track information
+				    data_t data = 0.0;
+				    if(((index_R+r) < this->dnn_layer->get_R()) && ((index_S+s) < this->dnn_layer->get_S()) && ((index_C+c) < this->dnn_layer->get_C()) && ((index_K+k) < this->dnn_layer->get_K())) { //Zero-remainder constaint removed
+				    this->sdmemoryStats.n_SRAM_weight_reads++;
+                                    data = filter_address[(index_G+g)*this->group_size*word_size + (index_K+k)*this->filter_size*word_size + (index_R+r)*this->row_filter_size*word_size + (index_S+s)*dnn_layer->get_C()*word_size + (index_C+c)];  //Fetching. Note the distribution in memory is interleaving the channels
+				    }
+
                            
                                     //Creating the package with the weight and the destination vector
                                     DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, vector_to_send, this->num_ms);
@@ -391,9 +418,14 @@ void SDMemory::cycle() {
                                     unsigned index_C=current_C*this->current_tile->get_T_C();
                                     unsigned index_R=current_R*this->current_tile->get_T_R();
                                     unsigned index_S=current_S*this->current_tile->get_T_S();
-                                    this->sdmemoryStats.n_SRAM_weight_reads++; //To track information
-                                    data_t data = filter_address[(index_G+g)*this->group_size*word_size + (index_K+k)*this->filter_size*word_size + 
+                                    //this->sdmemoryStats.n_SRAM_weight_reads++; //To track information
+				    data_t data = 0.0;
+				    if(((index_R+r) < this->dnn_layer->get_R()) && ((index_S+s) < this->dnn_layer->get_S()) && ((index_C+c) < this->dnn_layer->get_C()) && ((index_K+k) < this->dnn_layer->get_K())) { //Zero-remainder constaint removed
+				    this->sdmemoryStats.n_SRAM_weight_reads++;
+
+                                    data = filter_address[(index_G+g)*this->group_size*word_size + (index_K+k)*this->filter_size*word_size + 
 				        + (index_R+r)*this->row_filter_size*word_size + (index_S+s)*dnn_layer->get_C()*word_size + (index_C+c)];
+				    }
                                     
 			            //Shift of this weight is g*group_tile_size + k*filter_tile_size + c*filter_channel_tile_size + r*s_tile_size + s
 			            unsigned int receiver = g*current_tile->get_T_K()*window_size  + k*window_size + 
@@ -444,14 +476,14 @@ void SDMemory::cycle() {
             
             unsigned int y_init = 0; //y_init is the first column of the window to send. This might be 0, if all the window must be sent,
             //If the fw links are enabled because the tile allows it                          
-            if((this->current_tile->get_T_Y_() == 1) && (this->current_tile->get_T_S()>1) && (this->dnn_layer->get_strides() == 1)) {   //Conditions in which the fw links of the MSwitches are enabled
+            if((this->current_tile->get_T_Y_() == 1) && (this->current_tile->get_T_S()>1) && (this->dnn_layer->get_strides() == 1) && ((this->dnn_layer->get_S() % this->current_tile->get_T_S())==0)) {   //Conditions in which the fw links of the MSwitches are enabled. Zero-remainder constraint. If there is pad in S dimension, then fw links has to be disabled and the sliding window operation will not use them. This is so, because pad causes a loose of symetry between the the values of the mses.
                 if(this->current_Y > 0) { //If it is not the first column of the row, then data is reused among the Mswitches
                     if(this->current_S == (iter_S-1)) { //If it is the last iteration of S
-                        y_init = y_inputs - 1;
+                        y_init = y_inputs-1 ;
                     }
                     else { //If it is not the last iteration of the window we do not send anything
                         y_init = y_inputs-1; //Do not send any activation since all the inputs are already in the fifos.
-			//CHECK. There was a bug here because y_init was equals to y_inputs. If true, remove the condition
+			//CHECK. There was a bug here. Before it was y_inputs here
                     }
                 }
                 else { //If it is the first window interation, we send all the activations in all the iterations of the same window
@@ -478,7 +510,6 @@ void SDMemory::cycle() {
 
                         }
                     }
-                    //TODO Me he quedado por aqui y tengo que leiminar una dimension mas en el array destinations por haber metido la dimension g
                    // std::cout << "Buscando VNs para el elemento:  [" << x << "," << y << "]" <<  std::endl;
                     int first_possible_vn_x = (x - (this->current_tile->get_T_R()-1));// / this->dnn_layer->get_strides();
                     if(first_possible_vn_x < 0) {
@@ -566,8 +597,13 @@ void SDMemory::cycle() {
                                // for(int i=0; i<this->num_ms; i++) 
                                 //    std::cout << destination_vector[i];
                                 //std::cout << std::endl;
-                                this->sdmemoryStats.n_SRAM_input_reads++; 
-                                data_t data = input_address[(index_N+i)*this->input_size+((index_X*this->dnn_layer->get_strides()+ x) + index_R)*this->dnn_layer->get_Y()*this->dnn_layer->get_C()*this->dnn_layer->get_G()*word_size+((index_Y*this->dnn_layer->get_strides() + y) + index_S)*this->dnn_layer->get_C()*this->dnn_layer->get_G()*word_size + (index_G+g)*dnn_layer->get_C()*word_size + (index_C+c)*word_size]; //Read value input(x,y)
+                                //this->sdmemoryStats.n_SRAM_input_reads++; 
+				data_t data = 0.0;
+				if(((index_R+x) < output_x_inputs) && ((index_S+y) < (output_y_inputs)) && ((index_C+c) < this->dnn_layer->get_C())) { //Zero-remainder constaint removed
+                                this->sdmemoryStats.n_SRAM_input_reads++;
+                                data = input_address[(index_N+i)*this->input_size+((index_X*this->dnn_layer->get_strides()+ x) + index_R)*this->dnn_layer->get_Y()*this->dnn_layer->get_C()*this->dnn_layer->get_G()*word_size+((index_Y*this->dnn_layer->get_strides() + y) + index_S)*this->dnn_layer->get_C()*this->dnn_layer->get_G()*word_size + (index_G+g)*dnn_layer->get_C()*word_size + (index_C+c)*word_size]; //Read value input(x,y)
+
+				}
                                 //Creating multicast package. Even though the package was unicast, multicast format is used anyway with just one element true in the destination vector
                                 DataPackage* pck = new DataPackage(sizeof(data_t), data,IACTIVATION,0, MULTICAST, destination_vector, this->num_ms);
                                 pck->setIterationK((index_G)*this->dnn_layer->get_K() + index_K*this->current_tile->get_T_G()); //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
@@ -661,8 +697,10 @@ void SDMemory::cycle() {
             assert(vn==VNAT[vn]->VN);
             //std::cout << "Memory received a psum " << data << std::endl;
             unsigned int addr_offset = this->VNAT[vn]->addr;
-            this->sdmemoryStats.n_SRAM_psum_writes++; //To track information 
-            this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
+	    if(this->VNAT[vn]->valid_value) { 
+                this->sdmemoryStats.n_SRAM_psum_writes++; //To track information 
+                this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
+	    }
             //std::cout << "value written " << data << std::endl;
             current_output_pixel+=1; 
             this->sdmemoryStats.n_SRAM_write_ports_use[pck_received->getOutputPort()]++; //To track information
