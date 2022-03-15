@@ -60,6 +60,12 @@ int main(int argc, char *argv[]) {
 	}
 
 
+	else if(arg=="-SparseDense") {
+	    runSparseDenseCommand(argc, argv);
+
+	}
+
+
 	else {
 	    std::cout << "How to use STONNE User Interface: ./" << argv[0] << " -h" << std::endl;
 	}
@@ -297,6 +303,155 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     delete[] output;
     delete[] output_cpu;
     delete stonne_instance; 
+    return true;
+}
+
+bool runSparseDenseCommand(int argc, char *argv[])
+{
+    float EPSILON=0.05;
+    std::string layer_name="SparseDenseTestLayer";
+    unsigned int M=32;                                  // M
+    unsigned int N=16;                                  // N
+    unsigned int K=32;                                  // K
+
+
+    unsigned int MK_sparsity=70;
+    unsigned int T_N=4;
+    unsigned int T_K=8;
+
+
+    Config stonne_cfg;
+    stonne_cfg.m_SDMemoryCfg.mem_controller_type=MAGMA_SPARSE_DENSE;
+
+    configSparseDenseParameters(argc, argv, stonne_cfg, layer_name, M, N, K, MK_sparsity, T_N, T_K);
+
+    //Creating MK matrix
+    float* MK_dense_matrix_no_organized = generateMatrixDense(M, K, MK_sparsity);
+    float* MK_dense_matrix = new float[M*K];
+
+    //KN matrix
+    float* KN_dense_matrix_no_organized = generateMatrixDense(K, N, 0);
+    float* KN_dense_matrix = new float[K*N];
+
+    for(int i=0; i<M*K; i++) {
+        MK_dense_matrix[i]=MK_dense_matrix_no_organized[i];
+    }
+
+    for(int i=0; i<K*N; i++) {
+        KN_dense_matrix[i]=KN_dense_matrix_no_organized[i];
+
+    }
+
+    float* cpu_output = new float[M*N];
+    float* acc_output = new float[M*N];
+
+    //Generating bitmaps
+    int nnz=0;
+    int* MK_col_id = generateMinorIDFromDense(MK_dense_matrix, M, K, nnz, GEN_BY_ROWS);
+    int* MK_row_pointer = generateMajorPointerFromDense(MK_dense_matrix, M , K, GEN_BY_ROWS);
+
+    //Generating sparse matrix
+    float* MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(MK_dense_matrix, M, K, GEN_BY_ROWS);
+
+    unsigned int* clocked_op = new unsigned int [M*N];
+
+
+
+//    /////
+//    // Print all
+/*
+    std::cout<<"\nKN Dense matrix - \n";
+
+	for(int i=0; i<K; i++) {
+        for(int j=0; j<N; j++) {
+            std::cout << KN_dense_matrix[i*N+j] << "\t";
+	}
+	std::cout << "\n";
+    }
+    std::cout << "\n";
+
+      std::cout<<"\nMK Dense matrix - \n";
+
+	for(int i=0; i<M; i++) {
+        for(int j=0; j<K; j++) {
+            std::cout << MK_dense_matrix[i*K+j] << "\t";
+	}
+	std::cout << "\n";
+    }
+    std::cout << "\n\nMK Sparse matrix - \n";
+    for(int i=0;i<nnz;i++)
+    {
+    	std::cout<<MK_sparse_matrix[i]<<"\t";
+    }
+
+    std::cout << "\n\nMK Col ID - \n";
+    for(int i=0;i<nnz;i++)
+    {
+    	std::cout<<MK_col_id[i]<<"\t";
+   }
+
+	std::cout << "\n\nMK Row pointer - \n";
+    for(int i=0;i<=M;i++)
+    {
+    	std::cout<<MK_row_pointer[i]<<"\t";
+    }
+    std::cout << "\n\n";
+    */
+
+
+
+    /////
+    Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
+    stonne_instance->loadSparseDense(layer_name, N, K, M, MK_sparse_matrix, KN_dense_matrix, (unsigned int*)MK_col_id, (unsigned int*) MK_row_pointer, acc_output, T_N, T_K); //Loading Sparse Dense
+    //stonne_instance->loadClocking(clocked_op);
+    stonne_instance->run(); //Running the simulator
+
+
+       /** CHECKING the results to make sure that the output is correct  **/
+    std::cout << "Running CPU version to compare results" << std::endl;
+    //Generating cpu output
+    cpu_gemm(MK_dense_matrix_no_organized, KN_dense_matrix_no_organized, cpu_output, M, N, K);
+
+    //Comparing the results
+    for(int i=0;i<M; i++) {
+        for(int j=0; j<N; j++) {
+            float difference=fabs(cpu_output[i*N+j]-acc_output[i*N+j]);
+            if(difference > EPSILON) {
+                std::cout << "ERROR position (" << i << "," << j <<  "): Value out simulator: " << acc_output[i*N+j] << ". Value out CPU: " << cpu_output[i*N+j] << std::endl;
+                std::cout << "\033[1;31mT test not passed\033[0m" << std::endl;
+		delete[] MK_dense_matrix;
+                delete[] KN_dense_matrix;
+		delete[] MK_dense_matrix_no_organized;
+		delete[] KN_dense_matrix_no_organized;
+                delete[] MK_col_id;
+                delete[] MK_row_pointer;
+                delete[] MK_sparse_matrix;
+                delete[] cpu_output;
+                delete[] acc_output;
+                delete stonne_instance;
+
+                assert(false); //Always false
+
+            }
+
+        }
+    }
+
+
+    //If the code does not stop then the TEST is correct
+    std::cout << "\033[1;32mTest passed correctly \033[0m" << std::endl << std::endl;
+
+
+    delete[] MK_dense_matrix_no_organized;
+    delete[] KN_dense_matrix_no_organized;
+    delete[] MK_dense_matrix;
+    delete[] KN_dense_matrix;
+    delete[] MK_col_id;
+    delete[] MK_row_pointer;
+    delete[] MK_sparse_matrix;
+    delete[] cpu_output;
+    delete[] acc_output;
+    delete stonne_instance;
     return true;
 }
 

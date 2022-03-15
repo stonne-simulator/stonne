@@ -59,6 +59,9 @@ Stonne::Stonne(Config stonne_cfg) {
 	case MAERI_DENSE_WORKLOAD:
 	    this->mem = new  SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection);
 	    break;
+	case MAGMA_SPARSE_DENSE:
+            this->mem = new  SparseDenseSDMemory(0, "SparseDenseSDMemory", stonne_cfg, this->outputLTConnection);
+            break;
 	case TPU_OS_DENSE:
 	    this->mem = new  OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
 	    break;

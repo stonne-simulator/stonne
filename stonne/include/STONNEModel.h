@@ -18,6 +18,7 @@
 #include "FENetwork.h"
 #include "MemoryController.h"
 #include "SparseSDMemory.h"
+#include "SparseDenseSDMemory.h"
 #include "TemporalRN.h"
 #include "OSMeshSDMemory.h"
 #include "OSMeshMN.h"
