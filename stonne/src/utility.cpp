@@ -178,6 +178,9 @@ std::string get_string_memory_controller_type(MemoryController_t memory_controll
             return "SIGMA_SPARSE_GEMM";
             break;
             /////
+	case MAGMA_SPARSE_DENSE:
+	    return "MAGMA_SPARSE_DENSE";
+	    break;
 	
 	case TPU_OS_DENSE:
 	    return "TPU_OS_DENSE";
@@ -200,6 +203,10 @@ MemoryController_t get_type_memory_controller_type(std::string memory_controller
 	else if(memory_controller_type=="TPU_OS_DENSE") {
             return TPU_OS_DENSE;
         }
+
+	else if(memory_controller_type=="MAGMA_SPARSE_DENSE") {
+            return MAGMA_SPARSE_DENSE;
+	}
         else {
             std::cout << memory_controller_type << " Not found" << std::endl;
             assert(false);

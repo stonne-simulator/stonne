@@ -562,7 +562,7 @@ void SparseDenseSDMemory::cycle() {
 	    unsigned int addr_offset = vnat_table_iterm[vn]*N + vnat_table_itern[vn]*T_N+vn;
 	    if((vnat_table_itern[vn]*T_N+vn) < N) { //Zero-remainder constraint
                 this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
-                this->clocked_op[addr_offset]=local_cycle;
+                //this->clocked_op[addr_offset]=local_cycle;
                 this->sdmemoryStats.n_SRAM_psum_writes++; //To track information
             }
 
