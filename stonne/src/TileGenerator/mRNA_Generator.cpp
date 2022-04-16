@@ -1,4 +1,4 @@
-#include "mRNA_Generator.h"
+#include "TileGenerator/mRNA_Generator.h"
 #include <cassert>
 
 // Constructor used for CONV layers

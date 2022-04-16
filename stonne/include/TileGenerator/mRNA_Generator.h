@@ -1,7 +1,7 @@
 #ifndef __MRNA_ADAPTER_H
 #define __MRNA_ADAPTER_H
 
-#include "mRNA/Analyzer.h"
+#include "TileGenerator/mRNA/Analyzer.h"
 #include "types.h"
 #include "Tile.h"
 

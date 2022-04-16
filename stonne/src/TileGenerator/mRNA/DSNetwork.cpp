@@ -1,7 +1,7 @@
 //
 // Created by Zhongyuan Zhao on 9/14/18.
 //
-#include "mRNA/DSNetwork.h"
+#include "TileGenerator/mRNA/DSNetwork.h"
 
 using namespace mRNA;
 

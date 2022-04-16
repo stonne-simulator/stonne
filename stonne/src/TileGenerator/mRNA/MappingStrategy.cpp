@@ -2,7 +2,7 @@
 // Created by Zhongyuan Zhao on 9/27/18.
 //
 
-#include "mRNA/MappingStrategy.h"
+#include "TileGenerator/mRNA/MappingStrategy.h"
 
 using namespace mRNA;
 

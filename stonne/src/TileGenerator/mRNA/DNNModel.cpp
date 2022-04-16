@@ -1,5 +1,5 @@
 
-#include "mRNA/DNNModel.h"
+#include "TileGenerator/mRNA/DNNModel.h"
 
 using namespace mRNA;
 

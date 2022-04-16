@@ -5,7 +5,7 @@
 #include "types.h"
 #include "utility.h"
 #include "cpptoml.h"
-#include "mRNA_Generator.h"
+#include "TileGenerator/mRNA_Generator.h"
 
 
 Config::Config() {

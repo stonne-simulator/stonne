@@ -1,7 +1,7 @@
 //
 // Created by Zhongyuan Zhao on 9/12/18.
 //
-#include "mRNA/MAERIModel.h"
+#include "TileGenerator/mRNA/MAERIModel.h"
 using namespace mRNA;
 
 void Maeri::ConnectMSNandDSN() {

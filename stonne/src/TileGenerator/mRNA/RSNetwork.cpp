@@ -1,7 +1,7 @@
 //
 // Created by Zhongyuan Zhao on 9/14/18.
 //
-#include "mRNA/RSNetwork.h"
+#include "TileGenerator/mRNA/RSNetwork.h"
 
 using namespace mRNA;
 

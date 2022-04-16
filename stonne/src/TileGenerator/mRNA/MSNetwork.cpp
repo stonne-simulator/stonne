@@ -1,7 +1,7 @@
 //
 // Created by Zhongyuan Zhao on 9/14/18.
 //
-#include "mRNA/MSNetwork.h"
+#include "TileGenerator/mRNA/MSNetwork.h"
 
 using namespace mRNA;
 

@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 #include "types.h"
-#include "mRNA_Generator.h"
+#include "TileGenerator/mRNA_Generator.h"
 
 // Parse functions
 bool isNum(std::string str);

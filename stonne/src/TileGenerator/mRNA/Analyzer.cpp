@@ -1,4 +1,4 @@
-#include "mRNA/Analyzer.h"
+#include "TileGenerator/mRNA/Analyzer.h"
 #include <list>
 
 using namespace mRNA;

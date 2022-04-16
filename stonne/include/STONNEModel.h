@@ -22,7 +22,7 @@
 #include "TemporalRN.h"
 #include "OSMeshSDMemory.h"
 #include "OSMeshMN.h"
-#include "mRNA_Generator.h"
+#include "TileGenerator/mRNA_Generator.h"
 
 class Stonne {
 private:
