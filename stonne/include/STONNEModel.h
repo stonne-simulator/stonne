@@ -22,7 +22,7 @@
 #include "TemporalRN.h"
 #include "OSMeshSDMemory.h"
 #include "OSMeshMN.h"
-#include "TileGenerator/mRNA_Generator.h"
+#include "TileGenerator/TileGenerator.h"
 
 class Stonne {
 private:
@@ -79,9 +79,6 @@ public:
 
     //General constructor. Generates mRNA configuration if enabled
     void loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow);
-    //Same general constructor, but using "use_mRNA=false" can force to not generate a tile, even though mRNA is enabled
-    //This is an auxiliary function for loadDenseGEMM(), which has to generate its own mRNA tile but reuses this function
-    void loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G,  unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow, bool use_mRNA);
 
     //Load CONV Layer. At the end this calls to the general constructor  with all the parameters
     void loadCONVLayer(std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address);
@@ -93,32 +90,32 @@ public:
     //Load Sparse GEMM onto STONNE according to SIGMA parameter taxonomy. 
     void loadGEMM(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, metadata_address_t MK_metadata, metadata_address_t KN_metadata, address_t output_matrix, metadata_address_t output_metadata, Dataflow dataflow);
 
-   //Load Dense GEMM onto STONNE according to SIGMA parameter taxonomy and tiling according to T_N, T_K and T_M
-   void loadDenseGEMM(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, address_t output_matrix, Dataflow dataflow);
+    //Load Dense GEMM onto STONNE according to SIGMA parameter taxonomy and tiling according to T_N, T_K and T_M
+    void loadDenseGEMM(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, address_t output_matrix, Dataflow dataflow);
 
     //Load sparse-dense GEMM onto STONNE
     void loadSparseDense(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer, address_t output_matrix, unsigned int T_N, unsigned int T_K);
 
-   //Load a Dense GEMM tile to run it using the loadDenseGEMM function
-   void loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M);
-
+    // Generic method to load a tile
     void loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_); //Load general and CONV tile
+
+    //Load a Dense GEMM tile to run it using the loadDenseGEMM function
+    void loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M);
+
+    // Loads a FC tile to run it using the loadFC function
     void loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K); //VNSize = T_S, NumVNs= T_N*T_K
+
+    // Loads a SparseDense tile to run it using the loadSparseDense function
+    void loadSparseDenseTile(unsigned int T_N, unsigned int T_K);
 
     //Loads a tile configuration from a file
     void loadTile(std::string tile_file);
 
-    // Generates a tile configuration using a mRNA generator
-    void generateTile(mRNA_Generator &mRNA);
-
-    // Generates a tile configuration with mRNA for a CONV layer
-    void generateConvTile(mRNA::OptGoal mRNA_goal);
-
-    // Generates a tile configuration with mRNA for a FC layer
-    void generateFCTile(mRNA::OptGoal mRNA_goal);
+    // Generates a tile configuration using a TileGenerator module
+    void generateTile(TileGenerator::Target target = TileGenerator::Target::NONE, float MK_sparsity = 0.0f);
 
     void run();
-    
+
 };
 
 #endif

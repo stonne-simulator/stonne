@@ -5,8 +5,6 @@
 #include "types.h"
 #include "utility.h"
 #include "cpptoml.h"
-#include "TileGenerator/mRNA_Generator.h"
-
 
 Config::Config() {
     this->reset();

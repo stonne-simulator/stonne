@@ -36,21 +36,21 @@ bool ispowerof2(unsigned int x) {
     return x && !(x & (x - 1));
 }
 
-mRNA::OptGoal parsemRNAGoal(std::string mRNA_goal) {
-    if(mRNA_goal == "none" || mRNA_goal == "0")
-        return mRNA::none;
-    else if(mRNA_goal == "performance" || mRNA_goal == "1")
-        return mRNA::performance;
-    else if(mRNA_goal == "energy" || mRNA_goal == "2")
-        return mRNA::energy;
-    else if(mRNA_goal == "energy_efficiency" || mRNA_goal == "3")
-        return mRNA::energy_efficiency;
+TileGenerator::Target parseTileGeneratorTarget(std::string target) {
+    if(target == "none" || target == "0")
+        return TileGenerator::Target::NONE;
+    else if(target == "performance" || target == "1")
+        return TileGenerator::Target::PERFORMANCE;
+    else if(target == "energy" || target == "2")
+        return TileGenerator::Target::ENERGY;
+    else if(target == "energy_efficiency" ||target  == "3")
+        return TileGenerator::Target::ENERGY_EFFICIENCY;
 
-    std::cerr << "mRNA goal " << mRNA_goal << " is not recognized" << std::endl;
-    std::cerr << "-mRNA only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
-    std::cerr << "Changing mRNA to mRNA::none" << std::endl;
+    std::cerr << "TileGenerator target <" << target << "> is not recognized" << std::endl;
+    std::cerr << "-generateTile only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
+    std::cerr << "Changing TileGenerator target to Target::none" << std::endl;
 
-    return mRNA::none;
+    return TileGenerator::Target::NONE;
 }
 
 std::string get_string_adder_configuration(adderconfig_t config) {
