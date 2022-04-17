@@ -324,6 +324,7 @@ bool runSparseDenseCommand(int argc, char *argv[])
 
     Config stonne_cfg;
     stonne_cfg.m_SDMemoryCfg.mem_controller_type=MAGMA_SPARSE_DENSE;
+    stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=1; // accumulation_buffer always enabled by default
 
     configSparseDenseParameters(argc, argv, stonne_cfg, layer_name, M, N, K, MK_sparsity, T_N, T_K, tileGeneratorTarget);
 
@@ -1247,6 +1248,9 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
            
            else if(name=="-accumulation_buffer") {
                 std::cout << "Changing accumulation_buffer to " << value << std::endl;
+                if (value == 0)
+                    std::cout << "NOTE: disabling the accumulation_buffer for SparseDense operations " <<
+                                 "could cause an unexpected behavior and the simulation could not work correctly" << std::endl;
                 stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=value;
             }
 
