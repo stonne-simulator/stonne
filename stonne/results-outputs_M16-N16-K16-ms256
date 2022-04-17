@@ -1,0 +1,290 @@
+sparsity=0 T_K=1 T_N=1 cycles=4398
+sparsity=0 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=2 T_N=1 cycles=2256
+sparsity=0 T_K=2 T_N=2 cycles=1248
+sparsity=0 T_K=2 T_N=4 cycles=752
+sparsity=0 T_K=2 T_N=8 cycles=512
+sparsity=0 T_K=2 T_N=16 cycles=400
+sparsity=0 T_K=4 T_N=1 cycles=1184
+sparsity=0 T_K=4 T_N=2 cycles=688
+sparsity=0 T_K=4 T_N=4 cycles=448
+sparsity=0 T_K=4 T_N=8 cycles=336
+sparsity=0 T_K=4 T_N=16 cycles=288
+sparsity=0 T_K=8 T_N=1 cycles=656
+sparsity=0 T_K=8 T_N=2 cycles=416
+sparsity=0 T_K=8 T_N=4 cycles=304
+sparsity=0 T_K=8 T_N=8 cycles=256
+sparsity=0 T_K=8 T_N=16 cycles=240
+sparsity=0 T_K=16 T_N=1 cycles=400
+sparsity=0 T_K=16 T_N=2 cycles=288
+sparsity=0 T_K=16 T_N=4 cycles=288
+sparsity=0 T_K=16 T_N=8 cycles=240
+sparsity=0 T_K=16 T_N=16 cycles=224
+sparsity=10 T_K=1 T_N=1 cycles=4024
+sparsity=10 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=2 T_N=1 cycles=2137
+sparsity=10 T_K=2 T_N=2 cycles=1185
+sparsity=10 T_K=2 T_N=4 cycles=717
+sparsity=10 T_K=2 T_N=8 cycles=491
+sparsity=10 T_K=2 T_N=16 cycles=386
+sparsity=10 T_K=4 T_N=1 cycles=1167
+sparsity=10 T_K=4 T_N=2 cycles=679
+sparsity=10 T_K=4 T_N=4 cycles=443
+sparsity=10 T_K=4 T_N=8 cycles=333
+sparsity=10 T_K=4 T_N=16 cycles=286
+sparsity=10 T_K=8 T_N=1 cycles=656
+sparsity=10 T_K=8 T_N=2 cycles=416
+sparsity=10 T_K=8 T_N=4 cycles=304
+sparsity=10 T_K=8 T_N=8 cycles=256
+sparsity=10 T_K=8 T_N=16 cycles=240
+sparsity=10 T_K=16 T_N=1 cycles=400
+sparsity=10 T_K=16 T_N=2 cycles=288
+sparsity=10 T_K=16 T_N=4 cycles=288
+sparsity=10 T_K=16 T_N=8 cycles=240
+sparsity=10 T_K=16 T_N=16 cycles=224
+sparsity=20 T_K=1 T_N=1 cycles=3633
+sparsity=20 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=2 T_N=1 cycles=1916
+sparsity=20 T_K=2 T_N=2 cycles=1068
+sparsity=20 T_K=2 T_N=4 cycles=652
+sparsity=20 T_K=2 T_N=8 cycles=452
+sparsity=20 T_K=2 T_N=16 cycles=360
+sparsity=20 T_K=4 T_N=1 cycles=1082
+sparsity=20 T_K=4 T_N=2 cycles=634
+sparsity=20 T_K=4 T_N=4 cycles=418
+sparsity=20 T_K=4 T_N=8 cycles=318
+sparsity=20 T_K=4 T_N=16 cycles=276
+sparsity=20 T_K=8 T_N=1 cycles=656
+sparsity=20 T_K=8 T_N=2 cycles=416
+sparsity=20 T_K=8 T_N=4 cycles=304
+sparsity=20 T_K=8 T_N=8 cycles=256
+sparsity=20 T_K=8 T_N=16 cycles=240
+sparsity=20 T_K=16 T_N=1 cycles=400
+sparsity=20 T_K=16 T_N=2 cycles=288
+sparsity=20 T_K=16 T_N=4 cycles=288
+sparsity=20 T_K=16 T_N=8 cycles=240
+sparsity=20 T_K=16 T_N=16 cycles=224
+sparsity=30 T_K=1 T_N=1 cycles=2987
+sparsity=30 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=2 T_N=1 cycles=1593
+sparsity=30 T_K=2 T_N=2 cycles=897
+sparsity=30 T_K=2 T_N=4 cycles=557
+sparsity=30 T_K=2 T_N=8 cycles=395
+sparsity=30 T_K=2 T_N=16 cycles=322
+sparsity=30 T_K=4 T_N=1 cycles=895
+sparsity=30 T_K=4 T_N=2 cycles=535
+sparsity=30 T_K=4 T_N=4 cycles=363
+sparsity=30 T_K=4 T_N=8 cycles=285
+sparsity=30 T_K=4 T_N=16 cycles=254
+sparsity=30 T_K=8 T_N=1 cycles=588
+sparsity=30 T_K=8 T_N=2 cycles=380
+sparsity=30 T_K=8 T_N=4 cycles=296
+sparsity=30 T_K=8 T_N=8 cycles=248
+sparsity=30 T_K=8 T_N=16 cycles=232
+sparsity=30 T_K=16 T_N=1 cycles=400
+sparsity=30 T_K=16 T_N=2 cycles=288
+sparsity=30 T_K=16 T_N=4 cycles=288
+sparsity=30 T_K=16 T_N=8 cycles=240
+sparsity=30 T_K=16 T_N=16 cycles=224
+sparsity=40 T_K=1 T_N=1 cycles=2545
+sparsity=40 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=2 T_N=1 cycles=1389
+sparsity=40 T_K=2 T_N=2 cycles=789
+sparsity=40 T_K=2 T_N=4 cycles=497
+sparsity=40 T_K=2 T_N=8 cycles=359
+sparsity=40 T_K=2 T_N=16 cycles=298
+sparsity=40 T_K=4 T_N=1 cycles=827
+sparsity=40 T_K=4 T_N=2 cycles=499
+sparsity=40 T_K=4 T_N=4 cycles=343
+sparsity=40 T_K=4 T_N=8 cycles=273
+sparsity=40 T_K=4 T_N=16 cycles=246
+sparsity=40 T_K=8 T_N=1 cycles=554
+sparsity=40 T_K=8 T_N=2 cycles=362
+sparsity=40 T_K=8 T_N=4 cycles=292
+sparsity=40 T_K=8 T_N=8 cycles=244
+sparsity=40 T_K=8 T_N=16 cycles=228
+sparsity=40 T_K=16 T_N=1 cycles=400
+sparsity=40 T_K=16 T_N=2 cycles=288
+sparsity=40 T_K=16 T_N=4 cycles=288
+sparsity=40 T_K=16 T_N=8 cycles=240
+sparsity=40 T_K=16 T_N=16 cycles=224
+sparsity=50 T_K=1 T_N=1 cycles=2137
+sparsity=50 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=2 T_N=1 cycles=1202
+sparsity=50 T_K=2 T_N=2 cycles=690
+sparsity=50 T_K=2 T_N=4 cycles=442
+sparsity=50 T_K=2 T_N=8 cycles=326
+sparsity=50 T_K=2 T_N=16 cycles=276
+sparsity=50 T_K=4 T_N=1 cycles=725
+sparsity=50 T_K=4 T_N=2 cycles=445
+sparsity=50 T_K=4 T_N=4 cycles=316
+sparsity=50 T_K=4 T_N=8 cycles=256
+sparsity=50 T_K=4 T_N=16 cycles=234
+sparsity=50 T_K=8 T_N=1 cycles=486
+sparsity=50 T_K=8 T_N=2 cycles=326
+sparsity=50 T_K=8 T_N=4 cycles=284
+sparsity=50 T_K=8 T_N=8 cycles=236
+sparsity=50 T_K=8 T_N=16 cycles=220
+sparsity=50 T_K=16 T_N=1 cycles=400
+sparsity=50 T_K=16 T_N=2 cycles=288
+sparsity=50 T_K=16 T_N=4 cycles=288
+sparsity=50 T_K=16 T_N=8 cycles=240
+sparsity=50 T_K=16 T_N=16 cycles=224
+sparsity=60 T_K=1 T_N=1 cycles=1882
+sparsity=60 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=2 T_N=1 cycles=1032
+sparsity=60 T_K=2 T_N=2 cycles=600
+sparsity=60 T_K=2 T_N=4 cycles=392
+sparsity=60 T_K=2 T_N=8 cycles=296
+sparsity=60 T_K=2 T_N=16 cycles=256
+sparsity=60 T_K=4 T_N=1 cycles=640
+sparsity=60 T_K=4 T_N=2 cycles=400
+sparsity=60 T_K=4 T_N=4 cycles=297
+sparsity=60 T_K=4 T_N=8 cycles=243
+sparsity=60 T_K=4 T_N=16 cycles=224
+sparsity=60 T_K=8 T_N=1 cycles=435
+sparsity=60 T_K=8 T_N=2 cycles=299
+sparsity=60 T_K=8 T_N=4 cycles=278
+sparsity=60 T_K=8 T_N=8 cycles=230
+sparsity=60 T_K=8 T_N=16 cycles=214
+sparsity=60 T_K=16 T_N=1 cycles=400
+sparsity=60 T_K=16 T_N=2 cycles=288
+sparsity=60 T_K=16 T_N=4 cycles=288
+sparsity=60 T_K=16 T_N=8 cycles=240
+sparsity=60 T_K=16 T_N=16 cycles=224
+sparsity=70 T_K=1 T_N=1 cycles=1287
+sparsity=70 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=2 T_N=1 cycles=743
+sparsity=70 T_K=2 T_N=2 cycles=447
+sparsity=70 T_K=2 T_N=4 cycles=319
+sparsity=70 T_K=2 T_N=8 cycles=249
+sparsity=70 T_K=2 T_N=16 cycles=222
+sparsity=70 T_K=4 T_N=1 cycles=521
+sparsity=70 T_K=4 T_N=2 cycles=337
+sparsity=70 T_K=4 T_N=4 cycles=274
+sparsity=70 T_K=4 T_N=8 cycles=226
+sparsity=70 T_K=4 T_N=16 cycles=210
+sparsity=70 T_K=8 T_N=1 cycles=384
+sparsity=70 T_K=8 T_N=2 cycles=272
+sparsity=70 T_K=8 T_N=4 cycles=272
+sparsity=70 T_K=8 T_N=8 cycles=224
+sparsity=70 T_K=8 T_N=16 cycles=208
+sparsity=70 T_K=16 T_N=1 cycles=400
+sparsity=70 T_K=16 T_N=2 cycles=288
+sparsity=70 T_K=16 T_N=4 cycles=288
+sparsity=70 T_K=16 T_N=8 cycles=240
+sparsity=70 T_K=16 T_N=16 cycles=224
+sparsity=80 T_K=1 T_N=1 cycles=947
+sparsity=80 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=2 T_N=1 cycles=607
+sparsity=80 T_K=2 T_N=2 cycles=375
+sparsity=80 T_K=2 T_N=4 cycles=282
+sparsity=80 T_K=2 T_N=8 cycles=226
+sparsity=80 T_K=2 T_N=16 cycles=206
+sparsity=80 T_K=4 T_N=1 cycles=436
+sparsity=80 T_K=4 T_N=2 cycles=292
+sparsity=80 T_K=4 T_N=4 cycles=264
+sparsity=80 T_K=4 T_N=8 cycles=216
+sparsity=80 T_K=4 T_N=16 cycles=200
+sparsity=80 T_K=8 T_N=1 cycles=384
+sparsity=80 T_K=8 T_N=2 cycles=272
+sparsity=80 T_K=8 T_N=4 cycles=272
+sparsity=80 T_K=8 T_N=8 cycles=224
+sparsity=80 T_K=8 T_N=16 cycles=208
+sparsity=80 T_K=16 T_N=1 cycles=400
+sparsity=80 T_K=16 T_N=2 cycles=288
+sparsity=80 T_K=16 T_N=4 cycles=288
+sparsity=80 T_K=16 T_N=8 cycles=240
+sparsity=80 T_K=16 T_N=16 cycles=224
+sparsity=90 T_K=1 T_N=1 cycles=539
+sparsity=90 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=2 T_N=1 cycles=369
+sparsity=90 T_K=2 T_N=2 cycles=249
+sparsity=90 T_K=2 T_N=4 cycles=242
+sparsity=90 T_K=2 T_N=8 cycles=194
+sparsity=90 T_K=2 T_N=16 cycles=178
+sparsity=90 T_K=4 T_N=1 cycles=368
+sparsity=90 T_K=4 T_N=2 cycles=256
+sparsity=90 T_K=4 T_N=4 cycles=256
+sparsity=90 T_K=4 T_N=8 cycles=208
+sparsity=90 T_K=4 T_N=16 cycles=192
+sparsity=90 T_K=8 T_N=1 cycles=384
+sparsity=90 T_K=8 T_N=2 cycles=272
+sparsity=90 T_K=8 T_N=4 cycles=272
+sparsity=90 T_K=8 T_N=8 cycles=224
+sparsity=90 T_K=8 T_N=16 cycles=208
+sparsity=90 T_K=16 T_N=1 cycles=400
+sparsity=90 T_K=16 T_N=2 cycles=288
+sparsity=90 T_K=16 T_N=4 cycles=288
+sparsity=90 T_K=16 T_N=8 cycles=240
+sparsity=90 T_K=16 T_N=16 cycles=224

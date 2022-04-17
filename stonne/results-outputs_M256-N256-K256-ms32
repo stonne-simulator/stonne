@@ -1,0 +1,1460 @@
+sparsity=0 T_K=1 T_N=1 cycles=16684949
+sparsity=0 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=0 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=2 T_N=1 cycles=8360205
+sparsity=0 T_K=2 T_N=2 cycles=4197261
+sparsity=0 T_K=2 T_N=4 cycles=2115917
+sparsity=0 T_K=2 T_N=8 cycles=1075373
+sparsity=0 T_K=2 T_N=16 cycles=555229
+sparsity=0 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=4 T_N=1 cycles=4198603
+sparsity=0 T_K=4 T_N=2 cycles=2108491
+sparsity=0 T_K=4 T_N=4 cycles=1063563
+sparsity=0 T_K=4 T_N=8 cycles=541227
+sparsity=0 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=8 T_N=1 cycles=2107136
+sparsity=0 T_K=8 T_N=2 cycles=1058816
+sparsity=0 T_K=8 T_N=4 cycles=534784
+sparsity=0 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=1 cycles=1054720
+sparsity=0 T_K=16 T_N=2 cycles=530688
+sparsity=0 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=1 cycles=528640
+sparsity=0 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=0 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=1 T_N=1 cycles=14992090
+sparsity=10 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=10 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=2 T_N=1 cycles=7514418
+sparsity=10 T_K=2 T_N=2 cycles=3772722
+sparsity=10 T_K=2 T_N=4 cycles=1902002
+sparsity=10 T_K=2 T_N=8 cycles=966770
+sparsity=10 T_K=2 T_N=16 cycles=499282
+sparsity=10 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=4 T_N=1 cycles=3775838
+sparsity=10 T_K=4 T_N=2 cycles=1896286
+sparsity=10 T_K=4 T_N=4 cycles=956638
+sparsity=10 T_K=4 T_N=8 cycles=486942
+sparsity=10 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=8 T_N=1 cycles=1905391
+sparsity=10 T_K=8 T_N=2 cycles=957551
+sparsity=10 T_K=8 T_N=4 cycles=483759
+sparsity=10 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=1 cycles=973765
+sparsity=10 T_K=16 T_N=2 cycles=490053
+sparsity=10 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=1 cycles=513220
+sparsity=10 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=10 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=1 T_N=1 cycles=13291264
+sparsity=20 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=20 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=2 T_N=1 cycles=6661692
+sparsity=20 T_K=2 T_N=2 cycles=3344700
+sparsity=20 T_K=2 T_N=4 cycles=1686332
+sparsity=20 T_K=2 T_N=8 cycles=857276
+sparsity=20 T_K=2 T_N=16 cycles=442876
+sparsity=20 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=4 T_N=1 cycles=3349218
+sparsity=20 T_K=4 T_N=2 cycles=1682146
+sparsity=20 T_K=4 T_N=4 cycles=848738
+sparsity=20 T_K=4 T_N=8 cycles=432162
+sparsity=20 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=8 T_N=1 cycles=1692338
+sparsity=20 T_K=8 T_N=2 cycles=850610
+sparsity=20 T_K=8 T_N=4 cycles=429874
+sparsity=20 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=1 cycles=862998
+sparsity=20 T_K=16 T_N=2 cycles=434454
+sparsity=20 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=1 cycles=458222
+sparsity=20 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=20 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=1 T_N=1 cycles=11620507
+sparsity=30 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=30 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=2 T_N=1 cycles=5828498
+sparsity=30 T_K=2 T_N=2 cycles=2926482
+sparsity=30 T_K=2 T_N=4 cycles=1475602
+sparsity=30 T_K=2 T_N=8 cycles=750290
+sparsity=30 T_K=2 T_N=16 cycles=387762
+sparsity=30 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=4 T_N=1 cycles=2930565
+sparsity=30 T_K=4 T_N=2 cycles=1472005
+sparsity=30 T_K=4 T_N=4 cycles=742853
+sparsity=30 T_K=4 T_N=8 cycles=378405
+sparsity=30 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=8 T_N=1 cycles=1481598
+sparsity=30 T_K=8 T_N=2 cycles=744830
+sparsity=30 T_K=8 T_N=4 cycles=376574
+sparsity=30 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=1 cycles=759170
+sparsity=30 T_K=16 T_N=2 cycles=382338
+sparsity=30 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=1 cycles=396542
+sparsity=30 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=30 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=1 T_N=1 cycles=9961315
+sparsity=40 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=40 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=2 T_N=1 cycles=4999159
+sparsity=40 T_K=2 T_N=2 cycles=2510199
+sparsity=40 T_K=2 T_N=4 cycles=1265847
+sparsity=40 T_K=2 T_N=8 cycles=643799
+sparsity=40 T_K=2 T_N=16 cycles=332903
+sparsity=40 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=4 T_N=1 cycles=2516795
+sparsity=40 T_K=4 T_N=2 cycles=1264315
+sparsity=40 T_K=4 T_N=4 cycles=638203
+sparsity=40 T_K=4 T_N=8 cycles=325275
+sparsity=40 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=8 T_N=1 cycles=1276255
+sparsity=40 T_K=8 T_N=2 cycles=641759
+sparsity=40 T_K=8 T_N=4 cycles=324639
+sparsity=40 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=1 cycles=657655
+sparsity=40 T_K=16 T_N=2 cycles=331383
+sparsity=40 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=1 cycles=342058
+sparsity=40 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=40 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=1 T_N=1 cycles=8256377
+sparsity=50 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=50 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=2 T_N=1 cycles=4145662
+sparsity=50 T_K=2 T_N=2 cycles=2081790
+sparsity=50 T_K=2 T_N=4 cycles=1049982
+sparsity=50 T_K=2 T_N=8 cycles=534206
+sparsity=50 T_K=2 T_N=16 cycles=276446
+sparsity=50 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=4 T_N=1 cycles=2090689
+sparsity=50 T_K=4 T_N=2 cycles=1050433
+sparsity=50 T_K=4 T_N=4 cycles=530433
+sparsity=50 T_K=4 T_N=8 cycles=270561
+sparsity=50 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=8 T_N=1 cycles=1062945
+sparsity=50 T_K=8 T_N=2 cycles=534689
+sparsity=50 T_K=8 T_N=4 cycles=270689
+sparsity=50 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=1 cycles=549715
+sparsity=50 T_K=16 T_N=2 cycles=277203
+sparsity=50 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=1 cycles=289373
+sparsity=50 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=50 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=1 T_N=1 cycles=6564546
+sparsity=60 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=60 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=2 T_N=1 cycles=3298333
+sparsity=60 T_K=2 T_N=2 cycles=1656477
+sparsity=60 T_K=2 T_N=4 cycles=835677
+sparsity=60 T_K=2 T_N=8 cycles=425405
+sparsity=60 T_K=2 T_N=16 cycles=220397
+sparsity=60 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=4 T_N=1 cycles=1667153
+sparsity=60 T_K=4 T_N=2 cycles=837841
+sparsity=60 T_K=4 T_N=4 cycles=423313
+sparsity=60 T_K=4 T_N=8 cycles=216177
+sparsity=60 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=8 T_N=1 cycles=850149
+sparsity=60 T_K=8 T_N=2 cycles=427877
+sparsity=60 T_K=8 T_N=4 cycles=216869
+sparsity=60 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=1 cycles=443317
+sparsity=60 T_K=16 T_N=2 cycles=223797
+sparsity=60 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=1 cycles=244141
+sparsity=60 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=60 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=1 T_N=1 cycles=4921031
+sparsity=70 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=70 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=2 T_N=1 cycles=2475933
+sparsity=70 T_K=2 T_N=2 cycles=1243677
+sparsity=70 T_K=2 T_N=4 cycles=627677
+sparsity=70 T_K=2 T_N=8 cycles=319805
+sparsity=70 T_K=2 T_N=16 cycles=165997
+sparsity=70 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=4 T_N=1 cycles=1255953
+sparsity=70 T_K=4 T_N=2 cycles=631441
+sparsity=70 T_K=4 T_N=4 cycles=319313
+sparsity=70 T_K=4 T_N=8 cycles=163377
+sparsity=70 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=8 T_N=1 cycles=643264
+sparsity=70 T_K=8 T_N=2 cycles=324032
+sparsity=70 T_K=8 T_N=4 cycles=164544
+sparsity=70 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=1 cycles=339232
+sparsity=70 T_K=16 T_N=2 cycles=171552
+sparsity=70 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=1 cycles=194540
+sparsity=70 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=70 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=1 T_N=1 cycles=3219691
+sparsity=80 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=80 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=2 T_N=1 cycles=1627062
+sparsity=80 T_K=2 T_N=2 cycles=817590
+sparsity=80 T_K=2 T_N=4 cycles=412982
+sparsity=80 T_K=2 T_N=8 cycles=210806
+sparsity=80 T_K=2 T_N=16 cycles=109846
+sparsity=80 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=4 T_N=1 cycles=830104
+sparsity=80 T_K=4 T_N=2 cycles=417688
+sparsity=80 T_K=4 T_N=4 cycles=211608
+sparsity=80 T_K=4 T_N=8 cycles=108696
+sparsity=80 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=8 T_N=1 cycles=431496
+sparsity=80 T_K=8 T_N=2 cycles=217736
+sparsity=80 T_K=8 T_N=4 cycles=110984
+sparsity=80 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=1 cycles=233862
+sparsity=80 T_K=16 T_N=2 cycles=118662
+sparsity=80 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=1 cycles=133888
+sparsity=80 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=80 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=1 T_N=1 cycles=1520150
+sparsity=90 T_K=1 T_N=2 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=4 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=8 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=16 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=32 cycles=
+  -> stonne: src/Accumulator.cpp:105: DataPackage* Accumulator::perform_operation_2_operands(DataPackage*, DataPackage*): Assertion `pck_left->get_vn() == pck_right->get_vn()' failed.
+sparsity=90 T_K=1 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=1 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=1 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=2 T_N=1 cycles=774336
+sparsity=90 T_K=2 T_N=2 cycles=389568
+sparsity=90 T_K=2 T_N=4 cycles=197312
+sparsity=90 T_K=2 T_N=8 cycles=101312
+sparsity=90 T_K=2 T_N=16 cycles=53440
+sparsity=90 T_K=2 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=2 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=2 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=2 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=4 T_N=1 cycles=403741
+sparsity=90 T_K=4 T_N=2 cycles=203677
+sparsity=90 T_K=4 T_N=4 cycles=103773
+sparsity=90 T_K=4 T_N=8 cycles=53949
+sparsity=90 T_K=4 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=4 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=4 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=4 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=4 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=8 T_N=1 cycles=219214
+sparsity=90 T_K=8 T_N=2 cycles=111182
+sparsity=90 T_K=8 T_N=4 cycles=57294
+sparsity=90 T_K=8 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=8 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=8 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=8 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=8 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=8 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=1 cycles=129520
+sparsity=90 T_K=16 T_N=2 cycles=66288
+sparsity=90 T_K=16 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=16 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=1 cycles=68867
+sparsity=90 T_K=32 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=32 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=64 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=128 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=1 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=2 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=4 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=8 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=16 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=32 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=64 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=128 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
+sparsity=90 T_K=256 T_N=256 cycles=
+  -> stonne: src/CompilerMSN.cpp:11: virtual void CompilerMSN::configureSignals(Tile*, DNNLayer*, unsigned int, unsigned int): Assertion `current_tile->get_VN_Size()*current_tile->get_Num_VNs() <= num_ms' failed.
