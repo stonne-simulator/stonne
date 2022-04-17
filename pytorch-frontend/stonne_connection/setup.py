@@ -116,3 +116,10 @@ setup(
         'build_ext': cpp_extension.BuildExtension
     }
 )
+
+
+#####################
+# Clean environment #
+#####################
+
+shutil.rmtree(STONNE_SRC_COPY_DIR)
