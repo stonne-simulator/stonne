@@ -703,7 +703,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") & (name != "-generateTile")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") & (name != "-generate_tile")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -850,7 +850,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
                 T_Y_=value;
            }
 
-            else if(name=="-generateTile") {
+            else if(name=="-generate_tile") {
                 std::cout << "Changing generateTile to " << value << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
@@ -885,7 +885,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") && (name != "-mn_type") && (name != "-mem_ctrl") & (name != "-generateTile")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") && (name != "-mn_type") && (name != "-mem_ctrl") & (name != "-generate_tile")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -1005,7 +1005,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
                T_K=value;
            }
 
-            else if(name=="-generateTile") {
+            else if(name=="-generate_tile") {
                 std::cout << "Changing generateTile to " << value << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
@@ -1160,7 +1160,7 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") && (name != "-generateTile")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") && (name != "-generate_tile")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -1240,7 +1240,7 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
                T_K=value;
            }
 
-            else if(name=="-generateTile") {
+            else if(name=="-generate_tile") {
                 std::cout << "Changing generateTile to " << value << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
