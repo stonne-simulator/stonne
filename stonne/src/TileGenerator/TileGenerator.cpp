@@ -31,6 +31,13 @@ namespace TileGenerator {
             assert(false);
         }
 
+        // Check if mRNA can generate a tile for the given parameters, printing warning messages if not
+        if (R * S > num_ms)
+            std::cerr << "WARNING: R * S > num_ms , mRNA might not be able to generate a CONV tile" << std::endl;
+        if (R * C > num_ms)
+            std::cerr << "WARNING: R * C > num_ms , mRNA might not be able to generate a CONV tile" << std::endl;
+
+
         // *** Create the DNN model and configure the input, filter and output variables
         mRNA::DNNModel dnnModel = createConvModel(R, S, C, K, G, N, X, Y, X_, Y_, stride);
         // *** Create the MAERI architecture
@@ -68,13 +75,18 @@ namespace TileGenerator {
     }
 
     DenseGemmTile TileGenerator::generateDenseGemmTile(uint M, uint N, uint K, Target target) {
-        // Note: if K > ms_num it will not work and it's not supported yet in mRNA. Maybe it could change in the future
-        assert(K <= num_ms);
-
         if (target == Target::NONE) {
             std::cerr << "Not mRNA goal specified, aborting" << std::endl;
             assert(false);
         }
+
+        // Note: if K > ms_num^2 it will not work and it's not supported yet in mRNA. Maybe it could change in the future
+        //assert(K <= num_ms);
+        // Check if mRNA can generate a tile for the given parameters, printing warning messages if not
+        if (M * N * K > num_ms)
+            std::cerr << "WARNING: M * N * K > num_ms , mRNA might not be able to generate a correct FC tile" << std::endl;
+        if (K > num_ms * num_ms)
+            std::cerr << "WARNING: K > num_ms^2 , mRNA might not be able to generate a correct FC tile" << std::endl;
 
         // *** Create the DNN model and configure the input, filter and output variables
         mRNA::DNNModel dnnModel = createDenseGemmModel(M, N, K);
@@ -94,9 +106,10 @@ namespace TileGenerator {
         // Recovers and returns the best tile mapping for the layer configuration
         if (analyzer.mappings[0]) {
             return DenseGemmTile(
-                analyzer.mappings[0]->kernel_y,  // T_M
-                analyzer.mappings[0]->kernel_in, // T_N
-                analyzer.mappings[0]->kernel_x   // T_K
+                 // In some strange cases mRNA was returning 0's in some fields of the tile
+                std::max(1, analyzer.mappings[0]->kernel_y),  // T_M
+                std::max(1, analyzer.mappings[0]->kernel_in), // T_N
+                std::max(1, analyzer.mappings[0]->kernel_x)   // T_K
             );
         } else {
             // TODO: could happen that cannot generate a tile configuration for some special case?
