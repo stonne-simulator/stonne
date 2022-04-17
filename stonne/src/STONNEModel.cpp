@@ -571,8 +571,8 @@ void Stonne::printStats() {
         out << "," << std::endl;
 
         //Printing tile configuration parameters
-       // this->current_tile->printConfiguration(out, indent);
-        //out << "," << std::endl;   
+        this->current_tile->printConfiguration(out, indent);
+        out << "," << std::endl;   
         
         //Printing ASNetwork configuration parameters (i.e., ASwitches configuration for these VNs, flags, etc)
         this->asnet->printConfiguration(out, indent);
