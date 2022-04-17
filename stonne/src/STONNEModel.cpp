@@ -219,12 +219,6 @@ void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned in
 
 //To dense CNNs and GEMMs 
 void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_) {
-    // If a tile was previously loaded, then do not load a new one
-    if (this->tile_loaded) {
-        std::cout << "Trying to load a tile, but one was previously loaded. Skipping." << std::endl;
-        return;
-    }
-
 
     assert(this->layer_loaded);
     if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type==LINEAR) {
@@ -571,8 +565,10 @@ void Stonne::printStats() {
         out << "," << std::endl;
 
         //Printing tile configuration parameters
-        this->current_tile->printConfiguration(out, indent);
-        out << "," << std::endl;   
+        if (tile_loaded) {
+            this->current_tile->printConfiguration(out, indent);
+            out << "," << std::endl;
+        }
         
         //Printing ASNetwork configuration parameters (i.e., ASwitches configuration for these VNs, flags, etc)
         this->asnet->printConfiguration(out, indent);
