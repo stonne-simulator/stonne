@@ -36,6 +36,10 @@ bool ispowerof2(unsigned int x) {
     return x && !(x & (x - 1));
 }
 
+unsigned int nextPowerOf2(int x) {
+    return pow(2, ceil(log2(x)));
+}
+
 TileGenerator::Target parseTileGeneratorTarget(std::string target) {
     if(target == "none" || target == "0")
         return TileGenerator::Target::NONE;

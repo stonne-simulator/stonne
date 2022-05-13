@@ -15,6 +15,8 @@ bool isNum(std::string str);
 
 bool ispowerof2(unsigned int x);
 
+unsigned int nextPowerOf2(int x);
+
 std::string getstr(std::istringstream& instr);
 
 TileGenerator::Target parseTileGeneratorTarget(std::string target);

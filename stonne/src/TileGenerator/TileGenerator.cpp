@@ -1,8 +1,10 @@
-#include "TileGenerator/TileGenerator.h"
-#include "TileGenerator/mRNA/Analyzer.h"
 #include <iostream>
 #include <cassert>
+#include "TileGenerator/TileGenerator.h"
+#include "TileGenerator/mRNA/Analyzer.h"
+#include "TileGenerator/MyGenerator/MyGenerator.h"
 
+// #define USE_DENSEGEMM_MRNA
 
 namespace TileGenerator {
 
@@ -26,8 +28,11 @@ namespace TileGenerator {
 
     ConvTile TileGenerator::generateConvTile(uint R, uint S, uint C, uint K, uint G, uint N, uint X, uint Y,
                                              uint X_, uint Y_, uint stride, Target target) {
+        std::cout << "Using mRNA as Tile Generator for CONV layer" << std::endl;
+
+
         if (target == Target::NONE) {
-            std::cerr << "Not mRNA goal specified, aborting" << std::endl;
+            std::cerr << "Not mRNA target specified, aborting" << std::endl;
             assert(false);
         }
 
@@ -74,9 +79,12 @@ namespace TileGenerator {
 
     }
 
+#ifdef USE_DENSEGEMM_MRNA
     DenseGemmTile TileGenerator::generateDenseGemmTile(uint M, uint N, uint K, Target target) {
+        std::cout << "Using mRNA as Tile Generator for DenseGemm layer" << std::endl;
+
         if (target == Target::NONE) {
-            std::cerr << "Not mRNA goal specified, aborting" << std::endl;
+            std::cerr << "Not mRNA target specified, aborting" << std::endl;
             assert(false);
         }
 
@@ -118,14 +126,29 @@ namespace TileGenerator {
             assert(false);
         }
     }
+#else
+    DenseGemmTile TileGenerator::generateDenseGemmTile(uint M, uint N, uint K, Target target) {
+        std::cout << "Using MyGenerator as Tile Generator for DenseGemm layer" << std::endl;
+
+        // *** Create the generator
+        MyGenerator::MyGenerator tileGenerator(num_ms, dn_bw, rn_bw);
+
+        // *** Generates the best tile mapping for the layer type
+        DenseGemmTile tile = tileGenerator.generateDenseGemmTile(M, N, K, target);
+
+        // TODO: write messages
+
+        return tile;
+    }
+#endif
 
     SparseDenseTile TileGenerator::generateSparseDenseTile(uint M, uint N, uint K, float MK_sparsity) {
+        std::cout << "Using MyGenerator as Tile Generator for SparseDense layer" << std::endl;
+
         uint T_N = 1;
         uint T_K = 1;
 
         // TODO: implement this method
-
-        std::cout << "Generated tile: T_K = " << T_K << ", T_N = " << T_N << std::endl;
 
         return SparseDenseTile(T_N, T_K);
     }

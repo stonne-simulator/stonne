@@ -1,17 +1,10 @@
 #ifndef STONNE_TILEGENERATOR_H
 #define STONNE_TILEGENERATOR_H
 
-#include "Tiles.h"
-#include "TileGenerator/mRNA/define.h"
+#include "TileGenerator/Utils/Target.h"
+#include "TileGenerator/Utils/Tiles.h"
 
 namespace TileGenerator {
-
-    enum Target {
-        NONE = mRNA::none,
-        PERFORMANCE = mRNA::performance,
-        ENERGY = mRNA::energy,
-        ENERGY_EFFICIENCY = mRNA::energy_efficiency
-    };
 
     class TileGenerator {
     private:

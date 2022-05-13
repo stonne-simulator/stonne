@@ -1,5 +1,5 @@
-#ifndef STONNE_TILES_H
-#define STONNE_TILES_H
+#ifndef STONNE_TILEGENERATOR_TILES_H
+#define STONNE_TILEGENERATOR_TILES_H
 
 typedef unsigned int uint;
 
@@ -44,4 +44,4 @@ namespace TileGenerator {
 
 } // TileGenerator
 
-#endif //STONNE_TILES_H
+#endif //STONNE_TILEGENERATOR_TILES_H

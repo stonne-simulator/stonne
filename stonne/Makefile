@@ -6,16 +6,16 @@ CXXFLAGS= -O3 -Iinclude/ -Iexternal/ #-ltcmalloc  -fno-builtin-malloc -fno-built
 BIN = stonne
 
 SOURCE =   $(wildcard src/*.cpp) \
-           $(wildcard src/mRNA/*.cpp) \
            $(wildcard src/TileGenerator/*.cpp) \
            $(wildcard src/TileGenerator/mRNA/*.cpp) \
-           $(wildcard src/TileGenerator/MyGenerator/*.cpp)
+           $(wildcard src/TileGenerator/MyGenerator/*.cpp) \
+           $(wildcard src/TileGenerator/Utils/*.cpp)
 
 INCLUDES = $(wildcard include/*.h) \
-		   $(wildcard include/mRNA/*.h) \
 		   $(wildcard include/TileGenerator/*.h) \
 		   $(wildcard include/TileGenerator/mRNA/*.h) \
-		   $(wildcard include/TileGenerator/MyGenerator/*.h)
+		   $(wildcard include/TileGenerator/MyGenerator/*.h) \
+		   $(wildcard include/TileGenerator/Utils/*.h)
 
 OBJSDIR = objs
 OBJS = $(patsubst src/%, $(OBJSDIR)/%, $(patsubst %.cpp,%.o,$(SOURCE)))
@@ -33,7 +33,8 @@ $(OBJSDIR):
 	mkdir -p $@ && \
 	mkdir -p $@/TileGenerator && \
 	mkdir -p $@/TileGenerator/mRNA && \
-	mkdir -p $@/TileGenerator/MyGenerator
+	mkdir -p $@/TileGenerator/MyGenerator && \
+	mkdir -p $@/TileGenerator/Utils
 
 $(OBJSDIR)/%.o: src/%.cpp $(INCLUDES)
 	$(CXX) $(CXXFLAGS) $(DEBUGFLAGS) -c $< -o $@  #-ltcmalloc
