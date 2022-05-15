@@ -409,12 +409,13 @@ void Stonne::loadTile(std::string tile_file) {
 } //End parser
 
 // General tile generation function for each type of layer
-void Stonne::generateTile(TileGenerator::Target target, float MK_sparsity) {
+void Stonne::generateTile(TileGenerator::Target target, float MK_sparsity, TileGenerator::Generator generator) {
     std::cout << "Generating a tile automatically..." << std::endl;
 
     TileGenerator::TileGenerator tileGenerator(stonne_cfg.m_MSNetworkCfg.ms_size,
                                                stonne_cfg.m_SDMemoryCfg.n_read_ports,
-                                               stonne_cfg.m_SDMemoryCfg.n_write_ports);
+                                               stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                                               generator);
 
     switch (dnn_layer->get_layer_type()) {
         case Layer_t::CONV: { // Generates a tile using the Stonne CONV parameters
@@ -467,7 +468,7 @@ void Stonne::generateTile(TileGenerator::Target target, float MK_sparsity) {
             unsigned long long K = dnn_layer->get_C();
 
             // Generate tile and get it's fields
-            TileGenerator::SparseDenseTile tile = tileGenerator.generateSparseDenseTile(M, N, K, MK_sparsity);
+            TileGenerator::SparseDenseTile tile = tileGenerator.generateSparseDenseTile(M, N, K, MK_sparsity, target);
 
             std::cout << "Generated tile: <T_N=" << tile.T_N << ", T_K=" << tile.T_K << ">" << std::endl;
 

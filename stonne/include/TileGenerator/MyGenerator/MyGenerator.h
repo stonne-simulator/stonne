@@ -8,20 +8,29 @@ using namespace TileGenerator;
 
 namespace MyGenerator {
 
+    /**
+     * MyGenerator is a simple tool to generate automatically tiles for DenseGEMM/FC and SparseDense layers.
+     */
     class MyGenerator {
-    private:
-        uint num_ms;
-        uint dn_bw;
-        uint rn_bw;
-
     public:
-        MyGenerator(int num_ms, int dn_bw, int rn_bw) : num_ms(num_ms), dn_bw(dn_bw), rn_bw(rn_bw) {}
-        ~MyGenerator() = default;
+        /*******************************/
+        /*** Tile Generation Methods ***/
+        /*******************************/
 
-        DenseGemmTile generateDenseGemmTile(uint M, uint N, uint K, Target target);
+        // DenseGEMM/FC
+        static DenseGemmTile generateDenseGemmTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, Target target);
 
-        SparseDenseTile generateSparseDenseTile(uint M, uint N, uint K, float MK_sparsity);
+        // SparseDense
+        static SparseDenseTile generateSparseDenseTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, float MK_sparsity, Target target);
 
+    private:
+        /************************/
+        /*** Helper functions ***/
+        /************************/
+
+        static float getEdgeUtilization(uint X, uint T_X);
+
+        static void maximizeEdgeUtilization(uint M, uint N, uint K, uint &T_M, uint &T_N, uint &T_K);
     };
 
 } // namespace MyGenerator
