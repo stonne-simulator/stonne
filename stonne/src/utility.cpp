@@ -57,6 +57,21 @@ TileGenerator::Target parseTileGeneratorTarget(std::string target) {
     return TileGenerator::Target::NONE;
 }
 
+TileGenerator::Generator parseTileGenerator(std::string generator) {
+    if(generator == "automatic" || generator == "0")
+        return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+    else if(generator == "mRNA" || generator == "1")
+        return TileGenerator::Generator::MRNA;
+    else if(generator == "MyGenerator" || generator == "2")
+        return TileGenerator::Generator::MYGENERATOR;
+
+    std::cerr << "TileGenerator generator <" << generator << "> is not recognized" << std::endl;
+    std::cerr << "-generator only supports 0 (automatic), 1 (mRNA) or 2 (MyGenerator)" << std::endl;
+    std::cerr << "Changing TileGenerator generator to Generator::CHOOSE_AUTOMATICALLY" << std::endl;
+
+    return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+}
+
 std::string get_string_adder_configuration(adderconfig_t config) {
     switch(config) {
         case ADD_2_1:

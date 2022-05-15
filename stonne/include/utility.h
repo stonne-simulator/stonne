@@ -21,6 +21,8 @@ std::string getstr(std::istringstream& instr);
 
 TileGenerator::Target parseTileGeneratorTarget(std::string target);
 
+TileGenerator::Generator parseTileGenerator(std::string generator);
+
 std::string get_string_adder_configuration(adderconfig_t config);
 
 std::string get_string_fwlink_direction(fl_t fl_direction);

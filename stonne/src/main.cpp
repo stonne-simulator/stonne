@@ -11,13 +11,13 @@
 using namespace std;
 
 void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &K, unsigned int &G, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_, TileGenerator::Target &tileGeneratorTarget);
+                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_, TileGenerator::Target &tileGeneratorTarget, TileGenerator::Generator &tileGenerator);
 
 void configSparseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &KN_sparsity, Dataflow &dataflow, unsigned int &optimize);
 
-void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N, TileGenerator::Target &tileGeneratorTarget);
+void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N, TileGenerator::Target &tileGeneratorTarget, TileGenerator::Generator &tileGenerator);
 
-void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K, TileGenerator::Target &tileGeneratorTarget);
+void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K, TileGenerator::Target &tileGeneratorTarget, TileGenerator::Generator &tileGenerator);
 
 bool runConvCommand(int argc, char *argv[]);
 bool runSparseGEMMCommand(int argc, char *argv[]);
@@ -105,10 +105,11 @@ bool runConvCommand(int argc, char *argv[]) {
 
     // TileGenerator parameters
     TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
+    TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
 
     Config stonne_cfg; //Hardware parameters
 //    stonne_cfg.m_MSNetworkCfg.ms_size=128;
-    configConvParameters(argc, argv, stonne_cfg, layer_name, R, S, C, K, G, N, X, Y, strides, T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_, tileGeneratorTarget); //Modify stonne_cfg and the variables according to user arguments
+    configConvParameters(argc, argv, stonne_cfg, layer_name, R, S, C, K, G, N, X, Y, strides, T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_, tileGeneratorTarget, tileGenerator); //Modify stonne_cfg and the variables according to user arguments
 
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
@@ -150,7 +151,7 @@ bool runConvCommand(int argc, char *argv[]) {
     if (tileGeneratorTarget == TileGenerator::Target::NONE)
         stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
     else
-        stonne_instance->generateTile(tileGeneratorTarget);
+        stonne_instance->generateTile(tileGenerator, tileGeneratorTarget);
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -205,10 +206,12 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
 
     // TileGenerator parameters
     TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
+    TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+
 
     Config stonne_cfg; //Hardware parameters
 //    stonne_cfg.m_MSNetworkCfg.ms_size=128;
-    configDenseGEMMParameters(argc, argv, stonne_cfg, layer_name, M, K, N, T_M, T_K, T_N, tileGeneratorTarget); //Modify stonne_cfg and the variables according to user arguments
+    configDenseGEMMParameters(argc, argv, stonne_cfg, layer_name, M, K, N, T_M, T_K, T_N, tileGeneratorTarget, tileGenerator); //Modify stonne_cfg and the variables according to user arguments
 
 
 
@@ -269,7 +272,7 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     if (tileGeneratorTarget == TileGenerator::Target::NONE)
         stonne_instance->loadGEMMTile(T_N, T_K, T_M);
     else
-        stonne_instance->generateTile(tileGeneratorTarget);
+        stonne_instance->generateTile(tileGenerator, tileGeneratorTarget);
     stonne_instance->run(); //Running the simulator 
 
     /** END of configuring and running the accelerator  **/
@@ -321,12 +324,13 @@ bool runSparseDenseCommand(int argc, char *argv[])
 
     // TileGenerator parameters
     TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
+    TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
 
     Config stonne_cfg;
     stonne_cfg.m_SDMemoryCfg.mem_controller_type=MAGMA_SPARSE_DENSE;
     stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled=1; // accumulation_buffer always enabled by default
 
-    configSparseDenseParameters(argc, argv, stonne_cfg, layer_name, M, N, K, MK_sparsity, T_N, T_K, tileGeneratorTarget);
+    configSparseDenseParameters(argc, argv, stonne_cfg, layer_name, M, N, K, MK_sparsity, T_N, T_K, tileGeneratorTarget, tileGenerator);
 
     //Creating MK matrix
     float* MK_dense_matrix_no_organized = generateMatrixDense(M, K, MK_sparsity);
@@ -407,7 +411,7 @@ bool runSparseDenseCommand(int argc, char *argv[])
     stonne_instance->loadSparseDense(layer_name, N, K, M, MK_sparse_matrix, KN_dense_matrix, (unsigned int*)MK_col_id, (unsigned int*) MK_row_pointer, acc_output, T_N, T_K); //Loading Sparse Dense
     //stonne_instance->loadClocking(clocked_op);
     if (tileGeneratorTarget != TileGenerator::Target::NONE)
-        stonne_instance->generateTile(tileGeneratorTarget, MK_sparsity);
+        stonne_instance->generateTile(tileGenerator, tileGeneratorTarget, MK_sparsity);
     stonne_instance->run(); //Running the simulator
 
 
@@ -693,7 +697,7 @@ bool runHelpCommand() {
 
 //This function modifies the default values of the parameters according to user arguments.
 void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &R, unsigned int &S, unsigned int &C, unsigned int &K, unsigned int &G, unsigned int &N, unsigned int &X, unsigned int &Y, unsigned int &strides,
-                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_, TileGenerator::Target &tileGeneratorTarget) {
+                      unsigned int &T_R, unsigned int &T_S, unsigned int &T_C, unsigned int &T_K, unsigned int &T_G, unsigned int &T_N, unsigned int &T_X_, unsigned int &T_Y_, TileGenerator::Target &tileGeneratorTarget, TileGenerator::Generator &tileGenerator) {
 
     //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
@@ -704,7 +708,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") & (name != "-generate_tile")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") && (name != "-generate_tile") && (name != "-generator")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -852,9 +856,16 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
            }
 
             else if(name=="-generate_tile") {
-                std::cout << "Changing generateTile to " << value << std::endl;
+                std::cout << "Changing generate_tile to " << value << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
+
+            else if(name=="-generator") {
+                std::cout << "Changing generator to " << value << std::endl;
+                tileGenerator = parseTileGenerator(value_str);
+            }
+
+
 
            //Parameter is not recognized
            else {
@@ -876,7 +887,7 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
     }
 }
 
-void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N, TileGenerator::Target &tileGeneratorTarget) {
+void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &K, unsigned int &N, unsigned int &T_M, unsigned int &T_K, unsigned int &T_N, TileGenerator::Target &tileGeneratorTarget, TileGenerator::Generator &tileGenerator) {
   //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
         string arg = argv[i];
@@ -886,7 +897,7 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") && (name != "-mn_type") && (name != "-mem_ctrl") & (name != "-generate_tile")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") && (name != "-mn_type") && (name != "-mem_ctrl") && (name != "-generate_tile") && (name != "-generator")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -1007,8 +1018,13 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
            }
 
             else if(name=="-generate_tile") {
-                std::cout << "Changing generateTile to " << value << std::endl;
+                std::cout << "Changing generate_tile to " << value << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
+            }
+
+            else if(name=="-generator") {
+                std::cout << "Changing generator to " << value << std::endl;
+                tileGenerator = parseTileGenerator(value_str);
             }
 
            //Parameter is not recognized
@@ -1151,7 +1167,7 @@ void configSparseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std:
     }
 }
 
-void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K, TileGenerator::Target &tileGeneratorTarget) {
+void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std::string &layer_name, unsigned int &M, unsigned int &N, unsigned int &K, unsigned int &MK_sparsity, unsigned int &T_N, unsigned int &T_K, TileGenerator::Target &tileGeneratorTarget, TileGenerator::Generator &tileGenerator) {
     //Parsing
     for(int i=2; i<argc; i++) { //0 is the name of the program and 1 is the execution command type
         string arg = argv[i];
@@ -1161,7 +1177,7 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
             string value_str=arg.substr(pos+1);
             string name=arg.substr(0, pos);
             unsigned int value;
-            if((name != "-layer_name") && (name != "-rn_type") && (name != "-generate_tile")) { //string parameters
+            if((name != "-layer_name") && (name != "-rn_type") && (name != "-generate_tile") && (name != "-generator")) { //string parameters
                 value=stoi(value_str);
             }
             //Checking parameter name
@@ -1242,8 +1258,13 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
            }
 
             else if(name=="-generate_tile") {
-                std::cout << "Changing generateTile to " << value << std::endl;
+                std::cout << "Changing generate_tile to " << value << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
+            }
+
+            else if(name=="-generator") {
+                std::cout << "Changing generator to " << value << std::endl;
+                tileGenerator = parseTileGenerator(value_str);
             }
            
            else if(name=="-accumulation_buffer") {

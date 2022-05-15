@@ -112,9 +112,9 @@ public:
     void loadTile(std::string tile_file);
 
     // Generates a tile configuration using a TileGenerator module
-    void generateTile(TileGenerator::Target target = TileGenerator::Target::PERFORMANCE,
-                      float MK_sparsity = 0.0f,
-                      TileGenerator::Generator generator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY);
+    void generateTile(TileGenerator::Generator generator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY,
+                      TileGenerator::Target target = TileGenerator::Target::PERFORMANCE,
+                      float MK_sparsity = 0.0f);
 
     void run();
 

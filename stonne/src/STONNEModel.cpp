@@ -300,6 +300,7 @@ void Stonne::loadTile(std::string tile_file) {
     auto T_X_=config->get_as<int32_t>("T_X'");
     auto T_Y_=config->get_as<int32_t>("T_Y'");
     auto tileGeneratorTarget_str=config->get_as<std::string>("generate_tile");
+    auto tileGenerator_str=config->get_as<std::string>("generator");
     TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
 
     if(!tile_type) {
@@ -324,7 +325,10 @@ void Stonne::loadTile(std::string tile_file) {
     if(*tile_type=="CONV") {
         // if generateTile is specified then generate a FC tile configuration for the layer
         if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
-            generateTile(tileGeneratorTarget);
+            TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+            if (tileGenerator_str)
+                tileGenerator = parseTileGenerator(*tileGenerator_str);
+            generateTile(tileGenerator, tileGeneratorTarget);
             return;
         }
         // in other case, parse all arguments and load the tile
@@ -378,7 +382,10 @@ void Stonne::loadTile(std::string tile_file) {
     else if(*tile_type=="FC") {
         // if generateTile is specified then generate a FC tile configuration for the layer
         if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
-            generateTile(tileGeneratorTarget);
+            TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+            if (tileGenerator_str)
+                tileGenerator = parseTileGenerator(*tileGenerator_str);
+            generateTile(tileGenerator, tileGeneratorTarget);
             return;
         }
         // in other case, parse all arguments and load the tile
@@ -409,8 +416,9 @@ void Stonne::loadTile(std::string tile_file) {
 } //End parser
 
 // General tile generation function for each type of layer
-void Stonne::generateTile(TileGenerator::Target target, float MK_sparsity, TileGenerator::Generator generator) {
+void Stonne::generateTile(TileGenerator::Generator generator, TileGenerator::Target target, float MK_sparsity) {
     std::cout << "Generating a tile automatically..." << std::endl;
+    std::cout << "Using generator <" << generator << "> and target <" << target << ">" << std::endl;
 
     TileGenerator::TileGenerator tileGenerator(stonne_cfg.m_MSNetworkCfg.ms_size,
                                                stonne_cfg.m_SDMemoryCfg.n_read_ports,
