@@ -5,7 +5,7 @@
 #ifndef RSNETWORK_H_
 #define RSNETWORK_H_
 
-#include "MSNetwork.h"
+#include "TileGenerator/mRNA/MSNetwork.h"
 #include <vector>
 #include <map>
 #include <cmath>

@@ -27,7 +27,7 @@ void Maeri::ConnectMSNandDSN() {
   }
 }
 
-void mRNA::Maeri::ConnectMSNandRSN() {
+void Maeri::ConnectMSNandRSN() {
   int fwdnum = rsnet->forwardertable.size();
   int level = rsnet->getmaxlev();
   int pesize = rsnet->getpesize();
@@ -48,7 +48,7 @@ void mRNA::Maeri::ConnectMSNandRSN() {
   }
 }
 
-void mRNA::Maeri::DrawNetwork(std::ofstream& profile) {
+void Maeri::DrawNetwork(std::ofstream& profile) {
   int maxlevel = dsnet->getmaxlev();
   std::vector<MSwitch*> recordms;
   profile << "digraph G " << "{\n{\n";

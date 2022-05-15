@@ -1,11 +1,11 @@
 #ifndef Analyzer_H_
 #define Analyzer_H_
 
-#include "define.h"
-#include "DNNModel.h"
-#include "MAERIModel.h"
-#include "MappingStrategy.h"
-#include "utility.h"
+#include "TileGenerator/mRNA/define.h"
+#include "TileGenerator/mRNA/DNNModel.h"
+#include "TileGenerator/mRNA/MAERIModel.h"
+#include "TileGenerator/mRNA/MappingStrategy.h"
+#include "TileGenerator/mRNA/utility.h"
 
 #include <iostream>
 #include <fstream>

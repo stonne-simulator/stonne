@@ -4,9 +4,15 @@
 #include "TileGenerator/mRNA/Analyzer.h"
 #include "TileGenerator/MyGenerator/MyGenerator.h"
 
-// #define USE_DENSEGEMM_MRNA
+#define USE_DENSEGEMM_MRNA
 
 namespace TileGenerator {
+
+    /*****************/
+    /*** Constants ***/
+    /*****************/
+    const std::string mrnaParametersFilename = "parameters/mRNA_energy_parameters.txt";
+    const std::string mrnaOutputBasename = "mRNA_output_";
 
     /*************************************/
     /*** Helper functions declarations ***/
@@ -20,7 +26,9 @@ namespace TileGenerator {
 
     mRNA::DNNModel createDenseGemmModel(uint M, uint N, uint K);
 
-
+    std::string getMrnaOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint R, uint S, uint C, uint K, uint G, uint N,
+                                      uint X, uint Y, uint X_, uint Y_, uint stride);
+    std::string getMrnaOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K);
 
     /******************************/
     /*** Tile Generator Methods ***/
@@ -49,15 +57,23 @@ namespace TileGenerator {
         mRNA::Maeri maeri(num_ms, dn_bw, rn_bw);
         // *** Create the Analyzer to generate the configuration
         mRNA::Analyzer analyzer(&maeri, &dnnModel, mRNA::OptGoal(target));
+        // Loads the mRNA energy parameters into the analyzer if available
+        std::ifstream configFile(mrnaParametersFilename);
+        if (configFile.is_open()) {
+            analyzer.parseconfig(configFile);
+            configFile.close();
+        } else {
+            std::cerr << "WARNING: Could not open file " << mrnaParametersFilename <<
+                " with mRNA parameters, the tile that will be generated might not be as optimal as expected" << std::endl;
+        }
 
+        // ofstream for mRNA logs, saved in file
+        std::ofstream mRNA_output(getMrnaOutputFilename(num_ms, dn_bw, rn_bw, R, S, C, K, G, N, X, Y, X_, Y_, stride));
 
-        // ofstream for mRNA logs, but currenly it's not used, so no output is generated
-        std::ofstream paper_bin;
-        // std::ofstream mRNA_output("mRNA_output.txt"); // example redirecting the output to a file
 
         // *** Generates the best tile mapping for the layer type
         // Executes mRNA algorithm
-        analyzer.AnalyzeCNN(paper_bin, mRNA::OptGoal(target));
+        analyzer.AnalyzeCNN(mRNA_output, mRNA::OptGoal(target));
         // Recovers and returns the best tile mapping for the layer configuration
         if (analyzer.bestmap) {
             return ConvTile(
@@ -71,8 +87,7 @@ namespace TileGenerator {
                 analyzer.bestmap->kernel_oy  // T_Y'
             );
         } else {
-            // TODO: could happen that cannot generate a tile configuration for some special case?
-            std::cerr << "Could not generate a Tile Configuration automatically" << std::endl;
+            std::cerr << "mRNA could not generate a Tile Configuration automatically" << std::endl;
             std::cerr << "Please, check the input parameters" << std::endl;
             assert(false);
         }
@@ -88,11 +103,8 @@ namespace TileGenerator {
             assert(false);
         }
 
-        // Note: if K > ms_num^2 it will not work and it's not supported yet in mRNA. Maybe it could change in the future
-        //assert(K <= num_ms);
         // Check if mRNA can generate a tile for the given parameters, printing warning messages if not
-        if (M * N * K > num_ms)
-            std::cerr << "WARNING: M * N * K > num_ms , mRNA might not be able to generate a correct FC tile" << std::endl;
+        // Note: if K > ms_num^2 it will not work and it's not supported yet in mRNA. Maybe it could change in the future
         if (K > num_ms * num_ms)
             std::cerr << "WARNING: K > num_ms^2 , mRNA might not be able to generate a correct FC tile" << std::endl;
 
@@ -102,26 +114,33 @@ namespace TileGenerator {
         mRNA::Maeri maeri(num_ms, dn_bw, rn_bw);
         // *** Create the Analyzer to generate the configuration
         mRNA::Analyzer analyzer(&maeri, &dnnModel, mRNA::OptGoal(target));
+        // Loads the mRNA energy parameters into the analyzer if available
+        std::ifstream configFile(mrnaParametersFilename);
+        if (configFile.is_open()) {
+            analyzer.parseconfig(configFile);
+            configFile.close();
+        } else {
+            std::cerr << "WARNING: Could not open file " << mrnaParametersFilename <<
+                " with mRNA parameters, the tile that will be generated might not be as optimal as expected" << std::endl;
+        }
 
 
-        // ofstream for mRNA logs, but currenly it's not used, so no output is generated
-        std::ofstream paper_bin;
-        // std::ofstream mRNA_output("mRNA_output.txt"); // example redirecting the output to a file
+        // ofstream for mRNA logs, saved in file
+        std::ofstream mRNA_output(getMrnaOutputFilename(num_ms, dn_bw, rn_bw, M, N, K));
 
         // *** Generates the best tile mapping for the layer type
         // Executes mRNA algorithm
-        analyzer.AnalyzeFC(paper_bin, mRNA::OptGoal(target));
+        analyzer.AnalyzeFC(mRNA_output, mRNA::OptGoal(target));
         // Recovers and returns the best tile mapping for the layer configuration
         if (analyzer.mappings[0]) {
             return DenseGemmTile(
                  // In some strange cases mRNA was returning 0's in some fields of the tile
                 std::max(1, analyzer.mappings[0]->kernel_y),  // T_M
-                std::max(1, analyzer.mappings[0]->kernel_in), // T_N
+                std::max(1, analyzer.mappings[0]->kernel_in), // T_N (always: 1)
                 std::max(1, analyzer.mappings[0]->kernel_x)   // T_K
             );
         } else {
-            // TODO: could happen that cannot generate a tile configuration for some special case?
-            std::cerr << "Could not generate a Tile Configuration automatically" << std::endl;
+            std::cerr << "mRNA could not generate a Tile Configuration automatically" << std::endl;
             std::cerr << "Please, check the input parameters" << std::endl;
             assert(false);
         }
@@ -198,6 +217,22 @@ namespace TileGenerator {
 
     mRNA::DNNModel createDenseGemmModel(uint M, uint N, uint K) {
         return createDNNModel("FC", M, K, 1, 1, 1, N, K, 1, M, 1, 1);
+    }
+
+    std::string getMrnaOutputFilename(uint num_ms, uint dn_bw, uint rn_bw,
+                                      uint R, uint S, uint C, uint K, uint G, uint N, uint X, uint Y, uint X_, uint Y_, uint stride) {
+        std::stringstream ss;
+        ss << mrnaOutputBasename << "CONV" << "_num_ms" << num_ms << "_dn_bw" << dn_bw << "_rn_bw" << rn_bw <<
+            "_R" << R << "_S" << S << "_C" << C << "_K" << K << "_G" << G << "_N" << N << "_X" << X << "_Y" << Y <<
+            "_X_" << X_ << "_Y_" << Y_ << "_stride" << stride << ".txt";
+        return ss.str();
+    }
+
+    std::string getMrnaOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K) {
+        std::stringstream ss;
+        ss << mrnaOutputBasename << "FC" << "_num_ms" << num_ms << "_dn_bw" << dn_bw << "_rn_bw" << rn_bw <<
+            "_M" << M << "_N" << N << "_K" << K << ".txt";
+        return ss.str();
     }
 
 } // TileGenerator

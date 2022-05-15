@@ -2,7 +2,7 @@
 #define DNNMODEL_H_
 
 #include <string>
-#include "utility.h"
+#include "TileGenerator/mRNA/utility.h"
 
 namespace mRNA {
 

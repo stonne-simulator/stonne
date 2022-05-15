@@ -5,7 +5,7 @@
 #ifndef DSNETWORK_H_
 #define DSNETWORK_H_
 
-#include "MSNetwork.h"
+#include "TileGenerator/mRNA/MSNetwork.h"
 #include <iostream>
 #include <fstream>
 #include <map>

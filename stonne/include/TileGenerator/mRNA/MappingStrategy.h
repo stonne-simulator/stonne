@@ -8,7 +8,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
-#include "define.h"
+#include "TileGenerator/mRNA/define.h"
 
 namespace mRNA {
 

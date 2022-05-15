@@ -1078,10 +1078,8 @@ void Analyzer::AnalyzeFC(std::ofstream& profile, OptGoal option) {
     // *** Modified for Stonne
     //int vn_num = std::floor(double(maeri->pe_size) / double(dnn_model->cnn_input->input_x));
     // It's calculating wrong the number of virtual neurons. It only considered input neurons but not output neurons.
-    // So, it could happen with ms_num=256 input=16 and output=8: ms_num/input=256/16=16 => vn_num > output neurons !!!
+    // So, it could happen with ms_num=256 input=16 and output=8: vn_num=ms_num/input=256/16=16 => vn_num > output neurons !!!
     int vn_num = std::min(std::floor(double(maeri->pe_size) / double(dnn_model->cnn_input->input_x)), (double) dnn_model->cnn_output->output_x);
-    // And we also need to add this line to get the T_N
-    map->kernel_in = std::min(dnn_model->cnn_input->input_x / vn_num, dnn_model->cnn_input->input_batch);
 
     int maxpe = vn_num * dnn_model->cnn_input->input_x;
     double peak_ur = double(maxpe) / double(maeri->pe_size);
@@ -1743,91 +1741,97 @@ void Analyzer::AnalyzeSystolicFC(std::ofstream &profile) {
 }
 
 void Analyzer::ConfigGen(std::ofstream& config) {
-    if (dnn_model->layer_type == "CONV") {
-        config << "MAERI Configuration: \n";
-        config << "Layer variables: \n";
-        config << "X = " << dnn_model->cnn_input->input_x << "\n";
-        config << "Y = " << dnn_model->cnn_input->input_y << "\n";
-        config << "C = " << dnn_model->cnn_input->input_channel << "\n";
-        config << "K = " << dnn_model->cnn_filter->filter_number << "\n";
-        config << "N = " << dnn_model->cnn_input->input_batch << "\n";
-        config << "X' = " << dnn_model->cnn_output->output_x << "\n";
-        config << "Y' = " << dnn_model->cnn_output->output_y << "\n";
-        config << "R = " << dnn_model->cnn_filter->filter_x << "\n";
-        config << "S = " << dnn_model->cnn_filter->filter_y << "\n";
+  if(dnn_model->layer_type == "CONV") {
+    config << "MAERI Configuration: \n";
+    config << "Layer variables: \n";
+    config << "X = " << dnn_model->cnn_input->input_x << "\n";
+    config << "Y = " << dnn_model->cnn_input->input_y << "\n";
+    config << "C = " << dnn_model->cnn_input->input_channel << "\n";
+    config << "K = " << dnn_model->cnn_filter->filter_number << "\n";
+    config << "N = " << dnn_model->cnn_input->input_batch << "\n";
+    config << "X' = " << dnn_model->cnn_output->output_x << "\n";
+    config << "Y' = " << dnn_model->cnn_output->output_y << "\n";
+    config << "R = " << dnn_model->cnn_filter->filter_x << "\n";
+    config << "S = " << dnn_model->cnn_filter->filter_y << "\n";
 
-        if (bestmap) {
-            config << "Mapping kernel (tile): \n";
-            config << "T_X = " << bestmap->kernel_x << "\n";
-            config << "T_Y = " << bestmap->kernel_y << "\n";
-            config << "T_C = " << bestmap->kernel_c << "\n";
-            config << "T_K = " << bestmap->kernel_n << "\n";
-            config << "T_N = " << bestmap->kernel_in << "\n";
-            config << "T_X' = " << bestmap->kernel_ox << "\n";
-            config << "T_Y' = " << bestmap->kernel_oy << "\n";
-        }
-
-        config << "Virtual Neuron : \n";
-        config << "VN_Size = " << bestmap->elementinvn[0] << "\n";
-        config << "Num_VN = " << bestmap->vn_num[0] << "\n";
-
-        config << "Loops outside the tile: \n";
-        int outloop_x = dnn_model->cnn_filter->filter_x / bestmap->kernel_x;
-        int outloop_y = dnn_model->cnn_filter->filter_y / bestmap->kernel_y;
-        int outloop_c = dnn_model->cnn_input->input_channel / bestmap->kernel_c;
-        int outloop_k = dnn_model->cnn_filter->filter_number / bestmap->kernel_n;
-        int outloop_n = dnn_model->cnn_input->input_batch / bestmap->kernel_in;
-        int outloop_ox = dnn_model->cnn_output->output_x / bestmap->kernel_ox;
-        int outloop_oy = dnn_model->cnn_output->output_y / bestmap->kernel_oy;
-
-        int mod_x = dnn_model->cnn_filter->filter_x % bestmap->kernel_x;
-        int mod_y = dnn_model->cnn_filter->filter_y % bestmap->kernel_y;
-        int mod_c = dnn_model->cnn_input->input_channel % bestmap->kernel_c;
-        int mod_k = dnn_model->cnn_filter->filter_number % bestmap->kernel_n;
-        int mod_n = dnn_model->cnn_input->input_batch % bestmap->kernel_in;
-        int mod_ox = dnn_model->cnn_output->output_x % bestmap->kernel_ox;
-        int mod_oy = dnn_model->cnn_output->output_y % bestmap->kernel_oy;
-
-        config << "R/T_X = " << outloop_x << "\n";
-        config << "S/T_Y = " << outloop_y << "\n";
-        config << "C/T_C = " << outloop_c << "\n";
-        config << "C/T_K = " << outloop_k << "\n";
-        config << "C/T_N = " << outloop_n << "\n";
-        config << "C/T_OX = " << outloop_ox << "\n";
-        config << "C/T_OY = " << outloop_oy << "\n";
-
-        config << "R%T_X = " << mod_x << "\n";
-        config << "S%T_Y = " << mod_y << "\n";
-        config << "C%T_C = " << mod_c << "\n";
-        config << "K%T_K = " << mod_k << "\n";
-        config << "N%T_N = " << mod_n << "\n";
-        config << "X'%T_OX = " << mod_ox << "\n";
-        config << "Y'%T_OY = " << mod_oy << "\n";
-
-        config << "Outer loop order (from outermost to innermost): N->C->K->X'->Y' \n";
-
-        int x = 0;
-        int y = 0;
-        int c = 0;
-        int k = 0;
-        int n = 0;
-        int ox = 0;
-        int oy = 0;
-        if (mod_x > 0) { x = outloop_x + 1; } else { x = outloop_x; }
-        if (mod_y > 0) { y = outloop_y + 1; } else { y = outloop_y; }
-        if (mod_c > 0) { c = outloop_c + 1; } else { c = outloop_c; }
-        if (mod_k > 0) { k = outloop_k + 1; } else { k = outloop_k; }
-        if (mod_n > 0) { n = outloop_n + 1; } else { n = outloop_n; }
-        if (mod_ox > 0) { ox = outloop_ox + 1; } else { ox = outloop_ox; }
-        if (mod_oy > 0) { oy = outloop_oy + 1; } else { oy = outloop_oy; }
-        unsigned long long total_iter = x * y * c * k * n * ox * oy;
-        config << "Total_iteration = " << total_iter << "\n";
-    } else if (dnn_model->layer_type == "MAXPOOL") {
-
-    } else if (dnn_model->layer_type == "FC") {
-        // TODO: best parameters are not calculated on mRNA?
-    } else if (dnn_model->layer_type == "RNN") {
-
+    if(bestmap) {
+      config << "Mapping kernel (tile): \n";
+      config << "T_X = " << bestmap->kernel_x << "\n";
+      config << "T_Y = " << bestmap->kernel_y << "\n";
+      config << "T_C = " << bestmap->kernel_c << "\n";
+      config << "T_K = " << bestmap->kernel_n << "\n";
+      config << "T_N = " << bestmap->kernel_in << "\n";
+      config << "T_X' = " << bestmap->kernel_ox << "\n";
+      config << "T_Y' = " << bestmap->kernel_oy << "\n";
     }
-}
 
+    config << "Virtual Neuron : \n";
+    config << "VN_Size = " << bestmap->elementinvn[0] << "\n";
+    config << "Num_VN = " << bestmap->vn_num[0] << "\n";
+
+    config << "Loops outside the tile: \n";
+    int outloop_x = dnn_model->cnn_filter->filter_x / bestmap->kernel_x;
+    int outloop_y = dnn_model->cnn_filter->filter_y / bestmap->kernel_y;
+    int outloop_c = dnn_model->cnn_input->input_channel / bestmap->kernel_c;
+    int outloop_k = dnn_model->cnn_filter->filter_number / bestmap->kernel_n;
+    int outloop_n = dnn_model->cnn_input->input_batch / bestmap->kernel_in;
+    int outloop_ox = dnn_model->cnn_output->output_x / bestmap->kernel_ox;
+    int outloop_oy = dnn_model->cnn_output->output_y / bestmap->kernel_oy;
+
+    int mod_x = dnn_model->cnn_filter->filter_x % bestmap->kernel_x;
+    int mod_y = dnn_model->cnn_filter->filter_y % bestmap->kernel_y;
+    int mod_c = dnn_model->cnn_input->input_channel % bestmap->kernel_c;
+    int mod_k = dnn_model->cnn_filter->filter_number % bestmap->kernel_n;
+    int mod_n = dnn_model->cnn_input->input_batch % bestmap->kernel_in;
+    int mod_ox = dnn_model->cnn_output->output_x % bestmap->kernel_ox;
+    int mod_oy = dnn_model->cnn_output->output_y % bestmap->kernel_oy;
+
+    config << "R/T_X = " << outloop_x << "\n";
+    config << "S/T_Y = " << outloop_y << "\n";
+    config << "C/T_C = " << outloop_c << "\n";
+    config << "C/T_K = " << outloop_k << "\n";
+    config << "C/T_N = " << outloop_n << "\n";
+    config << "C/T_OX = " << outloop_ox << "\n";
+    config << "C/T_OY = " << outloop_oy << "\n";
+
+    config << "R%T_X = " << mod_x << "\n";
+    config << "S%T_Y = " << mod_y << "\n";
+    config << "C%T_C = " << mod_c << "\n";
+    config << "K%T_K = " << mod_k << "\n";
+    config << "N%T_N = " << mod_n << "\n";
+    config << "X'%T_OX = " << mod_ox << "\n";
+    config << "Y'%T_OY = " << mod_oy << "\n";
+
+    config << "Outer loop order (from outermost to innermost): N->C->K->X'->Y' \n";
+
+    int x = 0;
+    int y = 0;
+    int c = 0;
+    int k = 0;
+    int n = 0;
+    int ox = 0;
+    int oy = 0;
+    if (mod_x > 0) { x = outloop_x + 1; } else { x = outloop_x; }
+    if (mod_y > 0) { y = outloop_y + 1; } else { y = outloop_y; }
+    if (mod_c > 0) { c = outloop_c + 1; } else { c = outloop_c; }
+    if (mod_k > 0) { k = outloop_k + 1; } else { k = outloop_k; }
+    if (mod_n > 0) { n = outloop_n + 1; } else { n = outloop_n; }
+    if (mod_ox > 0) { ox = outloop_ox + 1; } else { ox = outloop_ox; }
+    if (mod_oy > 0) { oy = outloop_oy + 1; } else { oy = outloop_oy; }
+    unsigned long long total_iter = x * y * c * k * n * ox * oy;
+    config << "Total_iteration = " << total_iter << "\n";
+  }
+  else if (dnn_model->layer_type == "MAXPOOL") {
+
+  }
+  else if (dnn_model->layer_type == "FC") {
+
+  }
+  else if (dnn_model->layer_type == "RNN") {
+
+  }
+
+
+
+
+}

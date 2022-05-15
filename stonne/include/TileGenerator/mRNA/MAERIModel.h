@@ -2,10 +2,10 @@
 #define MAERIMODEL_H_
 
 #include <string>
-#include "RSNetwork.h"
-#include "MSNetwork.h"
-#include "DSNetwork.h"
-#include "SDMemory.h"
+#include "TileGenerator/mRNA/RSNetwork.h"
+#include "TileGenerator/mRNA/MSNetwork.h"
+#include "TileGenerator/mRNA/DSNetwork.h"
+#include "TileGenerator/mRNA/SDMemory.h"
 #include <algorithm>
 
 namespace mRNA {

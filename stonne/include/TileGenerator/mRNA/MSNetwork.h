@@ -5,9 +5,9 @@
 #ifndef MSNETWORK_H_
 #define MSNETWORK_H_
 
-#include "define.h"
-#include "DSNetwork.h"
-#include "RSNetwork.h"
+#include "TileGenerator/mRNA/define.h"
+#include "TileGenerator/mRNA/DSNetwork.h"
+#include "TileGenerator/mRNA/RSNetwork.h"
 
 namespace mRNA {
 
