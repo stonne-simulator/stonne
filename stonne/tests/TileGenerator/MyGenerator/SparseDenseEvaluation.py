@@ -22,6 +22,7 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
     # execution generating a new tile automatically
     command = f'./stonne -SparseDense -M={M} -N={N} -K={K} -MK_sparsity={sparsity} -num_ms={num_ms} -dn_bw={dn_bw}'
     command += f' -rn_bw={rn_bw} -accumulation_buffer=1 -generate_tile=performance -generator={generator}'
+    print(f' - {command}')
     process = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     stdout = stdout.decode('utf-8')
@@ -36,9 +37,10 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
 
     generatedtile = EvaluationUtils.get_sparsedense_tile(stdout)
 
-    print(f' - {command}')
+    # print tile and cycles in terminal
     print(f'\tL=> T_N={generatedtile[0]} T_M={generatedtile[1]}')
     print(f'\tL=> {generatedtile_cycles} cycles')
+
 
     ### Search of the best mapping using powers of 2 ###
 
@@ -56,6 +58,7 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
             # execution using a fixed tile
             command = f'./stonne -SparseDense -M={M} -N={N} -K={K} -MK_sparsity={sparsity} -num_ms={num_ms}'
             command += f' -dn_bw={dn_bw} -rn_bw={rn_bw} -accumulation_buffer=1 -T_N={T_N} -T_K={T_K}'
+            print(f' - {command}')
             process = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
             stdout = stdout.decode('utf-8')
@@ -72,13 +75,14 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
                 min_cycles = cycles
                 min_tile = [T_N, T_K]
 
-            print(f' - {command}')
+            # print cycles of this case in terminal
             print(f'\tL=> {cycles} cycles')
 
     # get and print final results
     speedup = ((1 / generatedtile_cycles) / (1 / min_cycles))
     passed = True if 1 - speedup <= tolerance else False
     print('# Final results for SparseDense layer')
+    print(f' - Hardware parameters: num_ms={num_ms}, dn_bw={dn_bw}, rn_bw={rn_bw}')
     print(f' - Matrix sizes: M={M}, N={N}, K={K}')
     print(f' - Tile Generated Automatically: T_N={generatedtile[0]}, T_K={generatedtile[1]}')
     print(f' - Total Cycles for generated tile: {generatedtile_cycles}')
