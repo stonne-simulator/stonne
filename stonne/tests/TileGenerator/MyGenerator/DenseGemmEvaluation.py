@@ -83,7 +83,7 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANCE, generat
     print(f' - Speedup of the generated tile: {speedup}')
     print(f' - Pass the test (tolerance={tolerance}) ? => {passed}')
 
-    EvaluationUtils.save_densegemm_results_csv(passed, M, N, K, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance)
+    EvaluationUtils.save_densegemm_results_csv(passed, M, N, K, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance)
 
     return passed
 

@@ -36,8 +36,8 @@ def check_assertions(stderr):
     return True if match else False
 
 
-def save_densegemm_results_csv(passed, M, N, K, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
-    fields = ['PASSED', 'M', 'N', 'K', 'GEN-T_M', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_M', 'MIN-T_N', 'MIN-T_K',
+def save_densegemm_results_csv(passed, M, N, K, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
+    fields = ['PASSED', 'M', 'N', 'K', 'GENERATOR', 'GEN-T_M', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_M', 'MIN-T_N', 'MIN-T_K',
               'MIN-CYCLES', 'SPEEDUP', 'TOLERANCE']
     with open(DENSEGEMM_CSV_FILENAME, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fields)
@@ -51,6 +51,7 @@ def save_densegemm_results_csv(passed, M, N, K, generatedtile, generatedtile_cyc
                          'M': M,
                          'N': N,
                          'K': K,
+                         'GENERATOR': generator,
                          'GEN-T_M': generatedtile[0],
                          'GEN-T_N': generatedtile[1],
                          'GEN-T_K': generatedtile[2],
@@ -63,8 +64,8 @@ def save_densegemm_results_csv(passed, M, N, K, generatedtile, generatedtile_cyc
                          'TOLERANCE': tolerance})
 
 
-def save_sparsedense_results_csv(passed, M, N, K, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
-    fields = ['PASSED', 'M', 'N', 'K', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES',
+def save_sparsedense_results_csv(passed, M, N, K, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
+    fields = ['PASSED', 'M', 'N', 'K', 'GENERATOR', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES',
               'SPEEDUP', 'TOLERANCE']
     with open(DENSEGEMM_CSV_FILENAME, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fields)
@@ -78,6 +79,7 @@ def save_sparsedense_results_csv(passed, M, N, K, generatedtile, generatedtile_c
                          'M': M,
                          'N': N,
                          'K': K,
+                         'GENERATOR': generator,
                          'GEN-T_N': generatedtile[0],
                          'GEN-T_K': generatedtile[1],
                          'GEN-CYCLES': generatedtile_cycles,
