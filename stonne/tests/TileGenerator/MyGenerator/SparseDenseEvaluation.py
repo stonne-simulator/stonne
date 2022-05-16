@@ -87,7 +87,7 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
     print(f' - Speedup of the generated tile: {speedup}')
     print(f' - Pass the test (tolerance={tolerance})? {passed}')
 
-    EvaluationUtils.save_sparsedense_results_csv(passed, M, N, K, sparsity, generator, generatedtile,
+    EvaluationUtils.save_sparsedense_results_csv(passed, num_ms, dn_bw, rn_bw, M, N, K, sparsity, generator, generatedtile,
                                                  generatedtile_cycles, min_tile, min_cycles, speedup, tolerance)
 
     return passed

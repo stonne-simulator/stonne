@@ -36,9 +36,9 @@ def check_assertions(stderr):
     return True if match else False
 
 
-def save_densegemm_results_csv(passed, M, N, K, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
-    fields = ['PASSED', 'M', 'N', 'K', 'GENERATOR', 'GEN-T_M', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_M', 'MIN-T_N', 'MIN-T_K',
-              'MIN-CYCLES', 'SPEEDUP', 'TOLERANCE']
+def save_densegemm_results_csv(passed, num_ms, dn_bw, rn_bw, M, N, K, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
+    fields = ['PASSED', 'NUM_MS', 'DN_BW', 'RN_BW', 'M', 'N', 'K', 'GENERATOR', 'GEN-T_M', 'GEN-T_N', 'GEN-T_K',
+              'GEN-CYCLES', 'MIN-T_M', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES', 'SPEEDUP', 'TOLERANCE']
     with open(DENSEGEMM_CSV_FILENAME, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fields)
 
@@ -48,6 +48,9 @@ def save_densegemm_results_csv(passed, M, N, K, generator, generatedtile, genera
 
         # write the row with the results of the simulation to the csv file
         writer.writerow({'PASSED': passed,
+                         'NUM_MS': num_ms,
+                         'DN_BW': dn_bw,
+                         'RN_BW': rn_bw,
                          'M': M,
                          'N': N,
                          'K': K,
@@ -64,9 +67,9 @@ def save_densegemm_results_csv(passed, M, N, K, generator, generatedtile, genera
                          'TOLERANCE': tolerance})
 
 
-def save_sparsedense_results_csv(passed, M, N, K, sparsity, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
-    fields = ['PASSED', 'M', 'N', 'K', 'SPARSITY', 'GENERATOR', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES',
-              'SPEEDUP', 'TOLERANCE']
+def save_sparsedense_results_csv(passed, num_ms, dn_bw, rn_bw, M, N, K, sparsity, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
+    fields = ['PASSED', 'NUM_MS', 'DN_BW', 'RN_BW',  'M', 'N', 'K', 'SPARSITY', 'GENERATOR', 'GEN-T_N', 'GEN-T_K',
+              'GEN-CYCLES', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES', 'SPEEDUP', 'TOLERANCE']
     with open(SPARSEDENSE_CSV_FILENAME, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fields)
 
@@ -76,6 +79,9 @@ def save_sparsedense_results_csv(passed, M, N, K, sparsity, generator, generated
 
         # write the row with the results of the simulation to the csv file
         writer.writerow({'PASSED': passed,
+                         'NUM_MS': num_ms,
+                         'DN_BW': dn_bw,
+                         'RN_BW': rn_bw,
                          'M': M,
                          'N': N,
                          'K': K,

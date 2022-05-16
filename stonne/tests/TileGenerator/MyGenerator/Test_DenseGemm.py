@@ -1,6 +1,7 @@
 import os
 import unittest
 import subprocess
+import random
 try: # Try to import the local version first (usually works when executed from the command line with Python directly)
     import DenseGemmEvaluation as DenseGemm
 except ImportError: # Only works when you execute it with the '-m unittest' parameter from stonne/stonne directory
@@ -72,7 +73,39 @@ class TestDenseGemm(unittest.TestCase):
         # - Total Cycles for best tile: 5145
         self.assertTrue(DenseGemm.evaluate(num_ms=256, dn_bw=256, rn_bw=64, M=116, N=333, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
-    # TODO: implement more tests
+    def testDenseGemmGenerateRandomly(self):
+        for i in range(100):
+            max_power = random.randint(1, 10) # 2..1024
+            num_ms = 2 ** max_power
+            dn_bw = 2 ** random.randint(0, max_power) # 1..num_ms
+            rn_bw = 2 ** random.randint(0, max_power) # 1..num_ms
+            M = random.randint(1, 1024)
+            N = random.randint(1, 1024)
+            K = random.randint(1, 1024)
+            self.assertTrue(DenseGemm.evaluate(num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+
+    def testDenseGemmGenerateRandomlyFixHardware(self):
+        for i in range(100):
+            max_power = random.randint(1, 10) # 2..1024
+            num_ms = 2 ** max_power
+            dn_bw = num_ms
+            rn_bw = num_ms
+            M = random.randint(1, 1024)
+            N = random.randint(1, 1024)
+            K = random.randint(1, 1024)
+            self.assertTrue(DenseGemm.evaluate(num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+
+    def testDenseGemmGenerateRandomlyFixHardwareAlwaysLess(self):
+        for i in range(100):
+            max_power = random.randint(1, 10) # 2..1024
+            num_ms = 2 ** max_power
+            dn_bw = num_ms
+            rn_bw = num_ms
+            M = random.randint(1, num_ms)
+            N = random.randint(1, num_ms)
+            K = random.randint(1, num_ms)
+            self.assertTrue(DenseGemm.evaluate(num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+
 
 # Main method to execute all testcases of MyGenerator for DenseGEMM/FC layers
 if __name__ == "__main__":
