@@ -8,6 +8,7 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
 
 
 PERFORMANCE_TOLERANCE = 0.2
+GENERATOR = "MyGenerator"
 
 
 class TestSparseDense(unittest.TestCase):
@@ -26,7 +27,9 @@ class TestSparseDense(unittest.TestCase):
         proc = subprocess.Popen(["make", "all"])
         proc.wait()
 
-    # TODO: implement testcases for SparseDense
+    def testSparseDenseBasic1(self):
+        for sparsity in [10, 40, 70, 90]:
+            self.assertTrue(SparseDense.evaluate(num_ms=16, dn_bw=8, rn_bw=8, M=32, N=8, K=16, sparsity=sparsity, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
 
 # Main method to execute all testcases of MyGenerator for SparseDense layers

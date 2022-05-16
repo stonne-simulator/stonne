@@ -24,7 +24,7 @@ def get_densegemm_tile(stdout):
 
 
 def get_sparsedense_tile(stdout):
-    match = re.search(r'Generated Tile: <T_N=(\d+), T_K=(\d+)>', stdout)
+    match = re.search(r'Generated tile: <T_N=(\d+), T_K=(\d+)>', stdout)
     if match:
         return int(match.group(1)), int(match.group(2))  # TODO: review this
     else:
@@ -64,10 +64,10 @@ def save_densegemm_results_csv(passed, M, N, K, generator, generatedtile, genera
                          'TOLERANCE': tolerance})
 
 
-def save_sparsedense_results_csv(passed, M, N, K, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
-    fields = ['PASSED', 'M', 'N', 'K', 'GENERATOR', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES',
+def save_sparsedense_results_csv(passed, M, N, K, sparsity, generator, generatedtile, generatedtile_cycles, min_tile, min_cycles, speedup, tolerance):
+    fields = ['PASSED', 'M', 'N', 'K', 'SPARSITY', 'GENERATOR', 'GEN-T_N', 'GEN-T_K', 'GEN-CYCLES', 'MIN-T_N', 'MIN-T_K', 'MIN-CYCLES',
               'SPEEDUP', 'TOLERANCE']
-    with open(DENSEGEMM_CSV_FILENAME, 'a') as csvfile:
+    with open(SPARSEDENSE_CSV_FILENAME, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fields)
 
         # if the file is empty, write the header
@@ -79,6 +79,7 @@ def save_sparsedense_results_csv(passed, M, N, K, generator, generatedtile, gene
                          'M': M,
                          'N': N,
                          'K': K,
+                         'SPARSITY': sparsity,
                          'GENERATOR': generator,
                          'GEN-T_N': generatedtile[0],
                          'GEN-T_K': generatedtile[1],
