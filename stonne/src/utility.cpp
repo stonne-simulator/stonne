@@ -58,7 +58,7 @@ TileGenerator::Target parseTileGeneratorTarget(std::string target) {
 }
 
 TileGenerator::Generator parseTileGenerator(std::string generator) {
-    if(generator == "automatic" || generator == "0")
+    if(generator == "auto" || generator == "0")
         return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
     else if(generator == "mRNA" || generator == "1")
         return TileGenerator::Generator::MRNA;

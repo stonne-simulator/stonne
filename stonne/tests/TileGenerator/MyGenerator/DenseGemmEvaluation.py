@@ -38,7 +38,7 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANCE, generat
     generatedtile = EvaluationUtils.get_densegemm_tile(stdout)
 
     # print tile and cycles in terminal
-    print(f'\tL=> T_N={generatedtile[0]} T_M={generatedtile[1]}')
+    print(f'\tL=> T_M={generatedtile[0]}, T_N={generatedtile[1]}, T_K={generatedtile[2]}')
     print(f'\tL=> {generatedtile_cycles} cycles')
 
 

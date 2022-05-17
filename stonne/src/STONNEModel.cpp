@@ -302,6 +302,7 @@ void Stonne::loadTile(std::string tile_file) {
     auto tileGeneratorTarget_str=config->get_as<std::string>("generate_tile");
     auto tileGenerator_str=config->get_as<std::string>("generator");
     TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
+    TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
 
     if(!tile_type) {
         std::cout << "Error to parse tile_type. Parameter not found" << std::endl;
@@ -325,7 +326,6 @@ void Stonne::loadTile(std::string tile_file) {
     if(*tile_type=="CONV") {
         // if generateTile is specified then generate a FC tile configuration for the layer
         if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
-            TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
             if (tileGenerator_str)
                 tileGenerator = parseTileGenerator(*tileGenerator_str);
             generateTile(tileGenerator, tileGeneratorTarget);
@@ -382,7 +382,6 @@ void Stonne::loadTile(std::string tile_file) {
     else if(*tile_type=="FC") {
         // if generateTile is specified then generate a FC tile configuration for the layer
         if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
-            TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
             if (tileGenerator_str)
                 tileGenerator = parseTileGenerator(*tileGenerator_str);
             generateTile(tileGenerator, tileGeneratorTarget);
