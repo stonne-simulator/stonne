@@ -1,8 +1,10 @@
 import unittest
 import os
 # since it not include an unittest.TestCase, it has to be run directly with python Test_MyGenerator
-import Test_DenseGemm as Test_DenseGemm
-import Test_SparseDense as Test_SparseDense
+import Test_DenseGemm
+import Test_DenseGemmRealModels
+import Test_SparseDense
+import Test_SparseDenseRealModels
 
 
 if __name__ == "__main__":
@@ -16,7 +18,9 @@ if __name__ == "__main__":
     # add all testcases to suite case
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test_DenseGemm.TestDenseGemm))
+    suite.addTest(unittest.makeSuite(Test_DenseGemmRealModels.TestDenseGemmRealModels))
     suite.addTest(unittest.makeSuite(Test_SparseDense.TestSparseDense))
+    suite.addTest(unittest.makeSuite(Test_SparseDenseRealModels.TestSparseDenseRealModels))
 
     # run tests
     unittest.TextTestRunner(verbosity=2).run(suite)
