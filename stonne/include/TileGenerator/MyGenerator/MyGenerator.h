@@ -22,15 +22,6 @@ namespace MyGenerator {
 
         // SparseDense
         static SparseDenseTile generateSparseDenseTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, float MK_sparsity, Target target);
-
-    private:
-        /************************/
-        /*** Helper functions ***/
-        /************************/
-
-        static float getEdgeUtilization(uint X, uint T_X);
-
-        static void maximizeEdgeUtilization(uint M, uint N, uint K, uint &T_M, uint &T_N, uint &T_K);
     };
 
 } // namespace MyGenerator
