@@ -19,9 +19,15 @@ unsigned int nextPowerOf2(int x);
 
 std::string getstr(std::istringstream& instr);
 
+std::string to_lower(std::string str);
+
 TileGenerator::Target parseTileGeneratorTarget(std::string target);
 
+std::string parseTileGeneratorTarget(TileGenerator::Target target);
+
 TileGenerator::Generator parseTileGenerator(std::string generator);
+
+std::string parseTileGenerator(TileGenerator::Generator generator);
 
 std::string get_string_adder_configuration(adderconfig_t config);
 

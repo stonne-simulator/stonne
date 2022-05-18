@@ -417,7 +417,7 @@ void Stonne::loadTile(std::string tile_file) {
 // General tile generation function for each type of layer
 void Stonne::generateTile(TileGenerator::Generator generator, TileGenerator::Target target, float MK_sparsity) {
     std::cout << "Generating a tile automatically..." << std::endl;
-    std::cout << "Using generator <" << generator << "> and target <" << target << ">" << std::endl;
+    std::cout << "Using generator <" << parseTileGenerator(generator) << "> and target <" << parseTileGeneratorTarget(target) << ">" << std::endl;
 
     TileGenerator::TileGenerator tileGenerator(stonne_cfg.m_MSNetworkCfg.ms_size,
                                                stonne_cfg.m_SDMemoryCfg.n_read_ports,
