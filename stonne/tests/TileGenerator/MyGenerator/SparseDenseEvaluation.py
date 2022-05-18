@@ -52,7 +52,9 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
         for T_K in [2 ** i for i in range(0, int(log2(num_ms)) + 1)]:
             # ensure that num_ms occupation is maximum and tile size does not exceed its dimension,
             # although allowing to slightly exceed the limit
-            if T_N >= N * 2 or T_K >= K * 2 or T_K == 1 or T_N * T_K != num_ms:
+            # cases with T_K == 1 and K != 1 will not work, we have to ensure that only can T_K=1 when K=1
+            # also we always want to maximize the num_ms utilization
+            if T_N >= N * 2 or T_K >= K * 2 or (T_K == 1 and K > 1) or T_N * T_K != num_ms:
                 continue
 
             # execution using a fixed tile
