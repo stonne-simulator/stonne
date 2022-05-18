@@ -31,47 +31,56 @@ class TestDenseGemm(unittest.TestCase):
     def test01_DenseGemmBasic1(self):
         # - Best tile (using powers of 2): T_M=1, T_N=8, T_K=2
         # - Total Cycles for best tile: 560
-        self.assertTrue(DenseGemm.evaluate(num_ms=16, dn_bw=8, rn_bw=8, M=16, N=16, K=16, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='Basic1',
+                num_ms=16, dn_bw=8, rn_bw=8, M=16, N=16, K=16, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test02_DenseGemmBasic2(self):
         # - Best tile (using powers of 2): T_M=1, T_N=8, T_K=2
         # - Total Cycles for best tile: 536
-        self.assertTrue(DenseGemm.evaluate(num_ms=16, dn_bw=8, rn_bw=8, M=32, N=8, K=16, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='Basic2',
+                num_ms=16, dn_bw=8, rn_bw=8, M=32, N=8, K=16, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test03_DenseGemmBasic3(self):
         # - Best tile (using powers of 2): T_M=1, T_N=8, T_K=2
         # - Total Cycles for best tile: 72
-        self.assertTrue(DenseGemm.evaluate(num_ms=16, dn_bw=8, rn_bw=8, M=7, N=7, K=7, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='Basic3',
+                num_ms=16, dn_bw=8, rn_bw=8, M=7, N=7, K=7, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test04_DenseGemmPowerOfTwo1(self):
         # - Best tile (using powers of 2): T_M=1, T_N=128, T_K=2
         # - Total Cycles for best tile: 4150
-        self.assertTrue(DenseGemm.evaluate(num_ms=256, dn_bw=256, rn_bw=256, M=128, N=256, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='PowerOfTwo1',
+                num_ms=256, dn_bw=256, rn_bw=256, M=128, N=256, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test05_DenseGemmPowerOfTwo2(self):
         # - Best tile (using powers of 2): T_M=1, T_N=8, T_K=16
         # - Total Cycles for best tile: 1042
-        self.assertTrue(DenseGemm.evaluate(num_ms=128, dn_bw=128, rn_bw=64, M=128, N=8, K=128, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='PowerOfTwo2',
+                num_ms=128, dn_bw=128, rn_bw=64, M=128, N=8, K=128, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test06_DenseGemmPowerOfTwo3(self):
         # - Best tile (using powers of 2): T_M=1, T_N=32, T_K=2
         # - Total Cycles for best tile: 2194
-        self.assertTrue(DenseGemm.evaluate(num_ms=64, dn_bw=64, rn_bw=64, M=16, N=64, K=128, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='PowerOfTwo3',
+                num_ms=64, dn_bw=64, rn_bw=64, M=16, N=64, K=128, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test07_DenseGemmRandom1(self):
         # - Best tile (using powers of 2): T_M=1, T_N=64, T_K=4
         # - Total Cycles for best tile: 4735
-        self.assertTrue(DenseGemm.evaluate(num_ms=256, dn_bw=256, rn_bw=64, M=116, N=317, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='Random1',
+                num_ms=256, dn_bw=256, rn_bw=64, M=116, N=317, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test08_DenseGemmRandom2(self):
         # - Best tile (using powers of 2): T_M=1, T_N=32, T_K=8
         # - Total Cycles for best tile: 5269
-        self.assertTrue(DenseGemm.evaluate(num_ms=256, dn_bw=256, rn_bw=64, M=116, N=347, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='Random2',
+                num_ms=256, dn_bw=256, rn_bw=64, M=116, N=347, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test09_DenseGemmRandom3(self):
         # - Best tile (using powers of 2): T_M=1, T_N=16, T_K=16
         # - Total Cycles for best tile: 5145
-        self.assertTrue(DenseGemm.evaluate(num_ms=256, dn_bw=256, rn_bw=64, M=116, N=333, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+        self.assertTrue(DenseGemm.evaluate(testname='Random3',
+                num_ms=256, dn_bw=256, rn_bw=64, M=116, N=333, K=32, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
 
     def test10_DenseGemmGenerateRandomly(self):
         results = []
@@ -82,7 +91,8 @@ class TestDenseGemm(unittest.TestCase):
             M = random.randint(1, 256)
             N = random.randint(1, 256)
             K = random.randint(1, 256)
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'RandomGenerated[{i}]',
+                num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def test11_DenseGemmGenerateRandomlyAlwaysLess(self):
@@ -95,7 +105,8 @@ class TestDenseGemm(unittest.TestCase):
             M = random.randint(1, num_ms)
             N = random.randint(1, num_ms)
             K = random.randint(1, num_ms)
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'RandomGeneratedAlwaysLess[{i}]',
+                num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
 

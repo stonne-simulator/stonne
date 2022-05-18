@@ -12,7 +12,7 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
 DEFAULT_TOLERANCE = 0.1
 
 
-def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANCE, generator="StonneMapper"):
+def evaluate(testname, num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANCE, generator="StonneMapper"):
     print(f'### SparseDense evaluation of {generator} with M={M}, N={N}, K={K}, sparsity={sparsity} and tolerance={tolerance}')
 
     ### Results from the generator ###
@@ -93,7 +93,7 @@ def evaluate(num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAULT_TOLERANC
     print(f' - Speedup of the generated tile: {speedup}')
     print(f' - Pass the test (tolerance={tolerance})? {passed}')
 
-    EvaluationUtils.save_sparsedense_results_csv(passed, num_ms, dn_bw, rn_bw, M, N, K, sparsity, generator, generatedtile,
+    EvaluationUtils.save_sparsedense_results_csv(passed, testname, num_ms, dn_bw, rn_bw, M, N, K, sparsity, generator, generatedtile,
                                                  generatedtile_cycles, min_tile, min_cycles, speedup, tolerance)
 
     return passed
@@ -137,4 +137,4 @@ if __name__ == "__main__":
     print(f'\ttolerance: {args.tolerance}')
     print(f'\tgenerator: {args.generator}')
 
-    evaluate(args.num_ms, args.dn_bw, args.rn_bw, args.M, args.N, args.K, args.sparsity, args.tolerance, args.generator)
+    evaluate('ManualEvaluation', args.num_ms, args.dn_bw, args.rn_bw, args.M, args.N, args.K, args.sparsity, args.tolerance, args.generator)

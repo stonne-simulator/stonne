@@ -34,51 +34,59 @@ class TestDenseGemmRealModels(unittest.TestCase):
     def testDenseGemmFc1Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=9216, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'Fc1Alexnet-ms{num_ms}',
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=9216, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc2Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'Fc2Alexnet-ms{num_ms}',
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc3Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'Fc3Alexnet-ms{num_ms}',
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc1MobileNet(self):
         results = []
         for num_ms in [128, 256, 512]:
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=1024, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'Fc1MobileNet-ms{num_ms}',
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=1024, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc1ResNet(self):
         results = []
         for num_ms in [128, 256, 512]:
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=2048, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'Fc1ResNet-ms{num_ms}',
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=2048, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc1VGG16(self):
         results = []
         for num_ms in [128, 256, 512]:
-            results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=25088, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+            results.append(DenseGemm.evaluate(testname=f'Fc1VGG16-ms{num_ms}',
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=25088, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     # Discarded because is the same mapping of Fc2Alexnet
     # def testDenseGemmFc2VGG16(self):
     #     results = []
     #     for num_ms in [128, 256, 512]:
-    #         results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+    #         results.append(DenseGemm.evaluate(testname=f'Fc2VGG16-ms{num_ms}',
+    #             num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
     #     self.assertTrue(all(results))
 
     # Discarded because is the same mapping of Fc3Alexnet
     # def testDenseGemmFc3VGG16(self):
     #     results = []
     #     for num_ms in [128, 256, 512]:
-    #         results.append(DenseGemm.evaluate(num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+    #         results.append(DenseGemm.evaluate(testname=f'Fc3VGG16-ms{num_ms}',
+    #             num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
     #     self.assertTrue(all(results))
 
 
