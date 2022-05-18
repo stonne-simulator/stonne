@@ -3,25 +3,25 @@
 #include <vector>
 #include <cassert>
 #include "utility.h"
-#include "TileGenerator/MyGenerator/MyGenerator.h"
-#include "TileGenerator/MyGenerator/TileOption.h"
+#include "TileGenerator/StonneMapper/StonneMapperGenerator.h"
+#include "TileGenerator/StonneMapper/TileOption.h"
 
 
-namespace MyGenerator {
+namespace StonneMapper {
 
     /*****************/
     /*** Constants ***/
     /*****************/
 
-    // MyGenerator report base filename
-    const std::string myGeneratorOutputBasename = "MyGenerator_output_";
+    // StonneMapper report base filename
+    const std::string stonneMapperOutputBasename = "StonneMapper_output_";
 
 
     /************************/
     /*** Helper functions ***/
     /************************/
 
-    std::string getMyGeneratorOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K);
+    std::string getStonneMapperOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K);
     void writeGeneratorResults(std::vector<TileOption> &options, TileOption &bestTile, std::string layerType, uint num_ms,
                                uint dn_bw, uint rn_bw, uint M, uint N, uint K, float sparsity=0.0f);
 
@@ -30,7 +30,7 @@ namespace MyGenerator {
     /*** Tile Generation Methods ***/
     /*******************************/
 
-    DenseGemmTile MyGenerator::generateDenseGemmTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, Target target) {
+    DenseGemmTile StonneMapperGenerator::generateDenseGemmTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, Target target) {
         /** This generation function does a search of combinations that maximizes the utilization of the MSs
          * 1. Add all combinations of powers of 2 (ms_utilization=1)
          * 2. Try to find out a group of combinations, not powers of 2, that surpass a certain threshold (ms_utilization>0.8)
@@ -78,7 +78,7 @@ namespace MyGenerator {
     }
 
 
-    SparseDenseTile MyGenerator::generateSparseDenseTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, float MK_sparsity, Target target) {
+    SparseDenseTile StonneMapperGenerator::generateSparseDenseTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, float MK_sparsity, Target target) {
         // TODO: implement this
         return SparseDenseTile(0, 0);
     }
@@ -89,9 +89,9 @@ namespace MyGenerator {
     /************************/
 
     // Generates a filename for the results generation of a DenseGEMM/FC layer
-    std::string getMyGeneratorOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K) {
+    std::string getStonneMapperOutputFilename(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K) {
         std::stringstream ss;
-        ss << myGeneratorOutputBasename << "FC" << "_num_ms" << num_ms << "_dn_bw" << dn_bw << "_rn_bw" << rn_bw <<
+        ss << stonneMapperOutputBasename << "FC" << "_num_ms" << num_ms << "_dn_bw" << dn_bw << "_rn_bw" << rn_bw <<
            "_M" << M << "_N" << N << "_K" << K << ".txt";
         return ss.str();
     }
@@ -100,10 +100,10 @@ namespace MyGenerator {
     // Writes the results of the analysis made by the simulator
     void writeGeneratorResults(std::vector<TileOption> &options, TileOption &bestTile, std::string layerType, uint num_ms,
                                uint dn_bw, uint rn_bw, uint M, uint N, uint K, float sparsity) {
-        std::ofstream outputFile(getMyGeneratorOutputFilename(num_ms, dn_bw, rn_bw, M, N, K));
+        std::ofstream outputFile(getStonneMapperOutputFilename(num_ms, dn_bw, rn_bw, M, N, K));
 
         // hardware and layer parameters
-        outputFile << "### MyGenerator results" << std::endl;
+        outputFile << "### StonneMapper results" << std::endl;
         outputFile << "# Parameters:" << std::endl;
         outputFile << " - Layer Type: " << layerType << std::endl;
         outputFile << " - num_ms: " << num_ms << std::endl;
@@ -134,4 +134,4 @@ namespace MyGenerator {
         outputFile.close();
     }
 
-} // namespace MyGenerator
+} // namespace StonneMapper

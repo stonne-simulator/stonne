@@ -6,13 +6,13 @@ import sys
 try: # Try to import the local version first (usually works when executed from the command line with Python directly)
     import EvaluationUtils
 except ImportError: # Only works when you execute it with the '-m unittest' parameter from stonne/stonne directory
-    import tests.TileGenerator.MyGenerator.EvaluationUtils as EvaluationUtils
+    import tests.TileGenerator.StonneMapper.EvaluationUtils as EvaluationUtils
 
 
 DEFAULT_TOLERANCE = 0.1
 
 
-def evaluate(num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANCE, generator="MyGenerator"):
+def evaluate(num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANCE, generator="StonneMapper"):
     print(f'### DenseGEMM evaluation of {generator} with M={M}, N={N}, K={K} and tolerance={tolerance}')
 
     ### Results from the generator ###
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     parser.add_argument('--N', type=int, required=True, help='Matrix N size.')
     parser.add_argument('--K', type=int, required=True, help='Matrix K size.')
     parser.add_argument('--tolerance', type=float, default=DEFAULT_TOLERANCE, help='Tolerance for deviation on the results.')
-    parser.add_argument('--generator', type=str, choices=['mRNA', 'MyGenerator'], default='MyGenerator', help='Tile generator to use.')
+    parser.add_argument('--generator', type=str, choices=['mRNA', 'StonneMapper'], default='StonneMapper', help='Tile generator to use.')
     args = parser.parse_args()
 
     if args.tolerance < 0 or args.tolerance > 1:

@@ -8,13 +8,13 @@ BIN = stonne
 SOURCE =   $(wildcard src/*.cpp) \
            $(wildcard src/TileGenerator/*.cpp) \
            $(wildcard src/TileGenerator/mRNA/*.cpp) \
-           $(wildcard src/TileGenerator/MyGenerator/*.cpp) \
+           $(wildcard src/TileGenerator/StonneMapper/*.cpp) \
            $(wildcard src/TileGenerator/Utils/*.cpp)
 
 INCLUDES = $(wildcard include/*.h) \
 		   $(wildcard include/TileGenerator/*.h) \
 		   $(wildcard include/TileGenerator/mRNA/*.h) \
-		   $(wildcard include/TileGenerator/MyGenerator/*.h) \
+		   $(wildcard include/TileGenerator/StonneMapper/*.h) \
 		   $(wildcard include/TileGenerator/Utils/*.h)
 
 OBJSDIR = objs
@@ -33,7 +33,7 @@ $(OBJSDIR):
 	mkdir -p $@ && \
 	mkdir -p $@/TileGenerator && \
 	mkdir -p $@/TileGenerator/mRNA && \
-	mkdir -p $@/TileGenerator/MyGenerator && \
+	mkdir -p $@/TileGenerator/StonneMapper && \
 	mkdir -p $@/TileGenerator/Utils
 
 $(OBJSDIR)/%.o: src/%.cpp $(INCLUDES)

@@ -2,7 +2,7 @@
 #include <cassert>
 #include "TileGenerator/TileGenerator.h"
 #include "TileGenerator/mRNA/MrnaGenerator.h"
-#include "TileGenerator/MyGenerator/MyGenerator.h"
+#include "TileGenerator/StonneMapper/StonneMapperGenerator.h"
 
 namespace TileGenerator {
 
@@ -29,12 +29,12 @@ namespace TileGenerator {
             case MRNA:
                 std::cout << "Using mRNA as Tile Generator for DenseGemm/FC layer" << std::endl;
                 return mRNA::MrnaGenerator::generateDenseGemmTile(num_ms, dn_bw, rn_bw, M, N, K, target);
-            case CHOOSE_AUTOMATICALLY: // by default: MyGenerator tool
-            case MYGENERATOR:
-                std::cout << "Using MyGenerator as Tile Generator for DenseGemm/FC layer" << std::endl;
-                return MyGenerator::MyGenerator::generateDenseGemmTile(num_ms, dn_bw, rn_bw, M, N, K, target);
+            case CHOOSE_AUTOMATICALLY: // by default: StonneMapper tool
+            case STONNE_MAPPER:
+                std::cout << "Using StonneMapper as Tile Generator for DenseGemm/FC layer" << std::endl;
+                return StonneMapper::StonneMapperGenerator::generateDenseGemmTile(num_ms, dn_bw, rn_bw, M, N, K, target);
             default:
-                std::cerr << "Only mRNA and MyGenerator generator is supported for DenseGemm/FC layers" << std::endl;
+                std::cerr << "Only mRNA and StonneMapper generator is supported for DenseGemm/FC layers" << std::endl;
                 assert(false);
         }
     }
@@ -42,12 +42,12 @@ namespace TileGenerator {
 
     SparseDenseTile TileGenerator::generateSparseDenseTile(uint M, uint N, uint K, float MK_sparsity, Target target) {
         switch(generator) {
-            case CHOOSE_AUTOMATICALLY: // by default: MyGenerator tool
-            case MYGENERATOR:
-                std::cout << "Using MyGenerator as Tile Generator for SparseDense layer" << std::endl;
-                return MyGenerator::MyGenerator::generateSparseDenseTile(num_ms, dn_bw, rn_bw, M, N, K, MK_sparsity, target);
+            case CHOOSE_AUTOMATICALLY: // by default: StonneMapper tool
+            case STONNE_MAPPER:
+                std::cout << "Using StonneMapper as Tile Generator for SparseDense layer" << std::endl;
+                return StonneMapper::StonneMapperGenerator::generateSparseDenseTile(num_ms, dn_bw, rn_bw, M, N, K, MK_sparsity, target);
             default:
-                std::cerr << "Only MyGenerator generator is supported for SparseDense layers" << std::endl;
+                std::cerr << "Only StonneMapper generator is supported for SparseDense layers" << std::endl;
                 assert(false);
         }
     }

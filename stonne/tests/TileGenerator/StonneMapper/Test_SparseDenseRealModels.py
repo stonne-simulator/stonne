@@ -5,18 +5,18 @@ import random
 try: # Try to import the local version first (usually works when executed from the command line with Python directly)
     import SparseDenseEvaluation as SparseDense
 except ImportError: # Only works when you execute it with the '-m unittest' parameter from stonne/stonne directory
-    import tests.TileGenerator.MyGenerator.SparseDenseEvaluation as SparseDense
+    import tests.TileGenerator.StonneMapper.SparseDenseEvaluation as SparseDense
 
 
 PERFORMANCE_TOLERANCE = 0.2
-GENERATOR = "MyGenerator"
+GENERATOR = "StonneMapper"
 
 
 class TestSparseDenseRealModels(unittest.TestCase):
     """
-    Test cases to test the generation of MyGenerator for SparseDense layers.
+    Test cases to test the generation of StonneMapper for SparseDense layers.
     It uses real model layers from Alexnet, MobileNet, ResNet-50 and VGG-16.
-    For each test, it runs a simulation of the layer generating the tile with MyGenerator.
+    For each test, it runs a simulation of the layer generating the tile with StonneMapper.
     Later, it searches for the best possible tile for this layer.
     At last, it compares the generated tile results with the best possible tile results,
     passing the test only if the speedup fits in the tolerance margin.
@@ -82,7 +82,7 @@ class TestSparseDenseRealModels(unittest.TestCase):
         self.assertTrue(all(results))
 
 
-# Main method to execute all testcases of MyGenerator for SparseDense/FC layers
+# Main method to execute all testcases of StonneMapper for SparseDense/FC layers
 if __name__ == "__main__":
     if not os.getcwd().endswith('stonne/stonne'):
         print("Please run this SparseDense.evaluate script from the stonne/stonne directory")

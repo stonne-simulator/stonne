@@ -12,7 +12,7 @@ namespace TileGenerator {
     enum Generator {
         CHOOSE_AUTOMATICALLY = 0,
         MRNA = 1,
-        MYGENERATOR = 2
+        STONNE_MAPPER = 2
     };
 
     /**

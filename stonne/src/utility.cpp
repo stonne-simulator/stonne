@@ -84,25 +84,26 @@ TileGenerator::Generator parseTileGenerator(std::string generator) {
         return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
     else if(generator == "mrna" || generator == "1")
         return TileGenerator::Generator::MRNA;
-    else if(generator == "mygenerator" || generator == "2")
-        return TileGenerator::Generator::MYGENERATOR;
+    else if(generator == "stonnemapper" || generator == "2")
+        return TileGenerator::Generator::STONNE_MAPPER;
 
     std::cerr << "TileGenerator generator <" << generator << "> is not recognized" << std::endl;
-    std::cerr << "-generator only supports 0 (automatic), 1 (mRNA) or 2 (MyGenerator)" << std::endl;
+    std::cerr << "-generator only supports 0 (automatic), 1 (mRNA) or 2 (StonneMapper)" << std::endl;
     std::cerr << "Changing TileGenerator generator to Generator::CHOOSE_AUTOMATICALLY" << std::endl;
 
     return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
 }
 
 std::string parseTileGenerator(TileGenerator::Generator generator) {
-    switch(generator) {
+    switch (generator) {
         case TileGenerator::Generator::CHOOSE_AUTOMATICALLY:
             return "Auto";
         case TileGenerator::Generator::MRNA:
             return "mRNA";
-        case TileGenerator::Generator::MYGENERATOR:
-            return "MyGenerator";
+        case TileGenerator::Generator::STONNE_MAPPER:
+            return "StonneMapper";
     }
+    return "";
 }
 
 

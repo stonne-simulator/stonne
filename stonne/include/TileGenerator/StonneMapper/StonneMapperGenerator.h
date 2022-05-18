@@ -1,17 +1,17 @@
-#ifndef STONNE_TILEGENERATOR_MYGENERATOR_H
-#define STONNE_TILEGENERATOR_MYGENERATOR_H
+#ifndef STONNE_TILEGENERATOR_STONNEMAPPER_H
+#define STONNE_TILEGENERATOR_STONNEMAPPER_H
 
 #include "TileGenerator/Utils/Target.h"
 #include "TileGenerator/Utils/Tiles.h"
 
 using namespace TileGenerator;
 
-namespace MyGenerator {
+namespace StonneMapper {
 
     /**
-     * MyGenerator is a simple tool to generate automatically tiles for DenseGEMM/FC and SparseDense layers.
+     * StonneMapper is a simple tool to generate automatically tiles for DenseGEMM/FC and SparseDense layers.
      */
-    class MyGenerator {
+    class StonneMapperGenerator {
     public:
         /*******************************/
         /*** Tile Generation Methods ***/
@@ -24,6 +24,6 @@ namespace MyGenerator {
         static SparseDenseTile generateSparseDenseTile(uint num_ms, uint dn_bw, uint rn_bw, uint M, uint N, uint K, float MK_sparsity, Target target);
     };
 
-} // namespace MyGenerator
+} // namespace StonneMapper
 
-#endif //STONNE_TILEGENERATOR_MYGENERATOR_H
+#endif //STONNE_TILEGENERATOR_STONNEMAPPER_H

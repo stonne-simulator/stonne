@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cmath>
-#include "TileGenerator/MyGenerator/TileOption.h"
+#include "TileGenerator/StonneMapper/TileOption.h"
 
-namespace MyGenerator {
+namespace StonneMapper {
 
     TileOption::TileOption(uint num_ms, uint M, uint N, uint K, uint T_M, uint T_N, uint T_K) {
         // Check that tile does not exceed the value of each dimension
@@ -60,4 +60,4 @@ namespace MyGenerator {
         return fX / (ceil(fX / fT_X) * fT_X);
     }
 
-} // namespace MyGenerator
+} // namespace StonneMapper

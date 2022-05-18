@@ -1,9 +1,9 @@
-#ifndef STONNE_MYGENERATOR_TILEOPTION_H
-#define STONNE_MYGENERATOR_TILEOPTION_H
+#ifndef STONNE_STONNEMAPPER_TILEOPTION_H
+#define STONNE_STONNEMAPPER_TILEOPTION_H
 
 #include "TileGenerator/Utils/Tiles.h"
 
-namespace MyGenerator {
+namespace StonneMapper {
 
     // A structure to hold the information about a possible tile to be used
     class TileOption {
@@ -31,6 +31,6 @@ namespace MyGenerator {
 
     };
 
-} // namespace MyGenerator
+} // namespace StonneMapper
 
-#endif //STONNE_MYGENERATOR_TILEOPTION_H
+#endif //STONNE_STONNEMAPPER_TILEOPTION_H
