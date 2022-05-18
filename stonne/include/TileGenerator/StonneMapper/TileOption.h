@@ -25,6 +25,8 @@ namespace StonneMapper {
 
         TileOption(uint num_ms, uint M, uint N, uint K, uint T_M, uint T_N, uint T_K);
 
+        bool operator==(const TileOption &val) const;
+        bool operator<(const TileOption &val) const;
         bool operator>(const TileOption &val) const;
 
         static float getEdgeUtilization(uint X, uint T_X);

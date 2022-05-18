@@ -237,6 +237,7 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
     //computing CPU version based on a Conv parameters mapping. Note a CONV layer might be seen as a GEMM if the mapping is correct.
     //sequential_layer(1, K, 1, M, 1, N, 1, K, 1, KN_matrix, MK_matrix, output_cpu); //Supposes that MK=inputs (M=batch size) and KN=filters (N=number of filters)
     //sequential_layer(1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_cpu); //Supposes that MK=inputs (M=batch size) and KN=filters (N=number of filters)
+    /*
     std::cout << "Printing MK matrix: " << std::endl;
     for(int i=0; i<M; i++) {
         for(int j=0; j<K; j++) {
@@ -252,8 +253,8 @@ bool runDenseGEMMCommand(int argc, char *argv[]) {
             std::cout << KN_matrix[i*K+j] << " ";
         }
         std::cout << std::endl;
-
     }
+     */
 
 
     sequential_layer(1, K, 1, N, 1, M, 1, K, 1, MK_matrix, KN_matrix, output_cpu); //Supposes that MK=inputs (M=batch size) and KN=filters (N=number of filters)
@@ -856,12 +857,12 @@ void configConvParameters(int argc, char *argv[], Config &stonne_cfg, std::strin
            }
 
             else if(name=="-generate_tile") {
-                std::cout << "Changing generate_tile to " << value << std::endl;
+                std::cout << "Changing generate_tile to " << value_str << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
 
             else if(name=="-generator") {
-                std::cout << "Changing generator to " << value << std::endl;
+                std::cout << "Changing generator to " << value_str << std::endl;
                 tileGenerator = parseTileGenerator(value_str);
             }
 
@@ -1018,12 +1019,12 @@ void configDenseGEMMParameters(int argc, char *argv[], Config &stonne_cfg, std::
            }
 
             else if(name=="-generate_tile") {
-                std::cout << "Changing generate_tile to " << value << std::endl;
+                std::cout << "Changing generate_tile to " << value_str << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
 
             else if(name=="-generator") {
-                std::cout << "Changing generator to " << value << std::endl;
+                std::cout << "Changing generator to " << value_str << std::endl;
                 tileGenerator = parseTileGenerator(value_str);
             }
 
@@ -1258,12 +1259,12 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
            }
 
             else if(name=="-generate_tile") {
-                std::cout << "Changing generate_tile to " << value << std::endl;
+                std::cout << "Changing generate_tile to " << value_str << std::endl;
                 tileGeneratorTarget = parseTileGeneratorTarget(value_str);
             }
 
             else if(name=="-generator") {
-                std::cout << "Changing generator to " << value << std::endl;
+                std::cout << "Changing generator to " << value_str << std::endl;
                 tileGenerator = parseTileGenerator(value_str);
             }
            

@@ -34,6 +34,32 @@ namespace StonneMapper {
         this->heuristic = this->msUtilization + this->edgeUtilization + heuristicN + heuristicK;
     }
 
+    bool TileOption::operator==( const TileOption& val ) const {
+        if (T_M != val.T_M) return false;
+        if (T_N != val.T_N) return false;
+        if (T_K != val.T_K) return false;
+        return true;
+    }
+
+
+    bool TileOption::operator<( const TileOption& val ) const {
+        // if heuristics are enoguh similar...
+        if (std::abs(heuristic - val.heuristic) < heuristicEpsilon) {
+            // then compare by T_N->T_K->T_M
+            if (T_N < val.T_N) return true;
+            else if (T_N < val.T_N) return false;
+            else {
+                if (T_K < val.T_K) return true;
+                else if (T_K > val.T_K) return false;
+                else return T_M < val.T_M;
+            }
+        }
+        else if (heuristic < val.heuristic) { // higher heuristic -> better tile
+            return true;
+        }
+        return false;
+    }
+
     bool TileOption::operator>( const TileOption& val ) const {
         // if heuristics are enoguh similar...
         if (std::abs(heuristic - val.heuristic) < heuristicEpsilon) {
