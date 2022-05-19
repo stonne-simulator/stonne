@@ -1,10 +1,12 @@
 #include <iostream>
 #include <cmath>
-#include "TileGenerator/StonneMapper/TileOption.h"
+#include "TileGenerator/StonneMapper/TileOptionDenseGemm.h"
+#include "TileGenerator/StonneMapper/utility.h"
+
 
 namespace StonneMapper {
 
-    TileOption::TileOption(uint num_ms, uint M, uint N, uint K, uint T_M, uint T_N, uint T_K) {
+    TileOptionDenseGemm::TileOptionDenseGemm(uint num_ms, uint M, uint N, uint K, uint T_M, uint T_N, uint T_K) {
         // Check that tile does not exceed the value of each dimension
         this->T_M = std::min(M, T_M);
         this->T_N = std::min(N, T_N);
@@ -21,7 +23,7 @@ namespace StonneMapper {
 
         // Calculate the heuristic value for this tile
         // - Max value added is, for T_N, factorHeuristicN. This is because usually tiles that maximizes the T_N value
-        //   tends to get better results. Also it happens with the performance when we compare T_K with T_M. For this
+        //   tends to get better results. Also, it happens with the performance when we compare T_K with T_M. For this
         //   reason, T_M does not receive any bonus if it gets a higher value
         // - Based on the max value that the dimension T_N/T_K can get, we calculate the "extra bonus" to the heuristic
         //   (to give this tiles more priority) based on the utilization on its dimension
@@ -34,7 +36,8 @@ namespace StonneMapper {
         this->heuristic = this->msUtilization + this->edgeUtilization + heuristicN + heuristicK;
     }
 
-    bool TileOption::operator==( const TileOption& val ) const {
+
+    bool TileOptionDenseGemm::operator==( const TileOptionDenseGemm& val ) const {
         if (T_M != val.T_M) return false;
         if (T_N != val.T_N) return false;
         if (T_K != val.T_K) return false;
@@ -42,8 +45,8 @@ namespace StonneMapper {
     }
 
 
-    bool TileOption::operator<( const TileOption& val ) const {
-        // if heuristics are enoguh similar...
+    bool TileOptionDenseGemm::operator<( const TileOptionDenseGemm& val ) const {
+        // if heuristics are enough similar...
         if (std::abs(heuristic - val.heuristic) < heuristicEpsilon) {
             // then compare by T_N->T_K->T_M
             if (T_N < val.T_N) return true;
@@ -60,8 +63,9 @@ namespace StonneMapper {
         return false;
     }
 
-    bool TileOption::operator>( const TileOption& val ) const {
-        // if heuristics are enoguh similar...
+
+    bool TileOptionDenseGemm::operator>( const TileOptionDenseGemm& val ) const {
+        // if heuristics are enough similar...
         if (std::abs(heuristic - val.heuristic) < heuristicEpsilon) {
             // then compare by T_N->T_K->T_M
             if (T_N > val.T_N) return true;
@@ -76,14 +80,6 @@ namespace StonneMapper {
             return true;
         }
         return false;
-    }
-
-    // Calculates the edge utilization for a given dimension and its tile value
-    // Edge utilization in a dimension is the percentage of operations that are worth for a given map
-    float TileOption::getEdgeUtilization(uint X, uint T_X) {
-        float fX = float(X);
-        float fT_X = float(T_X);
-        return fX / (ceil(fX / fT_X) * fT_X);
     }
 
 } // namespace StonneMapper
