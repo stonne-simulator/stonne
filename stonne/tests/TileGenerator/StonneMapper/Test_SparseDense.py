@@ -8,7 +8,7 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
     import tests.TileGenerator.StonneMapper.SparseDenseEvaluation as SparseDense
 
 
-PERFORMANCE_TOLERANCE = 0.2
+PERFORMANCE_TOLERANCE = 0.3
 GENERATOR = "StonneMapper"
 
 
@@ -123,7 +123,7 @@ class TestSparseDense(unittest.TestCase):
     def test14_SparseDenseGenerateRandomly(self):
         results = []
         for i in range(10):
-            num_ms = 2 ** random.randint(3, 10) # 8..1024
+            num_ms = 2 ** random.randint(3, 9) # 8..512
             dn_bw = num_ms
             rn_bw = num_ms
             M = random.randint(1, 256)
@@ -137,7 +137,7 @@ class TestSparseDense(unittest.TestCase):
     def test15_SparseDenseGenerateRandomlyAlwaysLess(self):
         results = []
         for i in range(10):
-            max_power = random.randint(3, 10) # 8..1024
+            max_power = random.randint(3, 9) # 8..512
             num_ms = 2 ** max_power
             dn_bw = num_ms
             rn_bw = num_ms

@@ -38,7 +38,7 @@ def evaluate(testname, num_ms, dn_bw, rn_bw, M, N, K, sparsity, tolerance=DEFAUL
     generatedtile = EvaluationUtils.get_sparsedense_tile(stdout)
 
     # print tile and cycles in terminal
-    print(f'\tL=> T_N={generatedtile[0]} T_M={generatedtile[1]}')
+    print(f'\tL=> T_N={generatedtile[0]} T_K={generatedtile[1]}')
     print(f'\tL=> {generatedtile_cycles} cycles')
 
 

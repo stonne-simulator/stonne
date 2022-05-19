@@ -8,7 +8,7 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
     import tests.TileGenerator.StonneMapper.SparseDenseEvaluation as SparseDense
 
 
-PERFORMANCE_TOLERANCE = 0.2
+PERFORMANCE_TOLERANCE = 0.3
 GENERATOR = "StonneMapper"
 
 

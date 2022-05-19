@@ -85,7 +85,7 @@ class TestDenseGemm(unittest.TestCase):
     def test10_DenseGemmGenerateRandomly(self):
         results = []
         for i in range(10):
-            num_ms = 2 ** random.randint(3, 10) # 8..1024
+            num_ms = 2 ** random.randint(3, 9) # 8..512
             dn_bw = num_ms
             rn_bw = num_ms
             M = random.randint(1, 256)
@@ -98,7 +98,7 @@ class TestDenseGemm(unittest.TestCase):
     def test11_DenseGemmGenerateRandomlyAlwaysLess(self):
         results = []
         for i in range(10):
-            max_power = random.randint(3, 10) # 8..1024
+            max_power = random.randint(3, 9) # 8..512
             num_ms = 2 ** max_power
             dn_bw = num_ms
             rn_bw = num_ms
