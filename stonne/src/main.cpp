@@ -412,7 +412,7 @@ bool runSparseDenseCommand(int argc, char *argv[])
     stonne_instance->loadSparseDense(layer_name, N, K, M, MK_sparse_matrix, KN_dense_matrix, (unsigned int*)MK_col_id, (unsigned int*) MK_row_pointer, acc_output, T_N, T_K); //Loading Sparse Dense
     //stonne_instance->loadClocking(clocked_op);
     if (tileGeneratorTarget != TileGenerator::Target::NONE)
-        stonne_instance->generateTile(tileGenerator, tileGeneratorTarget, MK_sparsity);
+        stonne_instance->generateTile(tileGenerator, tileGeneratorTarget, float(MK_sparsity) / 100.0f);
     stonne_instance->run(); //Running the simulator
 
 
@@ -1246,6 +1246,10 @@ void configSparseDenseParameters(int argc, char *argv[], Config &stonne_cfg, std
            else if(name=="-MK_sparsity") {
                 std::cout << "Changing MK_sparsity to " << value << std::endl;
                 MK_sparsity=value;
+                if (MK_sparsity < 0 || MK_sparsity > 100) {
+                    std::cerr << "Error: -MK_sparsity must be between 0 and 100" << std::endl;
+                    assert(false);
+                }
            }
   
            else if(name=="-T_N") {

@@ -415,9 +415,12 @@ void Stonne::loadTile(std::string tile_file) {
 } //End parser
 
 // General tile generation function for each type of layer
+// The sparsity (if specified) must be between 0 and 1
 void Stonne::generateTile(TileGenerator::Generator generator, TileGenerator::Target target, float MK_sparsity) {
     std::cout << "Generating a tile automatically..." << std::endl;
     std::cout << "Using generator <" << parseTileGenerator(generator) << "> and target <" << parseTileGeneratorTarget(target) << ">" << std::endl;
+
+    assert(MK_sparsity >= 0 && MK_sparsity <= 1); // implementation check, user will not see it
 
     TileGenerator::TileGenerator tileGenerator(stonne_cfg.m_MSNetworkCfg.ms_size,
                                                stonne_cfg.m_SDMemoryCfg.n_read_ports,
