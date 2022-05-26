@@ -52,10 +52,10 @@ def evaluate(testname, num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANC
         for T_N in [2 ** i for i in range(0, int(ceil(log2(num_ms))) + 1)]:
             for T_K in [2 ** i for i in range(0, int(ceil(log2(num_ms))) + 1)]:
                 # ensure that num_ms occupation is maximum and tile size does not exceed its dimension,
-                # although allowing to slightly exceed the limit
+                # although allowing to slightly exceed the limit (conditions on the end of the loops)
                 # cases with T_K == 1 and K != 1 will not work, we have to ensure that only can T_K=1 when K=1
                 # also we always want to maximize the num_ms utilization
-                if T_M >= M * 2 or T_N >= N * 2 or T_K >= K * 2 or (T_K == 1 and K > 1) or T_M * T_N * T_K != num_ms:
+                if (T_K == 1 and K > 1) or T_M * T_N * T_K != num_ms:
                     continue
 
                 # execution using a fixed tile
@@ -80,6 +80,16 @@ def evaluate(testname, num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANC
 
                 # print cycles of this case in terminal
                 print(f'\tL=> {cycles} cycles')
+                
+                # if T_K has reached the largest value that makes sense for the mapping, cancel the loop
+                if T_K >= K * 2:
+                    break
+            # if T_N has reached the largest value that makes sense for the mapping, cancel the loop
+            if T_N >= N * 2:
+                break
+        # if T_M has reached the largest value that makes sense for the mapping, cancel the loop
+        if T_M >= M * 2:
+            break
 
     # get and print final results
     speedup = ((1 / generatedtile_cycles) / (1 / min_cycles))
