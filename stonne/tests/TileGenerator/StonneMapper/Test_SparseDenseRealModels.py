@@ -8,8 +8,13 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
     import tests.TileGenerator.StonneMapper.SparseDenseEvaluation as SparseDense
 
 
+# Available generators for SparseDense layers
+GENERATOR = ["StonneMapper"]
+GENERATOR = GENERATOR[0]
+
+# Tests parameters
 PERFORMANCE_TOLERANCE = 0.3
-GENERATOR = "StonneMapper"
+BATCH_SIZE_N = 1
 
 
 class TestSparseDenseRealModels(unittest.TestCase):
@@ -35,42 +40,42 @@ class TestSparseDenseRealModels(unittest.TestCase):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc1Alexnet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=9216, sparsity=97, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=9216, sparsity=97, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testSparseDenseFc2Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc2Alexnet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, sparsity=91, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=4096, sparsity=91, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testSparseDenseFc3Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc3Alexnet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, sparsity=90, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=4096, sparsity=90, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testSparseDenseFc1MobileNet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc1MobileNet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=1024, sparsity=75, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=1024, sparsity=75, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testSparseDenseFc1ResNet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc1ResNet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=2048, sparsity=89, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=2048, sparsity=89, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testSparseDenseFc1VGG16(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc1VGG16-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=25088, sparsity=93, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=25088, sparsity=93, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     # Same mapping of Fc2Alexnet, different sparsity
@@ -78,7 +83,7 @@ class TestSparseDenseRealModels(unittest.TestCase):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc2VGG16-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, sparsity=93, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=4096, sparsity=93, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     # Same mapping of Fc3Alexnet, different sparsity
@@ -86,7 +91,7 @@ class TestSparseDenseRealModels(unittest.TestCase):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(SparseDense.evaluate(testname=f'Fc3VGG16-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, sparsity=93, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=4096, sparsity=93, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
 

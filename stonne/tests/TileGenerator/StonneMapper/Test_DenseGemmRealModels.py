@@ -8,8 +8,13 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
     import tests.TileGenerator.StonneMapper.DenseGemmEvaluation as DenseGemm
 
 
+# Available generators for DenseGEMM layers
+GENERATOR = ["StonneMapper", "mRNA"]
+GENERATOR = GENERATOR[0]
+
+# Tests parameters
 PERFORMANCE_TOLERANCE = 0.2
-GENERATOR = "StonneMapper"
+BATCH_SIZE_N = 1
 
 
 class TestDenseGemmRealModels(unittest.TestCase):
@@ -35,42 +40,42 @@ class TestDenseGemmRealModels(unittest.TestCase):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(DenseGemm.evaluate(testname=f'Fc1Alexnet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=9216, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=9216, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc2Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(DenseGemm.evaluate(testname=f'Fc2Alexnet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc3Alexnet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(DenseGemm.evaluate(testname=f'Fc3Alexnet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc1MobileNet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(DenseGemm.evaluate(testname=f'Fc1MobileNet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=1024, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=1024, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc1ResNet(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(DenseGemm.evaluate(testname=f'Fc1ResNet-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=2048, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=2048, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     def testDenseGemmFc1VGG16(self):
         results = []
         for num_ms in [128, 256, 512]:
             results.append(DenseGemm.evaluate(testname=f'Fc1VGG16-ms{num_ms}',
-                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=25088, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+                num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=25088, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 
     # Discarded because is the same mapping of Fc2Alexnet
@@ -78,7 +83,7 @@ class TestDenseGemmRealModels(unittest.TestCase):
     #     results = []
     #     for num_ms in [128, 256, 512]:
     #         results.append(DenseGemm.evaluate(testname=f'Fc2VGG16-ms{num_ms}',
-    #             num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+    #             num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=4096, N=BATCH_SIZE_N, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
     #     self.assertTrue(all(results))
 
     # Discarded because is the same mapping of Fc3Alexnet
@@ -86,7 +91,7 @@ class TestDenseGemmRealModels(unittest.TestCase):
     #     results = []
     #     for num_ms in [128, 256, 512]:
     #         results.append(DenseGemm.evaluate(testname=f'Fc3VGG16-ms{num_ms}',
-    #             num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=1, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
+    #             num_ms=num_ms, dn_bw=num_ms, rn_bw=num_ms, M=1000, N=BATCH_SIZE_N, K=4096, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
     #     self.assertTrue(all(results))
 
 

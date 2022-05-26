@@ -8,8 +8,13 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
     import tests.TileGenerator.StonneMapper.DenseGemmEvaluation as DenseGemm
 
 
+# Available generators for DenseGEMM layers
+GENERATOR = ["StonneMapper", "mRNA"]
+GENERATOR = GENERATOR[0]
+
+# Tests parameters
 PERFORMANCE_TOLERANCE = 0.2
-GENERATOR = "StonneMapper"
+NUMBER_RANDOM_TESTS = 10
 
 
 class TestDenseGemm(unittest.TestCase):
@@ -84,7 +89,7 @@ class TestDenseGemm(unittest.TestCase):
 
     def test10_DenseGemmGenerateRandomly(self):
         results = []
-        for i in range(10):
+        for i in range(NUMBER_RANDOM_TESTS):
             num_ms = 2 ** random.randint(3, 9) # 8..512
             dn_bw = num_ms
             rn_bw = num_ms
@@ -92,20 +97,6 @@ class TestDenseGemm(unittest.TestCase):
             N = random.randint(1, 256)
             K = random.randint(1, 256)
             results.append(DenseGemm.evaluate(testname=f'RandomGenerated[{i}]',
-                num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
-        self.assertTrue(all(results))
-
-    def test11_DenseGemmGenerateRandomlyAlwaysLess(self):
-        results = []
-        for i in range(10):
-            max_power = random.randint(3, 9) # 8..512
-            num_ms = 2 ** max_power
-            dn_bw = num_ms
-            rn_bw = num_ms
-            M = random.randint(1, num_ms)
-            N = random.randint(1, num_ms)
-            K = random.randint(1, num_ms)
-            results.append(DenseGemm.evaluate(testname=f'RandomGeneratedAlwaysLess[{i}]',
                 num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 

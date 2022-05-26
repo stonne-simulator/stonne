@@ -8,8 +8,13 @@ except ImportError: # Only works when you execute it with the '-m unittest' para
     import tests.TileGenerator.StonneMapper.SparseDenseEvaluation as SparseDense
 
 
+# Available generators for SparseDense layers
+GENERATOR = ["StonneMapper"]
+GENERATOR = GENERATOR[0]
+
+# Execution parameters
 PERFORMANCE_TOLERANCE = 0.3
-GENERATOR = "StonneMapper"
+NUMBER_RANDOM_TESTS = 10
 
 
 class TestSparseDense(unittest.TestCase):
@@ -122,7 +127,7 @@ class TestSparseDense(unittest.TestCase):
 
     def test14_SparseDenseGenerateRandomly(self):
         results = []
-        for i in range(10):
+        for i in range(NUMBER_RANDOM_TESTS):
             num_ms = 2 ** random.randint(3, 9) # 8..512
             dn_bw = num_ms
             rn_bw = num_ms
@@ -131,21 +136,6 @@ class TestSparseDense(unittest.TestCase):
             K = random.randint(1, 256)
             sparsity = random.randint(0, 99)
             results.append(SparseDense.evaluate(testname=f'RandomGenerated[{i}]',
-                num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, sparsity=sparsity, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
-        self.assertTrue(all(results))
-
-    def test15_SparseDenseGenerateRandomlyAlwaysLess(self):
-        results = []
-        for i in range(10):
-            max_power = random.randint(3, 9) # 8..512
-            num_ms = 2 ** max_power
-            dn_bw = num_ms
-            rn_bw = num_ms
-            M = random.randint(1, num_ms)
-            N = random.randint(1, num_ms)
-            K = random.randint(1, num_ms)
-            sparsity = random.randint(0, 99)
-            results.append(SparseDense.evaluate(testname=f'RandomGeneratedAlwaysLess[{i}]',
                 num_ms=num_ms, dn_bw=dn_bw, rn_bw=rn_bw, M=M, N=N, K=K, sparsity=sparsity, tolerance=PERFORMANCE_TOLERANCE, generator=GENERATOR))
         self.assertTrue(all(results))
 

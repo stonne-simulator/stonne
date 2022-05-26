@@ -1,5 +1,5 @@
 import argparse
-from math import log2
+from math import log2, ceil
 import os
 import subprocess
 import sys
@@ -48,9 +48,9 @@ def evaluate(testname, num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANC
     min_cycles = 9999999999
     min_tile = None
     print('# Trying all combinations searching the best tile using powers of 2')
-    for T_M in [2 ** i for i in range(0, int(log2(num_ms)) + 1)]:
-        for T_N in [2 ** i for i in range(0, int(log2(num_ms)) + 1)]:
-            for T_K in [2 ** i for i in range(0, int(log2(num_ms)) + 1)]:
+    for T_M in [2 ** i for i in range(0, int(ceil(log2(num_ms))) + 1)]:
+        for T_N in [2 ** i for i in range(0, int(ceil(log2(num_ms))) + 1)]:
+            for T_K in [2 ** i for i in range(0, int(ceil(log2(num_ms))) + 1)]:
                 # ensure that num_ms occupation is maximum and tile size does not exceed its dimension,
                 # although allowing to slightly exceed the limit
                 # cases with T_K == 1 and K != 1 will not work, we have to ensure that only can T_K=1 when K=1
