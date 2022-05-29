@@ -112,11 +112,19 @@ namespace StonneMapper {
             options.insert(option);
         }
         */
-
+        
         // Calculate the maximum T_K=2^x value we can use
         // We subtract 1 due to T_K tile constrains [min=1..max=512] -> [min=2..max=512] (min T_K=2)
         // Actually, for the final power we will increase the power by one
         uint maxPowerOfTwoT_K = log2(num_ms) - 1;
+
+        // TODO: explain this correctly
+        // If the value of N is much smaller than that of T_K, then the best results are obtained, by far, by increasing
+        // the value of T_K. Therefore, depending on the difference between K and N, more priority will be given to T_K,
+        // thus reducing the degree of sparsity to be considered.
+        // E.g: K=4096, N=16, sparsity=0.9 -> log2(4096) - log(16) = 8 -> sparsity = 0.9 - (8 / 10) = 0.1 -> more priority to T_K
+        if (N * 2 <= K)
+            MK_sparsity = std::max(0.0, MK_sparsity - (log2(K) - log2(N)) / 10.0);
 
         // Approximate the power of 2 of T_K using the approximation function -> it returns a value between 0 and 1
         // with the factor/position of the power to select
@@ -132,7 +140,8 @@ namespace StonneMapper {
         // Assign the rest of the num_ms to T_N
         uint T_N = std::min(N, num_ms / T_K);
         // If after this there are still some multipliers left (e.g: N very small) then add them to T_K if possible
-        T_K *= num_ms / (T_K * T_N);
+        T_K = std::min(K, T_K * (num_ms / (T_K * T_N)));
+
 
         // We implement this by this way to reuse the implementation of the heuristic method, thus it is not necessary
         // to modify the rest of the code of the function, and it is easily adaptable if you want to adapt the new
