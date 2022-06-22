@@ -28,8 +28,6 @@ class TestDenseGemmRealModels(unittest.TestCase):
     Note: accumulation_buffer is always 1
     """
 
-    # TODO: should we consider greater batch sizes than 1?
-
     @classmethod
     def setUpClass(cls):
         # builds the STONNE executable

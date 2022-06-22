@@ -112,7 +112,7 @@ namespace StonneMapper {
             options.insert(option);
         }
         */
-        
+
         // Calculate the maximum T_K=2^x value we can use
         // We subtract 1 due to T_K tile constrains [min=1..max=512] -> [min=2..max=512] (min T_K=2)
         // Actually, for the final power we will increase the power by one
@@ -174,7 +174,7 @@ namespace StonneMapper {
     // Returns a factor value between 0 (T_K=max_value) and 1 (T_K=min_value=2)
     float approximatePowerFactorT_K(float sparsity) {
         // Approximate point of intersection of the two functions
-        if (sparsity < 0.51) {
+        if (sparsity < 0.51327166727) {
             // Basic exponential decreasing function
             // Generated with https://www.mycurvefit.com/ and this data:
             // x     y

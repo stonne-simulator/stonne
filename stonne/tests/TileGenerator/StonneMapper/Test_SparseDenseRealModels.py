@@ -14,7 +14,7 @@ GENERATOR = GENERATOR[0]
 
 # Tests parameters
 PERFORMANCE_TOLERANCE = 0.3
-BATCH_SIZE_N = 1
+BATCH_SIZE_N = 16
 
 
 class TestSparseDenseRealModels(unittest.TestCase):
@@ -27,8 +27,6 @@ class TestSparseDenseRealModels(unittest.TestCase):
     passing the test only if the speedup fits in the tolerance margin.
     Note: accumulation_buffer is always 1
     """
-
-    # TODO: should we consider greater batch sizes than 1?
 
     @classmethod
     def setUpClass(cls):

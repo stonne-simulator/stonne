@@ -80,7 +80,7 @@ def evaluate(testname, num_ms, dn_bw, rn_bw, M, N, K, tolerance=DEFAULT_TOLERANC
 
                 # print cycles of this case in terminal
                 print(f'\tL=> {cycles} cycles')
-                
+
                 # if T_K has reached the largest value that makes sense for the mapping, cancel the loop
                 if T_K >= K * 2:
                     break

@@ -26,7 +26,7 @@ def get_densegemm_tile(stdout):
 def get_sparsedense_tile(stdout):
     match = re.search(r'Generated tile: <T_N=(\d+), T_K=(\d+)>', stdout)
     if match:
-        return int(match.group(1)), int(match.group(2))  # TODO: review this
+        return int(match.group(1)), int(match.group(2))
     else:
         return None
 
