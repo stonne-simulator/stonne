@@ -142,7 +142,7 @@ The hardware parameters are common for all the kernels. Other parameters can be 
 
 * `accumulation_buffer = [0,1]`
 
-    Enables the accumulation buffer. Mandatory in Rigid architectures.
+    Enables the accumulation buffer. Mandatory in Rigid architectures. Also needs to be set to 1 for SparseDense (SpMM) execution.
 
 * `print_stats = [0,1]`
 
