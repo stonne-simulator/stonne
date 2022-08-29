@@ -464,8 +464,9 @@ Example of running a SparseGEMM:
 
 Example of running a SparseDense:
 ```powershell
-./stonne -SparseDense -M=20 -N=20 -K=256 -MK_sparsity=80 -T_N=4 -T_K=32 -num_ms=128 -dn_bw=64 -rn_bw=64
+./stonne -SparseDense -M=20 -N=20 -K=256 -MK_sparsity=80 -T_N=4 -T_K=32 -num_ms=128 -dn_bw=64 -rn_bw=64 -accumulation_buffer=1
 ```
+Note that accumulation buffer needs to be set to 1 for the SparseDense case to work
 
 Example of running a SparseDense generating the tile with STONNE Mapper (performance [1] target):
 ```powershell
