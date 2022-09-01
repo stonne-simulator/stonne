@@ -7,6 +7,7 @@
     - [Flexible DNN Architecture](#flexible-dnn-architecture)
     - [Input Module](#input-module)
     - [Output module](#output-module)
+    - [STONNE Mapper: Module for automatic tile generation](#stonne-mapper-module-for-automatic-tile-generation)
   - [Supported Architectures](#supported-architectures)
   - [STONNE User Interface. How to run STONNE quickly.](#stonne-user-interface-how-to-run-stonne-quickly)
     - [Installation](#installation)
@@ -45,7 +46,7 @@ dense DNNs, more recent architectures have argued for flexibility to efficiently
 ![alt text](https://github.com/francisco-munoz/stonne/blob/master/figures/Top_Level_Stonne_shorter.png)
 
 STONNE is a cycle-level microarchitectural simulator for flexible DNN inference accelerators. To allow for end-to-end evaluations, the simulator is connected with a Deep Learning (DL) framework (Caffe and Pytorch DL frameworks in the current version). Therefore, STONNE can fully execute any dense and sparse DNN models supported by the DL framework that uses as its front-end.
- The simulator has been written entirely in C++, following the well-known GRASP and SOLID programming principles of object-oriented design. This has simplified its development and makes it easier the implementation of any kind of DNN inference accelerator microarchitecture, tile configuration mappings and dataflows.
+The simulator has been written entirely in C++, following the well-known GRASP and SOLID programming principles of object-oriented design. This has simplified its development and makes it easier the implementation of any kind of DNN inference accelerator microarchitecture, tile configuration mappings and dataflows.
 
 The figure presented above shows a high-level view of STONNE with the three major modules involved in the end-to-end simulation flow:
 
@@ -62,6 +63,16 @@ Furthermore, since these DL frameworks require a more complicated installation a
 ### Output module
 
 Once a simulation for a certain layer has been completed, this module is used for reporting simulation statistics such as performance, compute unit utilization, number of accesses to SRAM, wires and FIFOs, etc. Besides, this output module also reports the amount of energy consumed and the on-chip area required by the simulated architecture. These statistics obviously depend on the particular data format (e.g., fp16 or int8) utilized to represent the DNN model's parameters. So, STONNE supports different data formats in the whole end-to-end evaluation process and statistics report. For estimating both area and energy consumption, STONNE utilizes a table-based area and energy model, computing total energy using the cycle-level activity stats for each module. For the current table-based numbers existend in STONNE (see 'stonne/energy\_tables/' path), we ran synthesis using Synopsys Design-Compiler and place-and-route using Cadence Innovus on each module inside the MAERI and SIGMA RTL to populate the table. Users can plug in the numbers for their own implementations as well.
+
+### STONNE Mapper: Module for automatic tile generation
+
+Flexible architectures need to be configured previously to execute any layer, commonly using a tile specification. The specified tile will drastically vary the results obtained in each execution, so choosing a good configuration is an important step when doing simulations. However, finding an optimal configuration is a task that requieres so much time or a deep knowledge of how each mapping would work.
+
+For this reasson, STONNE includes a module called STONNE Mapper. It is a mapper which can automatically generate, given the hardware configuration and the specification of the layer to be simualated, a tile configuration that will be close to the optimum one in most cases. When used, the module will generate an output file with some extra information of the process used to select the tile. STONNE Mapper is an excellent alternative for fast prototyping and a good helper in finding the optimal tile configuration when the search space is very large.
+
+Currently, STONNE Mapper gives support to generate mappings of CONV, FC/DenseGEMM and SparseDense layers (how to use it in every case is explained later). For CONV mappings it integrates and use mRNA, another mapper designed for MAERI presented on ISPASS-2019. For FC/DenseGEMM and SparseDense it implements its own algorithms. In the most of the cases, the generated mappings gets more than the 90% of the performance from optimum configuration (based on the results obtained in our benchmarks), so it has a high trustly degree.
+
+This module and all of the implementations were made in a Final Degree Project in June 2022. Any question about its use or implementation can be made by contacting the author, Adrián Fenollar Navarro ([@Adrian-2105](https://github.com/Adrian-2105)).
 
 ## Supported Architectures	
 
@@ -89,7 +100,7 @@ Currently, STONNE runs 4 types of operations: Convolution Layers, FC Layers, Den
 
 The sintax of a STONNE user interface command to run any of the available operations is as follows:
 ```powershell
-./stonne [-h | -CONV | -FC | -SparseGEMM | -DenseGEMM] [Hardware parameters] [Dimension and tile Parameters]
+./stonne [-h | -CONV | -FC | -DenseGEMM | -SparseGEMM | SparseDense] [Hardware parameters] [Dimension and tile Parameters]
 ```
 
 ### Help Menu
@@ -125,13 +136,13 @@ The hardware parameters are common for all the kernels. Other parameters can be 
     
     Type of Multiplier network to be used. Linear is for flexible architectures, OS\_MESH for rigid architectures like TPU.
 
-* `mem_ctrl = [MAERI_DENSE_WORKLOAD, SIGMA_SPARSE_GEMM, TPU_OS_DENSE]`
+* `mem_ctrl = [MAERI_DENSE_WORKLOAD, SIGMA_SPARSE_GEMM, TPU_OS_DENSE, MAGMA_SPARSE_DENSE]`
     
     Type of memory controller to be used
 
 * `accumulation_buffer = [0,1]`
 
-    Enables the accumulation buffer. Mandatory in Rigid architectures.
+    Enables the accumulation buffer. Mandatory in Rigid architectures. Also needs to be set to 1 for SparseDense (SpMM) execution.
 
 * `print_stats = [0,1]`
 
@@ -140,11 +151,16 @@ The hardware parameters are common for all the kernels. Other parameters can be 
 
 ### Dimension and tile Parameters
 
-Obviously, the dimensions of the kernel depends on the type of the operation that is going to be run. Next, it is described the different parameters according to each supported operation:
+Obviously, the dimensions of the kernel depends on the type of the operation that is going to be run.
+
+If you intend to use STONNE Mapper to generate the tile configuration, note that the tile parameters (`T_x`) will be ignored and STONNE will only use the configuration it generates. In the same way, if you use STONNE Mapper, there is not need for the user to manually specify the tile parameters.
+
+
+Next, it is described the different parameters according to each supported operation:
 
 * CONV
 
-    * `layer_name`
+    * `layer_name = [CONV]`
         
         Name of the layer to run. The output statistic file will be named accordingly
 
@@ -216,6 +232,20 @@ Obviously, the dimensions of the kernel depends on the type of the operation tha
     
         Number of input columns mapped a time
 
+    * **STONNE Mapper**
+
+        * If used, the following parameters can be skipped: `strides`, `T_R`, `T_S`, `T_C`, `T_K`, `T_G`, `T_N`, `T_X_` and `T_Y_`.
+        
+        * When using it, it is mandatory to also use the option `-accumulation_buffer=1` to ensure that the tile configuration can adjust to the hardware resources.
+
+        * `generate_tile = [0 | none, 1 | performance, 2 | energy, 3 | energy_efficiency]`
+
+          STONNE Mapper is disabled by default (0, `none`). To use it you must to specify a target (1, 2 or 3; also the names can be used). The targets for the tile generation on CONV layers can be: `performance` (1) for maximize the performance, `energy` (2) for minimize the energy consumption and `energy-efficiency` (3) for get a balance between performance and energy.
+
+        * `generator = [Auto, mRNA]`
+
+          [Testing option] At the moment, only `mRNA` algorithm is supported for these type of layers.
+
     * **Constraints**
 
         Please make sure that these next constraints are followed (i.e., tile dimension must be multiple of its dimension):
@@ -231,7 +261,7 @@ Obviously, the dimensions of the kernel depends on the type of the operation tha
 
 * FC
 
-    * `layer_name = [str]`
+    * `layer_name = [FC]`
     
         Name of the layer to run. The output statistic file will be called by this name
 
@@ -259,9 +289,23 @@ Obviously, the dimensions of the kernel depends on the type of the operation tha
     
         Number of input neurons mapped at a time
 
+    * **STONNE Mapper**
+
+        * If used, the following parameters can be skipped: `T_M`, `T_N` and `T_K`.
+
+        * When using it, it is mandatory to also use the option `-accumulation_buffer=1` to ensure that the tile configuration can adjust to the hardware resources.
+
+        * `generate_tile = [0 | none, 1 | performance]`
+
+          STONNE Mapper is disabled by default (0, `none`). To use it you must to specify a target (1; also the names can be used). The only target available at the moment for the tile generation on FC/DenseGEMM layers is `performance` (1) for maximize the performance. However, the generated mapping is also the best mapping for the other targets for this type of layers.
+
+        * `generator = [Auto, StonneMapper, mRNA]`
+
+          [Testing option]  The user can select which algorithm to use to generate the mapping. By default, `StonneMapper` is always used because it gets better results in all cases (because it is a direct improvement of `mRNA`). This option should only be used if it is needed to test the mRNA tile generation for these type of layers.
+
 * DenseGEMM
 
-    * `layer_name = [str]`
+    * `layer_name = [DenseGEMM]`
     
         Name of the layer to run. The output statistic file will be called by this name
 
@@ -289,9 +333,24 @@ Obviously, the dimensions of the kernel depends on the type of the operation tha
     
         Number of K elements mapped at a time
 
+    * **STONNE Mapper**
+
+        * If used, the following parameters can be skipped: `T_M`, `T_N` and `T_K`.
+
+        * When using it, it is mandatory to also use the option `-accumulation_buffer=1` to ensure that the tile configuration can adjust to the hardware resources.
+
+        * `generate_tile = [0 | none, 1 | performance]`
+
+          STONNE Mapper is disabled by default (0, `none`). To use it you must to specify a target (1; also the names can be used). The only target available at the moment for the tile generation on FC/DenseGEMM layers is `performance` (1) for maximize the performance. However, the generated mapping is also the best mapping for the other targets for this type of layers.
+
+        * `generator = [Auto, StonneMapper, mRNA]`
+
+          [Testing option]  The user can select which algorithm to use to generate the mapping. By default, `StonneMapper` is always used because it gets better results in all cases (because it is a direct improvement of `mRNA`). This option should only be used if it is needed to test the mRNA tile generation for these type of layers.
+
+
 * SparseGEMM
 
-    * `layer_name = [str]`
+    * `layer_name = [SparseGEMM]`
     
         Name of the layer to run. The output statistic file will be called by this name
 
@@ -321,11 +380,61 @@ Obviously, the dimensions of the kernel depends on the type of the operation tha
     
         Apply compiler-based optimizations
 
+
+* SparseDense
+
+    * `layer_name = [SparseDense]`
+    
+        Name of the layer to run. The output statistic file will be called by this name
+
+    * `M = [x]` 
+    
+        Number of rows MK matrix
+
+    * `N = [x]`
+    
+        Number of columns KN matrix
+
+    * `K = [x]`
+    
+        Number of columns MK and rows KN matrix (cluster size)
+
+    * `MK_sparsity = [x]` 
+    
+        Percentage of sparsity MK matrix (0-100)
+
+    * `T_N = [x]`
+    
+        Number of N columns at a time
+
+    * `T_K = [x]`
+    
+        Number of K elements mapped at a time
+
+    * **STONNE Mapper**
+
+        * If used, the following parameters can be skipped: `T_N` and `T_K`.
+        
+        * When using it, it is mandatory to also use the option `-accumulation_buffer=1` to ensure that the tile configuration can adjust to the hardware resources.
+
+        * `generate_tile = [0 | none, 1 | performance]`
+
+          STONNE Mapper is disabled by default (0, `none`). To use it you must to specify a target (1; also the names can be used). The only target available at the moment for the tile generation on FC/DenseGEMM layers is `performance` (1) for maximize the performance. However, the generated mapping is also the best mapping for the other targets for this type of layers.
+
+        * `generator = [Auto, StonneMapper]`
+
+          [Testing option] At the moment, only `StonneMapper` algorithm is supported for these type of layers.
+
 ### Examples
 
-Example running a convolution layer: 
+Example running a CONV layer: 
 ```powershell
 ./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -T_R=3 -T_S=3 -T_C=1 -T_G=1 -T_K=1 -T_N=1 -T_X_=3 -T_Y_=1 -num_ms=64 -dn_bw=8 -rn_bw=8
+```
+
+Example running a CONV layer generating the tile with STONNE Mapper (energy target): 
+```powershell
+./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -generate_tile=energy -num_ms=64 -dn_bw=8 -rn_bw=8 -accumulation_buffer=1
 ```
 
 Example running a FC layer:
@@ -333,30 +442,48 @@ Example running a FC layer:
 ./stonne -FC -M=20 -N=20 -K=256 -num_ms=256 -dn_bw=64 -rn_bw=64 -T_K=64 -T_M=2 -T_N=1
 ```
 
-Example of running a sparse GEMM:
+Example running a FC layer generating the tile with STONNE Mapper (with mRNA algorithm and performance target):
 ```powershell
-./stonne -SparseGEMM -M=20 -N=20 -K=256 -num_ms=128 -dn_bw=64 -rn_bw=64  -MK_sparsity=80 -KN_sparsity=10 -dataflow=MK_STA_KN_STR
+./stonne -FC -M=20 -N=20 -K=256 -generate_tile=performance -generator=mRNA -num_ms=256 -dn_bw=64 -rn_bw=64 -accumulation_buffer=1
 ```
 
-Example of running a dense GEMM:
+Example of running a DenseGEMM:
 ```powershell
 /stonne -DenseGEMM -M=20 -N=20 -K=256 -num_ms=256 -dn_bw=64 -rn_bw=64 -T_K=64 -T_M=2 -T_N=1
 ```
 
-Example of running a dense GEMM over TPU:
+Example of running a DenseGEMM over TPU:
 ```powershell
 ./stonne -DenseGEMM -M=4 -N=4 -K=16 -ms_rows=4 -ms_cols=4 -dn_bw=8 -rn_bw=16  -T_N=4 -T_M=1 -T_K=1 -accumulation_buffer=1 -rn_type="TEMPORALRN" -mn_type="OS_MESH" -mem_ctrl="TPU_OS_DENSE"
 ```
 
+Example of running a SparseGEMM:
+```powershell
+./stonne -SparseGEMM -M=20 -N=20 -K=256 -num_ms=128 -dn_bw=64 -rn_bw=64  -MK_sparsity=80 -KN_sparsity=10 -dataflow=MK_STA_KN_STR
+```
+
+Example of running a SparseDense:
+```powershell
+./stonne -SparseDense -M=20 -N=20 -K=256 -MK_sparsity=80 -T_N=4 -T_K=32 -num_ms=128 -dn_bw=64 -rn_bw=64 -accumulation_buffer=1
+```
+Note that accumulation buffer needs to be set to 1 for the SparseDense case to work
+
+Example of running a SparseDense generating the tile with STONNE Mapper (performance [1] target):
+```powershell
+./stonne -SparseDense -M=20 -N=20 -K=256 -MK_sparsity=80 -generate_tile=1 -num_ms=128 -dn_bw=64 -rn_bw=64 -accumulation_buffer=1
+```
+
 ### Output
 
-Every layer execution generates 2 files in the path in which the simulator has been executed (the env variable OUTPUT_DIR can be set to indicate another output path): 
+Every layer execution generates three files in the path in which the simulator has been executed (the env variable OUTPUT_DIR can be set to indicate another output path): 
 
-- A json file with all the hardware statistics generated during the execution. 
+- A JSON file with all the hardware statistics generated during the execution. 
 
-- A counters file with the number of use of every component of the architecture generated. This can be utilized to generate the energy model. 
+- A counters file with the number of use of every component of the architecture generated. This can be utilized to generate the energy model.
 
-Note that after the execution, the results obtained in the output tensor by the simulator are compared with a  CPU algorithm to ensure the correctness of the simulator. Note that if the simulator does not output the correct results, an assertion will raise at the end of the execution. 
+- [Only if STONNE Mapper was used] A brief report about the process made by the module to select an efficient tile and the tile used.
+
+Note that after the execution, the results obtained in the output tensor by the simulator are compared with a CPU algorithm to ensure the correctness of the simulator. Note that if the simulator does not output the correct results, an assertion will raise at the end of the execution. 
 
 
 
@@ -377,7 +504,7 @@ The pytorch-frontend is located in the folder 'pytorch-frontend' and this basica
 
 ### Installation
 
-Installing Pytorch-frontend will make the same effort as installing the original Pytorch framework (see 'pytorch-frontend/README.md' or access to their original repository). 
+Installing Pytorch-frontend will make the same effort as installing the original PyTorch framework (see 'pytorch-frontend/README.md' or access to their original repository). 
 
 First, you will need Python 3.6 or later and a C++14 compiler. Also, we highly recommend installing an Anaconda environment. Once you have Anaconda installed (https://www.anaconda.com/products/individual) you can proceed to the installation. Next, we summarize the installation process on Linux (Please refer to the original Pytorch documentation to learn how to install it in other operating system):
 
@@ -410,7 +537,7 @@ Please, follow the official instructions for each dependency if something occurs
 ### Running PyTorch in STONNE
 
 Running pytorch using STONNE as a device is almost straightforward.
-Let's assume we define a DNN model using pytorch. This model is composed of a single and simple convolutional layer. Next, we present this code:
+Let's assume we define a DNN model using PyTorch. This model is composed of a single and simple convolutional layer. Next, we present this code:
 
 ```python
 class Net(nn.Module):
@@ -450,7 +577,7 @@ As we can see, we have inserted 4 new parameters:
 
 * `tile (str)`
 
-    This is the path to a file that defines the tile to be used to partition that layer. An example of this file might be found in 'minibenchmarks/dogsandcats_tile.txt' (Note that an example for a linear tile file might be found in 'minibenchmarks/dogsandcats_tile_fc.txt'). This parameter only will make sense if the hardware configuration file contains a dense memory controller. If the memory controller is sparse, then the execution will not require tiling as it is explained in SIGMA paper.
+    This is the path to a file that defines the tile to be used to partition that layer. An example of this file might be found in `minibenchmarks/dogsandcats_tile.txt` (note that an example for a linear tile file might be found in `minibenchmarks/dogsandcats_tile_fc.txt`). Also an example using STONNE Mapper for generate automatically a tile can be found in `minibenchmarks/dogsandcats_tile_stonnemapper.txt` (same parameters as if used from the CLI). This parameter only will make sense if the hardware configuration file contains a dense memory controller. If the memory controller is sparse, then the execution will not require tiling as it is explained in SIGMA paper.
 
 * `sparsity_ratio (float 0.0-1.0)`
 
@@ -461,16 +588,16 @@ As we can see, we have inserted 4 new parameters:
     This is an optional parameter and points to a folder in which the stats of the simulation of that layer will be stored. 
 
 
-The addition of these 4 parameters and the modification of the function will let pytorch  run the layer in STONNE obtaining the real tensors.
+The addition of these 4 parameters and the modification of the function will let PyTorch run the layer in STONNE obtaining the real tensors.
 
-In the current version of the pytorch-frontend we also support nn.SimulatedLinear and torch_stonne.SimulatedMatmul operations that correspond with both nn.Linear and nn.Matmul operations in the original pytorch framework. The only need is to change the name of the functions and indicate the 3 extra parameters. 
+In the current version of the pytorch-frontend we also support `nn.SimulatedLinear` and `torch_stonne.SimulatedMatmul` operations that correspond with both `nn.Linear` and `nn.Matmul` operations in the original PyTorch framework. The only need is to change the name of the functions and indicate the 3 extra parameters. 
 
 
 ### Simulation with real benchmarks
 
 In order to reduce the effort of the user, we have already migrated some models to STONNE. By the moment, we have 4 DNN benchmarks in this framework: Alexnet, SSD-mobilenets, SSD-Resnets1.5 and BERT. All of them are in the folder 'benchmarks'. Note that to migrate these models, we have had to understand the code of all of them, locate the main kernels (i.e., convolutions, linear and matrix multiplication operations) and turn the functions into the simulated version. That is the effort you require to migrate a new model. We will update this list over time. 
 
-Running these models is straightforward as we have prepared a script ('benchmarks/run_benchmarks.py file') that performs all the task automatically. Next, we present one example for each network:
+Running these models is straightforward as we have prepared a script (`benchmarks/run_benchmarks.py` file) that performs all the task automatically. Next, we present one example for each network:
 
 ```
 cd benchmarks

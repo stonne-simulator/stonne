@@ -11,6 +11,8 @@
 #include "utility.h"
 #include "Config.h"
 #include <time.h>
+#include <math.h>
+#include <unistd.h>
 #include "cpptoml.h"
 
 Stonne::Stonne(Config stonne_cfg) {
@@ -151,10 +153,6 @@ void Stonne::connectBusandMemory() {
 }
 
 void Stonne::loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow) {
-    loadDNNLayer(layer_type, layer_name, R, S, C, K, G, N, X, Y, strides, input_address, filter_address, output_address, dataflow, true);
-}
-
-void Stonne::loadDNNLayer(Layer_t layer_type, std::string layer_name, unsigned int R, unsigned int S, unsigned int C, unsigned int K, unsigned int G, unsigned int N, unsigned int X, unsigned int Y, unsigned int strides, address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow, bool use_mRNA) {
     assert((C % G)==0); //G must be multiple of C
     assert((K % G)==0); //G must be multiple of K
     assert(X>=R);
@@ -198,7 +196,7 @@ void Stonne::loadDenseGEMM(std::string layer_name, unsigned int N, unsigned int 
     //K in CNN = M in SIGMA
     //input_matrix=KN
     //filter_matrix = MK
-    loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow, false);
+    loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
 }
 
@@ -216,28 +214,11 @@ void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned in
     std::cout << "Loading metadata" << std::endl;
 
     /////To define in the new class
-    this->mem->setDenseSpatialData(T_N, T_K);
-    std::cout << "Loading tile data" << std::endl;
+    loadSparseDenseTile(T_N, T_K);
 }
-
-
-void Stonne::loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M)  {
-    //loadTile(1, T_K, 1, T_M, 1, T_N, 1, 1);
-    std::cout << "Loading a GEMM tile" << std::endl;
-    loadTile(1, T_K, 1, T_N, 1, 1, T_M, 1);
-    assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == GEMM));   //Force to have the right layer with the GEMM parameters)
-}
-
-
 
 //To dense CNNs and GEMMs 
 void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_) {
-    // If a tile was previously loaded, then do not load a new one
-    if (this->tile_loaded) {
-        std::cout << "Trying to load a tile, but one was previously loaded. Skipping." << std::endl;
-        return;
-    }
-
 
     assert(this->layer_loaded);
     if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type==LINEAR) {
@@ -251,21 +232,19 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
  
     //Remove these lines if we want the architeture to compute the layer even if the tile does not fit. 
     // This will mean that some row, columns or output channels would remain without calculating. 
-    /*
     if(stonne_cfg.m_SDMemoryCfg.mem_controller_type==MAERI_DENSE_WORKLOAD) { //Just for this maeri controller
-        //assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
-        //assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
-        //assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
-        //assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
-        assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
-        assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
-        assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
-        assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
+       // assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
+       // assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
+       // assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
+       // assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
+       // assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
+       // assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
+       // assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
+       // assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
     }
-    */
 
     //End check
-    unsigned int n_folding = (this->dnn_layer->get_R() / T_R)*(this->dnn_layer->get_S() / T_S) * (this->dnn_layer->get_C() / T_C) ;
+    unsigned int n_folding = ceil(this->dnn_layer->get_R() / (float) T_R)*ceil(this->dnn_layer->get_S() / (float)T_S) * ceil(this->dnn_layer->get_C() / (float)T_C) ;
     bool folding_enabled = false; //Condition to use extra multiplier. Note that if folding is enabled but some type of accumulation buffer is needed this is false as no fw ms is needed. 
     if((n_folding > 1) && (this->stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled==0) && (this->stonne_cfg.m_ASNetworkCfg.reduce_network_type != FENETWORK)) { //If there is folding and the RN is not able to acumulate itself, we have to use an extra MS to accumulate
         folding_enabled = true; 
@@ -289,11 +268,23 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
     this->mem->setTile(this->current_tile);
 }
 
+void Stonne::loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M)  {
+    //loadTile(1, T_K, 1, T_M, 1, T_N, 1, 1);
+    std::cout << "Loading a GEMM tile" << std::endl;
+    loadTile(1, T_K, 1, T_N, 1, 1, T_M, 1);
+    assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == GEMM));   //Force to have the right layer with the GEMM parameters)
+}
+
 void Stonne::loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K)  {
     //loadTile(1, T_S, 1, T_K, 1, T_N, 1, 1);
     std::cout << "Loading a FC tile" << std::endl;
     loadTile(1, T_S, 1, T_K, 1, 1, T_N, 1);
     assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == FC));   //Force to have the right layer with the FC parameters)
+}
+
+void Stonne::loadSparseDenseTile(unsigned int T_N, unsigned int T_K) {
+    std::cout << "Loading SparseDense tile: <T_N=" << T_N << ", T_K=" << T_K << ">" << std::endl;
+    this->mem->setDenseSpatialData(T_N, T_K);
 }
 
 
@@ -308,8 +299,10 @@ void Stonne::loadTile(std::string tile_file) {
     auto T_N=config->get_as<int32_t>("T_N");
     auto T_X_=config->get_as<int32_t>("T_X'");
     auto T_Y_=config->get_as<int32_t>("T_Y'");
-    auto mRNA_goal_str=config->get_as<std::string>("mRNA");
-    mRNA::OptGoal mRNA_goal;
+    auto tileGeneratorTarget_str=config->get_as<std::string>("generate_tile");
+    auto tileGenerator_str=config->get_as<std::string>("generator");
+    TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
+    TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
 
     if(!tile_type) {
         std::cout << "Error to parse tile_type. Parameter not found" << std::endl;
@@ -331,9 +324,11 @@ void Stonne::loadTile(std::string tile_file) {
     }
 
     if(*tile_type=="CONV") {
-        // if mRNA is specified then generate a FC tile configuration for the layer
-        if (mRNA_goal_str && (mRNA_goal = parsemRNAGoal(*mRNA_goal_str)) != mRNA::none) {
-            generateConvTile(mRNA_goal);
+        // if generateTile is specified then generate a FC tile configuration for the layer
+        if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
+            if (tileGenerator_str)
+                tileGenerator = parseTileGenerator(*tileGenerator_str);
+            generateTile(tileGenerator, tileGeneratorTarget);
             return;
         }
         // in other case, parse all arguments and load the tile
@@ -385,9 +380,11 @@ void Stonne::loadTile(std::string tile_file) {
     }
 
     else if(*tile_type=="FC") {
-        // if mRNA is specified then generate a FC tile configuration for the layer
-        if (mRNA_goal_str && (mRNA_goal = parsemRNAGoal(*mRNA_goal_str)) != mRNA::none) {
-            generateFCTile(mRNA_goal);
+        // if generateTile is specified then generate a FC tile configuration for the layer
+        if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
+            if (tileGenerator_str)
+                tileGenerator = parseTileGenerator(*tileGenerator_str);
+            generateTile(tileGenerator, tileGeneratorTarget);
             return;
         }
         // in other case, parse all arguments and load the tile
@@ -417,63 +414,87 @@ void Stonne::loadTile(std::string tile_file) {
 
 } //End parser
 
-// General mRNA generation of a tile
-void Stonne::generateTile(mRNA_Generator &mRNA) {
-    std::cout << "Generating optimum Tile configuration with mRNA..." << std::endl;
+// General tile generation function for each type of layer
+// The sparsity (if specified) must be between 0 and 1
+void Stonne::generateTile(TileGenerator::Generator generator, TileGenerator::Target target, float MK_sparsity) {
+    std::cout << "Generating a tile automatically..." << std::endl;
+    std::cout << "Using generator <" << parseTileGenerator(generator) << "> and target <" << parseTileGeneratorTarget(target) << ">" << std::endl;
 
-    // Generate tile and get it's fields
-    Tile tileGenerated = mRNA.generateTileConfig();
-    unsigned int T_R  = tileGenerated.get_T_R();
-    unsigned int T_S  = tileGenerated.get_T_S();
-    unsigned int T_C  = tileGenerated.get_T_C();
-    unsigned int T_K  = tileGenerated.get_T_K();
-    unsigned int T_G  = tileGenerated.get_T_G();
-    unsigned int T_N  = tileGenerated.get_T_N();
-    unsigned int T_X_ = tileGenerated.get_T_X_();
-    unsigned int T_Y_ = tileGenerated.get_T_Y_();
+    assert(MK_sparsity >= 0 && MK_sparsity <= 1); // implementation check, user will not see it
 
-    // Loads the generated tile and checks parameters
-    loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
+    TileGenerator::TileGenerator tileGenerator(stonne_cfg.m_MSNetworkCfg.ms_size,
+                                               stonne_cfg.m_SDMemoryCfg.n_read_ports,
+                                               stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                                               generator);
+
+    switch (dnn_layer->get_layer_type()) {
+        case Layer_t::CONV: { // Generates a tile using the Stonne CONV parameters
+            unsigned int R = dnn_layer->get_R();
+            unsigned int S = dnn_layer->get_S();
+            unsigned int C = dnn_layer->get_C();
+            unsigned int K = dnn_layer->get_K();
+            unsigned int G = dnn_layer->get_G();
+            unsigned int N = dnn_layer->get_N();
+            unsigned int X = dnn_layer->get_X();
+            unsigned int Y = dnn_layer->get_Y();
+            unsigned int strides = dnn_layer->get_strides();
+            unsigned int X_ = (X - R + strides) / strides;
+            unsigned int Y_ = (Y - S + strides) / strides;
+
+            // Generate tile and print it on the screen
+            TileGenerator::ConvTile tile = tileGenerator.generateConvTile(R, S, C, K, G, N, X, Y, X_, Y_, strides, target);
+
+            std::cout << "Generated tile: <T_R=" << tile.T_R << ", T_S=" << tile.T_S << ", T_C=" << tile.T_C << ", T_K=" << tile.T_K << ", T_G=" << tile.T_G << ", T_N=" << tile.T_N << ", T_X'=" << tile.T_X_ << ", T_Y'=" << tile.T_Y_ << ">" << std::endl;
+
+            // Loads the generated tile and checks parameters
+            loadTile(tile.T_R, tile.T_S, tile.T_C, tile.T_K, tile.T_G, tile.T_N, tile.T_X_, tile.T_Y_);
+            break;
+        }
+
+        case Layer_t::FC:
+        case Layer_t::GEMM: { // Generates a tile using the Stonne FC parameters
+            // See Stonne::loadDenseGEMM for reference to this map
+            unsigned int M = dnn_layer->get_X();
+            unsigned int N = dnn_layer->get_K();
+            unsigned int K = dnn_layer->get_S();
+
+            // Generate tile and get it's fields
+            TileGenerator::DenseGemmTile tile = tileGenerator.generateDenseGemmTile(M, N, K, target);
+
+            std::cout << "Generated tile: <T_M=" << tile.T_M << ", T_N=" << tile.T_N << ", T_K=" << tile.T_K << ">" << std::endl;
+
+            // Loads the generated tile and checks parameters
+            if (dnn_layer->get_layer_type() == Layer_t::FC)
+                loadFCTile(tile.T_K, tile.T_M, tile.T_N);
+            else // dnn_layer->get_layer_type() == Layer_t::GEMM
+                loadGEMMTile(tile.T_N, tile.T_K, tile.T_M);
+
+            break;
+        }
+
+        case Layer_t::SPARSE_DENSE: { // Generates a tile using the Stonne SparseDense parameters
+            unsigned long long M = dnn_layer->get_N();
+            unsigned long long N = dnn_layer->get_K();
+            unsigned long long K = dnn_layer->get_C();
+
+            // Generate tile and get it's fields
+            TileGenerator::SparseDenseTile tile = tileGenerator.generateSparseDenseTile(M, N, K, MK_sparsity, target);
+
+            std::cout << "Generated tile: <T_N=" << tile.T_N << ", T_K=" << tile.T_K << ">" << std::endl;
+
+
+            // Loads the generated tile and checks parameters
+            loadSparseDenseTile(tile.T_N, tile.T_K);
+            break;
+        }
+        default: {
+            std::cout << "Error: Unknown layer type." << std::endl;
+            assert(false);
+        }
+    }
+
 }
 
-// Generates a tile using the Stonne CONV parameters
-void Stonne::generateConvTile(mRNA::OptGoal mRNA_goal) {
-    unsigned int R = dnn_layer->get_R();
-    unsigned int S = dnn_layer->get_S();
-    unsigned int C = dnn_layer->get_C();
-    unsigned int K = dnn_layer->get_K();
-    unsigned int G = dnn_layer->get_G();
-    unsigned int N = dnn_layer->get_N();
-    unsigned int X = dnn_layer->get_X();
-    unsigned int Y = dnn_layer->get_Y();
-    unsigned int strides = dnn_layer->get_strides();
-    unsigned int X_ = (X - R + strides) / strides;      // X_
-    unsigned int Y_ = (Y - S + strides) / strides;       // Y_
-
-    mRNA_Generator mRNA_CONV(CONV,
-                             stonne_cfg.m_MSNetworkCfg.ms_size,
-                             stonne_cfg.m_SDMemoryCfg.n_read_ports,
-                             stonne_cfg.m_SDMemoryCfg.n_write_ports,
-                             R, S, C, K, G, N, X, Y, X_, Y_, strides,
-                             mRNA_goal);
-    generateTile(mRNA_CONV);
-}
-
-// Generates a tile using the Stonne FC parameters
-void Stonne::generateFCTile(mRNA::OptGoal mRNA_goal) {
-    // See Stonne::loadDenseGEMM for reference to this map
-    unsigned int K = dnn_layer->get_S();
-    unsigned int M = dnn_layer->get_X();
-    unsigned int N = dnn_layer->get_K();
-
-    mRNA_Generator mRNA_FC(FC,
-                           stonne_cfg.m_MSNetworkCfg.ms_size,
-                           stonne_cfg.m_SDMemoryCfg.n_read_ports,
-                           stonne_cfg.m_SDMemoryCfg.n_write_ports,
-                           M, N, K,
-                           mRNA_goal);
-    generateTile(mRNA_FC);
-}
 
 void Stonne::run() {
     //Execute the cycles
@@ -555,8 +576,10 @@ void Stonne::printStats() {
         out << "," << std::endl;
 
         //Printing tile configuration parameters
-       // this->current_tile->printConfiguration(out, indent);
-        //out << "," << std::endl;   
+        if (tile_loaded) {
+            this->current_tile->printConfiguration(out, indent);
+            out << "," << std::endl;
+        }
         
         //Printing ASNetwork configuration parameters (i.e., ASwitches configuration for these VNs, flags, etc)
         this->asnet->printConfiguration(out, indent);

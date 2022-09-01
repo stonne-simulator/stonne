@@ -1,0 +1,30 @@
+# STONNE
+stonne/stonne
+stonne/objs/
+**/output_stats*
+**/mRNA_output_*
+**/StonneMapper_output_*
+
+# Pytorch frontend
+pytorch-frontend/aten/
+pytorch-frontend/build/
+pytorch-frontend/third_party/
+pytorch-frontend/tools/
+pytorch-frontend/torch/
+
+# Stonne connection
+pytorch-frontend/stonne_connection/build
+pytorch-frontend/stonne_connection/dist
+pytorch-frontend/stonne_connection/stonne_src_code
+pytorch-frontend/stonne_connection/torch_stonne.egg-info
+pytorch-frontend/stonne_connection/stonne/**/*.o
+pytorch-frontend/torch.egg-info
+
+# Python
+*.pyc
+
+# Extra
+.idea/
+.vscode/
+stonne/.idea/
+stonne/.vscode/

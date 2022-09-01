@@ -8,16 +8,26 @@
 #include <sstream>
 #include <string>
 #include "types.h"
-#include "mRNA_Generator.h"
+#include "TileGenerator/TileGenerator.h"
 
 // Parse functions
 bool isNum(std::string str);
 
 bool ispowerof2(unsigned int x);
 
+unsigned int nextPowerOf2(int x);
+
 std::string getstr(std::istringstream& instr);
 
-mRNA::OptGoal parsemRNAGoal(std::string mRNA_goal);
+std::string to_lower(std::string str);
+
+TileGenerator::Target parseTileGeneratorTarget(std::string target);
+
+std::string parseTileGeneratorTarget(TileGenerator::Target target);
+
+TileGenerator::Generator parseTileGenerator(std::string generator);
+
+std::string parseTileGenerator(TileGenerator::Generator generator);
 
 std::string get_string_adder_configuration(adderconfig_t config);
 

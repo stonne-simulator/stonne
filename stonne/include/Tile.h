@@ -52,8 +52,6 @@ public:
 
     Tile(unsigned int T_M, unsigned int T_N, unsigned int T_K, bool folding); //Used for FC layers
 
-    Tile(std::string tile_file); //Used by some external front-end to get the tile values from an input file.
-
     //Signals generation
     void generate_signals(int num_ms);
 
