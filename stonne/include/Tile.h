@@ -50,7 +50,7 @@ private:
 public:
     Tile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G,  unsigned int T_N, unsigned int T_X_, unsigned int T_Y_, bool folding); //Used by the architecture
 
-    Tile(std::string tile_file); //Used by some external front-end to get the tile values from an input file.
+    Tile(unsigned int T_M, unsigned int T_N, unsigned int T_K, bool folding); //Used for FC layers
 
     //Signals generation
     void generate_signals(int num_ms);

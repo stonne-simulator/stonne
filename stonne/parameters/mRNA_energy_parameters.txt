@@ -1,0 +1,10 @@
+Energy_factors {
+  dram_eng = 54
+  spm_eng = 8
+  reg_eng = 1
+  dsaccess_eng = 1
+  rsaccess_eng = 1
+  msaccess_eng = 1
+  multiply_eng = 1
+  reduce_eng = 1
+}

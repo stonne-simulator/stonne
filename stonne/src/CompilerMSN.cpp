@@ -114,7 +114,8 @@ void CompilerMSN::generate_ms_signals(unsigned int num_ms) {
     //Disabling if padding
      //If stride > 1 then all the signals of ms_fwreceive_enabled and ms_fwsend_enabled must be disabled since no reuse between MSwitches can be done. In order to not to incorporate stride
     //as a tile parameter, we leave the class Tile not aware of the stride. Then, if stride exists, here the possible enabled signals (since tile does not know about tile) are disabled.
-    if(this->dnn_layer->get_strides() > 1) {
+    //Zero-remainder constraint. Something similar happens if T_S % S != 0
+    if((this->dnn_layer->get_strides() > 1) || ((this->dnn_layer->get_S() % this->current_tile->get_T_S())!=0)) {
         for(unsigned int i=0; i<num_ms; i++) {
             ms_fwsend_enabled[i]=false;
             ms_fwreceive_enabled[i]=false;

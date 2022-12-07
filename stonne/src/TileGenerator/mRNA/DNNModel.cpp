@@ -1,5 +1,10 @@
+//
+// Created by Zhongyuan Zhao on 9/21/18.
+//
 
-#include "DNNModel.h"
+#include "TileGenerator/mRNA/DNNModel.h"
+
+using namespace mRNA;
 
 void DNNModel::parseModelName(std::istringstream& instr) {
   std::string str;

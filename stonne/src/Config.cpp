@@ -6,7 +6,6 @@
 #include "utility.h"
 #include "cpptoml.h"
 
-
 Config::Config() {
     this->reset();
 }

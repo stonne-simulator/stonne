@@ -11,6 +11,9 @@
 #include "utility.h"
 #include "Config.h"
 #include <time.h>
+#include <math.h>
+#include <unistd.h>
+#include "cpptoml.h"
 
 Stonne::Stonne(Config stonne_cfg) {
     this->stonne_cfg=stonne_cfg;
@@ -58,6 +61,9 @@ Stonne::Stonne(Config stonne_cfg) {
 	case MAERI_DENSE_WORKLOAD:
 	    this->mem = new  SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection);
 	    break;
+	case MAGMA_SPARSE_DENSE:
+            this->mem = new  SparseDenseSDMemory(0, "SparseDenseSDMemory", stonne_cfg, this->outputLTConnection);
+            break;
 	case TPU_OS_DENSE:
 	    this->mem = new  OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
 	    break;
@@ -208,22 +214,12 @@ void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned in
     std::cout << "Loading metadata" << std::endl;
 
     /////To define in the new class
-    this->mem->setDenseSpatialData(T_N, T_K);
-    std::cout << "Loading tile data" << std::endl;
+    loadSparseDenseTile(T_N, T_K);
 }
-
-
-void Stonne::loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M)  {
-    //loadTile(1, T_K, 1, T_M, 1, T_N, 1, 1);
-    loadTile(1, T_K, 1, T_N, 1, 1, T_M, 1);
-    assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == GEMM));   //Force to have the right layer with the GEMM parameters)
-    std::cout << "Loading a GEMM tile" << std::endl;
-}
-
-
 
 //To dense CNNs and GEMMs 
 void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_) {
+
     assert(this->layer_loaded);
     if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type==LINEAR) {
         assert(this->ms_size >= (T_R*T_S*T_C*T_K*T_G*T_N*T_X_*T_Y_)); //There are enough mswitches
@@ -237,18 +233,18 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
     //Remove these lines if we want the architeture to compute the layer even if the tile does not fit. 
     // This will mean that some row, columns or output channels would remain without calculating. 
     if(stonne_cfg.m_SDMemoryCfg.mem_controller_type==MAERI_DENSE_WORKLOAD) { //Just for this maeri controller
-        assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
-        assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
-        assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
-        assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
-        assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
-        assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
-        assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
-        assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
+       // assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
+       // assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
+       // assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
+       // assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
+       // assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
+       // assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
+       // assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
+       // assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
     }
 
     //End check
-    unsigned int n_folding = (this->dnn_layer->get_R() / T_R)*(this->dnn_layer->get_S() / T_S) * (this->dnn_layer->get_C() / T_C) ;
+    unsigned int n_folding = ceil(this->dnn_layer->get_R() / (float) T_R)*ceil(this->dnn_layer->get_S() / (float)T_S) * ceil(this->dnn_layer->get_C() / (float)T_C) ;
     bool folding_enabled = false; //Condition to use extra multiplier. Note that if folding is enabled but some type of accumulation buffer is needed this is false as no fw ms is needed. 
     if((n_folding > 1) && (this->stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled==0) && (this->stonne_cfg.m_ASNetworkCfg.reduce_network_type != FENETWORK)) { //If there is folding and the RN is not able to acumulate itself, we have to use an extra MS to accumulate
         folding_enabled = true; 
@@ -272,12 +268,233 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
     this->mem->setTile(this->current_tile);
 }
 
+void Stonne::loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M)  {
+    //loadTile(1, T_K, 1, T_M, 1, T_N, 1, 1);
+    std::cout << "Loading a GEMM tile" << std::endl;
+    loadTile(1, T_K, 1, T_N, 1, 1, T_M, 1);
+    assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == GEMM));   //Force to have the right layer with the GEMM parameters)
+}
+
 void Stonne::loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K)  {
     //loadTile(1, T_S, 1, T_K, 1, T_N, 1, 1);
+    std::cout << "Loading a FC tile" << std::endl;
     loadTile(1, T_S, 1, T_K, 1, 1, T_N, 1);
     assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == FC));   //Force to have the right layer with the FC parameters)
-    std::cout << "Loading a FC tile" << std::endl;
 }
+
+void Stonne::loadSparseDenseTile(unsigned int T_N, unsigned int T_K) {
+    std::cout << "Loading SparseDense tile: <T_N=" << T_N << ", T_K=" << T_K << ">" << std::endl;
+    this->mem->setDenseSpatialData(T_N, T_K);
+}
+
+
+void Stonne::loadTile(std::string tile_file) {
+    auto config = cpptoml::parse_file(tile_file); //Creating object to parse
+    auto tile_type=config->get_as<std::string>("tile_type");
+    auto T_R=config->get_as<int32_t>("T_R");
+    auto T_S=config->get_as<int32_t>("T_S");
+    auto T_C=config->get_as<int32_t>("T_C");
+    auto T_K=config->get_as<int32_t>("T_K");
+    auto T_G=config->get_as<int32_t>("T_G");
+    auto T_N=config->get_as<int32_t>("T_N");
+    auto T_X_=config->get_as<int32_t>("T_X'");
+    auto T_Y_=config->get_as<int32_t>("T_Y'");
+    auto tileGeneratorTarget_str=config->get_as<std::string>("generate_tile");
+    auto tileGenerator_str=config->get_as<std::string>("generator");
+    TileGenerator::Target tileGeneratorTarget = TileGenerator::Target::NONE;
+    TileGenerator::Generator tileGenerator = TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+
+    if(!tile_type) {
+        std::cout << "Error to parse tile_type. Parameter not found" << std::endl;
+        exit(1);
+    }
+
+    if(*tile_type=="CONV") { //Actually the architecture does not know about the layer type. This is just to make sure that the user introduces the
+        //appropiate parameters.
+        std::cout << "Reading a tile of type CONV" << std::endl;
+    }
+
+    else if(*tile_type=="FC") {
+        std::cout << "Reading a tile of type FC" << std::endl;
+    }
+
+    else {
+        std::cout << "Error to parse tile_type. Specify a correct type: [CONV, FC, POOL]" << std::endl;
+        exit(1);
+    }
+
+    if(*tile_type=="CONV") {
+        // if generateTile is specified then generate a FC tile configuration for the layer
+        if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
+            if (tileGenerator_str)
+                tileGenerator = parseTileGenerator(*tileGenerator_str);
+            generateTile(tileGenerator, tileGeneratorTarget);
+            return;
+        }
+        // in other case, parse all arguments and load the tile
+        else {
+            if(!T_R) {
+                std::cout << "Error to parse T_R. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_S) {
+                std::cout << "Error to parse T_S. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_C) {
+                std::cout << "Error to parse T_C. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_K) {
+                std::cout << "Error to parse T_K. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_G) {
+                std::cout << "Error to parse T_G. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_N) {
+                std::cout << "Error to parse T_N. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_X_) {
+                std::cout << "Error to parse T_X'. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_Y_) {
+                std::cout << "Error to parse T_Y'. Value not found." << std::endl;
+                exit(1);
+            }
+
+            //Filling the parameters
+            loadTile(*T_R, *T_S, *T_C, *T_K, *T_G, *T_N, *T_X_, *T_Y_);
+        }
+
+    }
+
+    else if(*tile_type=="FC") {
+        // if generateTile is specified then generate a FC tile configuration for the layer
+        if (tileGeneratorTarget_str && (tileGeneratorTarget = parseTileGeneratorTarget(*tileGeneratorTarget_str)) != TileGenerator::Target::NONE) {
+            if (tileGenerator_str)
+                tileGenerator = parseTileGenerator(*tileGenerator_str);
+            generateTile(tileGenerator, tileGeneratorTarget);
+            return;
+        }
+        // in other case, parse all arguments and load the tile
+        else {
+            if(!T_N) {
+                std::cout << "Error to parse T_N. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_S) {
+                std::cout << "Error to parse T_S. Value not found." << std::endl;
+                exit(1);
+            }
+
+            if(!T_K) {
+                std::cout << "Error to parse T_K. Value not found." << std::endl;
+                exit(1);
+            }
+
+            //Filling the parameters
+            loadFCTile(*T_S, *T_N, *T_K);
+        }
+    }
+
+    //Folding is not specified in this case since this use case is not to load the tile into the architecture. Rather, it is to load the tile from the file and layer specify all the parameters
+    // to the architecture by means of some abstractions like an instruction.
+
+} //End parser
+
+// General tile generation function for each type of layer
+// The sparsity (if specified) must be between 0 and 1
+void Stonne::generateTile(TileGenerator::Generator generator, TileGenerator::Target target, float MK_sparsity) {
+    std::cout << "Generating a tile automatically..." << std::endl;
+    std::cout << "Using generator <" << parseTileGenerator(generator) << "> and target <" << parseTileGeneratorTarget(target) << ">" << std::endl;
+
+    assert(MK_sparsity >= 0 && MK_sparsity <= 1); // implementation check, user will not see it
+
+    TileGenerator::TileGenerator tileGenerator(stonne_cfg.m_MSNetworkCfg.ms_size,
+                                               stonne_cfg.m_SDMemoryCfg.n_read_ports,
+                                               stonne_cfg.m_SDMemoryCfg.n_write_ports,
+                                               generator);
+
+    switch (dnn_layer->get_layer_type()) {
+        case Layer_t::CONV: { // Generates a tile using the Stonne CONV parameters
+            unsigned int R = dnn_layer->get_R();
+            unsigned int S = dnn_layer->get_S();
+            unsigned int C = dnn_layer->get_C();
+            unsigned int K = dnn_layer->get_K();
+            unsigned int G = dnn_layer->get_G();
+            unsigned int N = dnn_layer->get_N();
+            unsigned int X = dnn_layer->get_X();
+            unsigned int Y = dnn_layer->get_Y();
+            unsigned int strides = dnn_layer->get_strides();
+            unsigned int X_ = (X - R + strides) / strides;
+            unsigned int Y_ = (Y - S + strides) / strides;
+
+            // Generate tile and print it on the screen
+            TileGenerator::ConvTile tile = tileGenerator.generateConvTile(R, S, C, K, G, N, X, Y, X_, Y_, strides, target);
+
+            std::cout << "Generated tile: <T_R=" << tile.T_R << ", T_S=" << tile.T_S << ", T_C=" << tile.T_C << ", T_K=" << tile.T_K << ", T_G=" << tile.T_G << ", T_N=" << tile.T_N << ", T_X'=" << tile.T_X_ << ", T_Y'=" << tile.T_Y_ << ">" << std::endl;
+
+            // Loads the generated tile and checks parameters
+            loadTile(tile.T_R, tile.T_S, tile.T_C, tile.T_K, tile.T_G, tile.T_N, tile.T_X_, tile.T_Y_);
+            break;
+        }
+
+        case Layer_t::FC:
+        case Layer_t::GEMM: { // Generates a tile using the Stonne FC parameters
+            // See Stonne::loadDenseGEMM for reference to this map
+            unsigned int M = dnn_layer->get_X();
+            unsigned int N = dnn_layer->get_K();
+            unsigned int K = dnn_layer->get_S();
+
+            // Generate tile and get it's fields
+            TileGenerator::DenseGemmTile tile = tileGenerator.generateDenseGemmTile(M, N, K, target);
+
+            std::cout << "Generated tile: <T_M=" << tile.T_M << ", T_N=" << tile.T_N << ", T_K=" << tile.T_K << ">" << std::endl;
+
+            // Loads the generated tile and checks parameters
+            if (dnn_layer->get_layer_type() == Layer_t::FC)
+                loadFCTile(tile.T_K, tile.T_M, tile.T_N);
+            else // dnn_layer->get_layer_type() == Layer_t::GEMM
+                loadGEMMTile(tile.T_N, tile.T_K, tile.T_M);
+
+            break;
+        }
+
+        case Layer_t::SPARSE_DENSE: { // Generates a tile using the Stonne SparseDense parameters
+            unsigned long long M = dnn_layer->get_N();
+            unsigned long long N = dnn_layer->get_K();
+            unsigned long long K = dnn_layer->get_C();
+
+            // Generate tile and get it's fields
+            TileGenerator::SparseDenseTile tile = tileGenerator.generateSparseDenseTile(M, N, K, MK_sparsity, target);
+
+            std::cout << "Generated tile: <T_N=" << tile.T_N << ", T_K=" << tile.T_K << ">" << std::endl;
+
+
+            // Loads the generated tile and checks parameters
+            loadSparseDenseTile(tile.T_N, tile.T_K);
+            break;
+        }
+        default: {
+            std::cout << "Error: Unknown layer type." << std::endl;
+            assert(false);
+        }
+    }
+
+}
+
 
 void Stonne::run() {
     //Execute the cycles
@@ -359,8 +576,10 @@ void Stonne::printStats() {
         out << "," << std::endl;
 
         //Printing tile configuration parameters
-       // this->current_tile->printConfiguration(out, indent);
-        //out << "," << std::endl;   
+        if (tile_loaded) {
+            this->current_tile->printConfiguration(out, indent);
+            out << "," << std::endl;
+        }
         
         //Printing ASNetwork configuration parameters (i.e., ASwitches configuration for these VNs, flags, etc)
         this->asnet->printConfiguration(out, indent);
@@ -522,5 +741,4 @@ void Stonne::testDSNetwork(unsigned int num_ms) {
     delete[] dests;
 
 }
-
 

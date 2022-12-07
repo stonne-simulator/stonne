@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <vector>
 #include <algorithm>
+
 bool isNum(std::string str) {
   std::istringstream sin(str);
   double d;
@@ -28,11 +29,83 @@ std::string getstr(std::istringstream& instr) {
       continue;
     }
   }
+  return str;
 }
 
 bool ispowerof2(unsigned int x) {
     return x && !(x & (x - 1));
 }
+
+unsigned int nextPowerOf2(int x) {
+    return pow(2, ceil(log2(x)));
+}
+
+std::string to_lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+  return str;
+}
+
+TileGenerator::Target parseTileGeneratorTarget(std::string target) {
+    target = to_lower(target);
+    if(target == "none" || target == "0")
+        return TileGenerator::Target::NONE;
+    else if(target == "performance" || target == "1")
+        return TileGenerator::Target::PERFORMANCE;
+    else if(target == "energy" || target == "2")
+        return TileGenerator::Target::ENERGY;
+    else if(target == "energy_efficiency" ||target  == "3")
+        return TileGenerator::Target::ENERGY_EFFICIENCY;
+
+    std::cerr << "TileGenerator target <" << target << "> is not recognized" << std::endl;
+    std::cerr << "-generate_tile only supports 0 (none), 1 (performance), 2 (energy) or 3 (energy_efficiency)" << std::endl;
+    std::cerr << "Changing TileGenerator target to Target::None" << std::endl;
+
+    return TileGenerator::Target::NONE;
+}
+
+std::string parseTileGeneratorTarget(TileGenerator::Target target) {
+    switch(target) {
+        case TileGenerator::Target::NONE:
+            return "none";
+        case TileGenerator::Target::PERFORMANCE:
+            return "performance";
+        case TileGenerator::Target::ENERGY:
+            return "energy";
+        case TileGenerator::Target::ENERGY_EFFICIENCY:
+            return "energy_efficiency";
+    }
+    return "";
+}
+
+
+TileGenerator::Generator parseTileGenerator(std::string generator) {
+    generator = to_lower(generator);
+    if(generator == "auto" || generator == "0")
+        return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+    else if(generator == "mrna" || generator == "1")
+        return TileGenerator::Generator::MRNA;
+    else if(generator == "stonnemapper" || generator == "2")
+        return TileGenerator::Generator::STONNE_MAPPER;
+
+    std::cerr << "TileGenerator generator <" << generator << "> is not recognized" << std::endl;
+    std::cerr << "-generator only supports 0 (automatic), 1 (mRNA) or 2 (StonneMapper)" << std::endl;
+    std::cerr << "Changing TileGenerator generator to Generator::CHOOSE_AUTOMATICALLY" << std::endl;
+
+    return TileGenerator::Generator::CHOOSE_AUTOMATICALLY;
+}
+
+std::string parseTileGenerator(TileGenerator::Generator generator) {
+    switch (generator) {
+        case TileGenerator::Generator::CHOOSE_AUTOMATICALLY:
+            return "Auto";
+        case TileGenerator::Generator::MRNA:
+            return "mRNA";
+        case TileGenerator::Generator::STONNE_MAPPER:
+            return "StonneMapper";
+    }
+    return "";
+}
+
 
 std::string get_string_adder_configuration(adderconfig_t config) {
     switch(config) {
@@ -159,6 +232,9 @@ std::string get_string_memory_controller_type(MemoryController_t memory_controll
             return "SIGMA_SPARSE_GEMM";
             break;
             /////
+	case MAGMA_SPARSE_DENSE:
+	    return "MAGMA_SPARSE_DENSE";
+	    break;
 	
 	case TPU_OS_DENSE:
 	    return "TPU_OS_DENSE";
@@ -181,6 +257,10 @@ MemoryController_t get_type_memory_controller_type(std::string memory_controller
 	else if(memory_controller_type=="TPU_OS_DENSE") {
             return TPU_OS_DENSE;
         }
+
+	else if(memory_controller_type=="MAGMA_SPARSE_DENSE") {
+            return MAGMA_SPARSE_DENSE;
+	}
         else {
             std::cout << memory_controller_type << " Not found" << std::endl;
             assert(false);
