@@ -109,7 +109,7 @@ setup(
             name='torch_stonne',
             sources=list_of_src_files_to_link,
             include_dirs=list_of_include_dirs,
-            extra_cflags=['-O3']
+            extra_compile_args=['-O3', '-std=c++17']
         )
     ],
     cmdclass={
