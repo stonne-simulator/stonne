@@ -44,6 +44,7 @@ We have created a docker image for STONNE! Everything is installed in the image 
 ```
 docker run -it franciscomunoz/stonne_omega_img /bin/bash
 
+```
 ## What is STONNE
 
 The design of specialized architectures for accelerating the inference procedure of Deep Neural Networks (DNNs) is a booming area of research nowadays. While first-generation accelerator proposals used simple fixed dataflows tailored for 
