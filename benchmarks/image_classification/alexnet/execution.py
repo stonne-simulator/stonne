@@ -6,7 +6,7 @@ import torch
 import alexnet
 
 
-url, filename = ("https://github.com/pytorch/hub/raw/master/dog.jpg", "dog.jpg")
+url, filename = ("https://raw.githubusercontent.com/pytorch/hub/master/images/dog.jpg", "dog.jpg")
 try: urllib.URLopener().retrieve(url, filename)
 except: urllib.request.urlretrieve(url, filename)
 
