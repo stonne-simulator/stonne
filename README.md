@@ -564,7 +564,7 @@ pip install torchvision==0.8.2 --no-deps
 You can check that the installation was successful by running the next test simulation:
 
 ```powershell
-python $STONNE_ROOT/pytorch-frontend/stonne_connection/test_2.py
+python $STONNE_ROOT/pytorch-frontend/stonne_connection/test_simulation.py
 ```
 
 ### Running PyTorch in STONNE
