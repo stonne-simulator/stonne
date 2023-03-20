@@ -43,29 +43,29 @@ class AlexNet(nn.Module):
         )'''
 
         self.features = nn.Sequential(
-            nn.SimulatedConv2d(3, 64, kernel_size=11, path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_conv1.txt', sparsity_ratio=0.90, stride=4, padding=2),
+            nn.SimulatedConv2d(3, 64, kernel_size=11, path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_conv1.txt', sparsity_ratio=0.90, stride=4, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
-            nn.SimulatedConv2d(64, 192, kernel_size=5,path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_conv2.txt', sparsity_ratio=0.90, padding=2),
+            nn.SimulatedConv2d(64, 192, kernel_size=5,path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_conv2.txt', sparsity_ratio=0.90, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
-            nn.SimulatedConv2d(192, 384, kernel_size=3, path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_conv3.txt', sparsity_ratio=0.90, padding=1),
+            nn.SimulatedConv2d(192, 384, kernel_size=3, path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_conv3.txt', sparsity_ratio=0.90, padding=1),
             nn.ReLU(inplace=True),
-            nn.SimulatedConv2d(384, 256, kernel_size=3, path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_conv4.txt', sparsity_ratio=0.90,padding=1),
+            nn.SimulatedConv2d(384, 256, kernel_size=3, path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_conv4.txt', sparsity_ratio=0.90,padding=1),
             nn.ReLU(inplace=True),
-            nn.SimulatedConv2d(256, 256, kernel_size=3, path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_conv5.txt', sparsity_ratio=0.90, padding=1),
+            nn.SimulatedConv2d(256, 256, kernel_size=3, path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_conv5.txt', sparsity_ratio=0.90, padding=1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
         )
 
         self.classifier = nn.Sequential(
             nn.Dropout(),
-            nn.SimulatedLinear(256 * 6 * 6, 4096, path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_fc6.txt', sparsity_ratio=0.90),
+            nn.SimulatedLinear(256 * 6 * 6, 4096, path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_fc6.txt', sparsity_ratio=0.90),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.SimulatedLinear(4096, 4096,path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_fc7.txt', sparsity_ratio=0.90),
+            nn.SimulatedLinear(4096, 4096,path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_fc7.txt', sparsity_ratio=0.90),
             nn.ReLU(inplace=True),
-            nn.SimulatedLinear(4096, num_classes, path_to_arch_file='/home/paco/Desktop/PyTorch/stonne/architectures/sparse_arch_test.cfg', path_to_tile='tiles/tile_configuration_fc8.txt', sparsity_ratio=0.90),
+            nn.SimulatedLinear(4096, num_classes, path_to_arch_file='maeri_256mses_256_bw.cfg', path_to_tile='tiles/tile_configuration_fc8.txt', sparsity_ratio=0.90),
         )
 
 
