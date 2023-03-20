@@ -19,7 +19,7 @@
     - [Examples](#examples)
     - [Output](#output)
     - [Generating Energy Numbers](#generating-energy-numbers)
-  - [Python Frontend](#python-frontend)
+  - [PyTorch Frontend](#pytorch-frontend)
     - [Installation](#installation-1)
     - [Running PyTorch in STONNE](#running-pytorch-in-stonne)
     - [Simulation with real benchmarks](#simulation-with-real-benchmarks)
@@ -39,12 +39,15 @@ Please, if you use STONNE, please cite us:
 ```
 
 ## Docker image
-We have created a docker image for STONNE! Everything is installed in the image so using the simulator is much easier. Just type the next docker command to download and run the image:
 
-```
-docker run -it franciscomunoz/stonne_omega_img /bin/bash
+We have created a docker image for STONNE! Everything is installed in the image so using the simulator is much easier. Also, this image comes with [OMEGA](https://github.com/stonne-simulator/dockerfile) and [SST-STONNE](https://github.com/stonne-simulator/sst-elements-with-stonne) simulators. More information can be found in [our Dockerfile repository](https://github.com/stonne-simulator/dockerfile).
 
+To pull and run the container, just type the following command:
+
+```bash
+docker run -it stonnesimulator/stonne-simulators
 ```
+
 ## What is STONNE
 
 The design of specialized architectures for accelerating the inference procedure of Deep Neural Networks (DNNs) is a booming area of research nowadays. While first-generation accelerator proposals used simple fixed dataflows tailored for 
@@ -81,7 +84,7 @@ For this reasson, STONNE includes a module called STONNE Mapper. It is a mapper 
 
 Currently, STONNE Mapper gives support to generate mappings of CONV, FC/DenseGEMM and SparseDense layers (how to use it in every case is explained later). For CONV mappings it integrates and use mRNA, another mapper designed for MAERI presented on ISPASS-2019. For FC/DenseGEMM and SparseDense it implements its own algorithms. In the most of the cases, the generated mappings gets more than the 90% of the performance from optimum configuration (based on the results obtained in our benchmarks), so it has a high trustly degree.
 
-This module and all of the implementations were made in a Final Degree Project in June 2022. Any question about its use or implementation can be made by contacting the author, Adrián Fenollar Navarro ([@Adrian-2105](https://github.com/Adrian-2105)).
+This module and all of the implementations were made in a Final Degree Project in June 2022. Any question about its use or implementation can be made by contacting the author directly ([@Adrian-2105](https://github.com/Adrian-2105)).
 
 ## Supported Architectures	
 
@@ -101,11 +104,11 @@ The installation of STONNE, along with its user interface,  can be carried out b
 cd stonne
 make all
 ```
-These commands will generate a binary file 'stonne/stonne'. This binary file can be executed to run layers and gemms with any dimensions and any hardware configuration. All the tensors are filled using random numbers. 
+These commands will generate a binary file `stonne/stonne`. This binary file can be executed to run layers and gemms with any dimensions and any hardware configuration. All the tensors are filled using random numbers. 
 
 ### How to run STONNE
 
-Currently, STONNE runs 4 types of operations: Convolution Layers, FC Layers, Dense GEMMs and Sparse GEMMs. Please, note that almost any kernel can be, in the end, mapped using these operations. Others operations such as pooling layers will be supported in the future. However, these are the operations that usually dominate the execution time in machine learning applications. Therefore, we believe that they are enough to perform a comprehensive and realistic exploration. Besides, note that a sparse convolution might be also supported as all the convolution layers can be converted into a GEMM operation using the im2col algorithm.
+Currently, STONNE runs 5 types of operations: Convolution Layers, FC Layers, Dense GEMMs, Sparse GEMMs and SparseDense GEMMs. Please, note that almost any kernel can be, in the end, mapped using these operations. Others operations such as pooling layers will be supported in the future. However, these are the operations that usually dominate the execution time in machine learning applications. Therefore, we believe that they are enough to perform a comprehensive and realistic exploration. Besides, note that a sparse convolution might be also supported as all the convolution layers can be converted into a GEMM operation using the im2col algorithm.
 
 The sintax of a STONNE user interface command to run any of the available operations is as follows:
 ```powershell
@@ -116,7 +119,7 @@ The sintax of a STONNE user interface command to run any of the available operat
 
 A help menu will be shown when running the next command:
 
-```
+```powershell
 ./stonne -h: Obtain further information to run STONNE
 ```
 
@@ -167,7 +170,7 @@ If you intend to use STONNE Mapper to generate the tile configuration, note that
 
 Next, it is described the different parameters according to each supported operation:
 
-* CONV
+* **CONV**
 
     * `layer_name = [CONV]`
         
@@ -268,7 +271,7 @@ Next, it is described the different parameters according to each supported opera
         6. `T_X_ % ((X - R + strides) / strides) = 0`
         7. `T_Y_ % ((Y - S + strides) / strides) = 0`
 
-* FC
+* **FC**
 
     * `layer_name = [FC]`
     
@@ -312,7 +315,7 @@ Next, it is described the different parameters according to each supported opera
 
           [Testing option]  The user can select which algorithm to use to generate the mapping. By default, `StonneMapper` is always used because it gets better results in all cases (because it is a direct improvement of `mRNA`). This option should only be used if it is needed to test the mRNA tile generation for these type of layers.
 
-* DenseGEMM
+* **DenseGEMM**
 
     * `layer_name = [DenseGEMM]`
     
@@ -357,7 +360,7 @@ Next, it is described the different parameters according to each supported opera
           [Testing option]  The user can select which algorithm to use to generate the mapping. By default, `StonneMapper` is always used because it gets better results in all cases (because it is a direct improvement of `mRNA`). This option should only be used if it is needed to test the mRNA tile generation for these type of layers.
 
 
-* SparseGEMM
+* **SparseGEMM**
 
     * `layer_name = [SparseGEMM]`
     
@@ -383,14 +386,16 @@ Next, it is described the different parameters according to each supported opera
     
         Percentage of sparsity KN matrix (0-100)
 
-    * `dataflow = [MK_STA_KN_STR | MK_STR_KN_STA]`
+    * `dataflow = [MK_STA_KN_STR, MK_STR_KN_STA]`
+    
+        Dataflow to use during operations 
 
     * `optimize = [0,1]`
     
         Apply compiler-based optimizations
 
 
-* SparseDense
+* **SparseDense**
 
     * `layer_name = [SparseDense]`
     
@@ -414,7 +419,7 @@ Next, it is described the different parameters according to each supported opera
 
     * `T_N = [x]`
     
-        Number of N columns at a time
+        Number of N columns mapped at a time
 
     * `T_K = [x]`
     
@@ -436,7 +441,7 @@ Next, it is described the different parameters according to each supported opera
 
 ### Examples
 
-Example running a CONV layer: 
+Example running a CONV layer (manual mapping): 
 ```powershell
 ./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -T_R=3 -T_S=3 -T_C=1 -T_G=1 -T_K=1 -T_N=1 -T_X_=3 -T_Y_=1 -num_ms=64 -dn_bw=8 -rn_bw=8
 ```
@@ -446,7 +451,7 @@ Example running a CONV layer generating the tile with STONNE Mapper (energy targ
 ./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -generate_tile=energy -num_ms=64 -dn_bw=8 -rn_bw=8 -accumulation_buffer=1
 ```
 
-Example running a FC layer:
+Example running a FC layer (manual mapping):
 ```powershell
 ./stonne -FC -M=20 -N=20 -K=256 -num_ms=256 -dn_bw=64 -rn_bw=64 -T_K=64 -T_M=2 -T_N=1
 ```
@@ -456,7 +461,7 @@ Example running a FC layer generating the tile with STONNE Mapper (with mRNA alg
 ./stonne -FC -M=20 -N=20 -K=256 -generate_tile=performance -generator=mRNA -num_ms=256 -dn_bw=64 -rn_bw=64 -accumulation_buffer=1
 ```
 
-Example of running a DenseGEMM:
+Example of running a DenseGEMM (manual mapping):
 ```powershell
 /stonne -DenseGEMM -M=20 -N=20 -K=256 -num_ms=256 -dn_bw=64 -rn_bw=64 -T_K=64 -T_M=2 -T_N=1
 ```
@@ -471,7 +476,7 @@ Example of running a SparseGEMM:
 ./stonne -SparseGEMM -M=20 -N=20 -K=256 -num_ms=128 -dn_bw=64 -rn_bw=64  -MK_sparsity=80 -KN_sparsity=10 -dataflow=MK_STA_KN_STR
 ```
 
-Example of running a SparseDense:
+Example of running a SparseDense (manual mapping):
 ```powershell
 ./stonne -SparseDense -M=20 -N=20 -K=256 -MK_sparsity=80 -T_N=4 -T_K=32 -num_ms=128 -dn_bw=64 -rn_bw=64 -accumulation_buffer=1
 ```
@@ -505,7 +510,7 @@ In order to generate the energy consumption of the execution we have developed a
 ```
 The current energy numbers are located in the file energy_tables/energy_model.txt. We obtained the energy numbers through synthesis using Synopsys Design-Compiler and place-and-route using Cadence Innovus on each module inside the MAERI and SIGMA RTL to populate the table. Users can plug in the numbers for their own implementations as well.
 
-## Python Frontend
+## PyTorch Frontend
 
 At this point, the user must be familiar with the usage of STONNE and the set of statistics that the tool is able to output. However, with the STONNE user interface presented previously, the user must have realized that the inputs and outputs coming in and out in the simulator are random. Here, it is explained how to run real DNN models using pytorch and STONNE as a computing device. 
 
@@ -513,35 +518,54 @@ The pytorch-frontend is located in the folder 'pytorch-frontend' and this basica
 
 ### Installation
 
-Installing Pytorch-frontend will make the same effort as installing the original PyTorch framework (see 'pytorch-frontend/README.md' or access to their original repository). 
+First, you will need Python 3.6 or higher and a C++14 compiler. Also, we highly recommend to create an Anaconda environment before continue. Learn how to install it in their [official documentation](https://docs.anaconda.com/anaconda/install/index.html). Once installed, you can create and activate a new virtual environment with the next commands:
 
-First, you will need Python 3.6 or later and a C++14 compiler. Also, we highly recommend installing an Anaconda environment. Once you have Anaconda installed (https://www.anaconda.com/products/individual) you can proceed to the installation. Next, we summarize the installation process on Linux (Please refer to the original Pytorch documentation to learn how to install it in other operating system):
+```powershell
+conda create --name stonne python=3.8 
+conda activate stonne
+```
+
+Once the environment is ready, you have to install some installation dependencies before continue. You can install them with the next commands:
+
+```powershell
+pip install pyyaml==6.0 setuptools==45.2.0 numpy==1.23.5 
+```
+
+Now you can start to install the PyTorch frontend. First, if you don't have CUDA on your computer, export the next variables:
+
+```powershell
+export MAX_JOBS=1
+export NO_CUDA=YES
+export NO_CUDA=1
+```
+
+Second, you can build and install PyTorch (`torch`) from sources using the next commands (it takes around 20 minutes):
 
 ```powershell
 cd pytorch-frontend/
 export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
 python setup.py install
 ```
-Next, run the next commands, which will install the pytorch_stonne package, that will be used for the connection with STONNE.
+
+Third, you can build and install our PyTorch frontend (`torch_stonne`) package using the next commands:
+
 ```powershell
 cd stonne_connection/
 python setup.py install
 ```
-Besides, you will need the next dependencies in order to run all the benchmarks:
 
-- torchvision (https://github.com/pytorch/vision)
-- transformers (https://github.com/huggingface/transformers)
-- numpy
-
-Please, make sure all the dependencies are solved before running any benchmark. Besides, make sure the installation of the dependencies do not remove the current version of pytorch to install another one. This is very common and can be frustrating. In order to avoid so, I recommend installing the torchvision package and transformers from sources. Here an example of installing torchvision from source:
+Finally, to be able to run all the benchmarks, you will need to install some extra dependencies. We recommend you to install the specific versions listed below in order to avoid package dependency problems and overwriting the previous torch installation. You can install them with the next commands:
 
 ```powershell
-git clone https://github.com/pytorch/vision
-cd vision
-python setup.py install
+pip install transformers==4.25.1
+pip install torchvision==0.8.2 --no-deps
 ```
 
-Please, follow the official instructions for each dependency if something occurs. 
+You can check that the installation was successful by running the next test simulation:
+
+```powershell
+python $STONNE_ROOT/pytorch-frontend/stonne_connection/test_2.py
+```
 
 ### Running PyTorch in STONNE
 
@@ -599,7 +623,7 @@ As we can see, we have inserted 4 new parameters:
 
 The addition of these 4 parameters and the modification of the function will let PyTorch run the layer in STONNE obtaining the real tensors.
 
-In the current version of the pytorch-frontend we also support `nn.SimulatedLinear` and `torch_stonne.SimulatedMatmul` operations that correspond with both `nn.Linear` and `nn.Matmul` operations in the original PyTorch framework. The only need is to change the name of the functions and indicate the 3 extra parameters. 
+In the current version of the pytorch-frontend we also support `nn.SimulatedLinear` and `torch_stonne.SimulatedMatmul` operations that correspond with both `nn.Linear` and `nn.Matmul` operations in the original PyTorch framework. The only need is to change the name of the functions and indicate the 3 extra parameters. We still do not support SparseDense operations on the pytorch-frontend.
 
 
 ### Simulation with real benchmarks
