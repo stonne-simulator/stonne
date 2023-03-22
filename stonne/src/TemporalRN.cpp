@@ -47,14 +47,12 @@ TemporalRN::~TemporalRN() {
 
 void TemporalRN::setMemoryConnections(std::vector<std::vector<Connection*>>  memoryConnections) {
     unsigned int n_bus_lines = memoryConnections.size();
-    std::cout << "N_bus_lines: " << n_bus_lines << std::endl;
 
     for(int i=0; i<this->accumulation_buffer_size; i++) {
         unsigned  int inputID = (i / n_bus_lines);
         unsigned int busID = i % n_bus_lines;
         Connection* mem_conn = memoryConnections[busID][inputID];
         outputconnectiontable.push_back(mem_conn);
-        std::cout << "ACCUMUlATOR " << i << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
     }
 
     //Finally we connect the output links with the memory 

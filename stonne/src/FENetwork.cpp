@@ -163,7 +163,6 @@ FENetwork::FENetwork(id_t id, std::string name, Config stonne_cfg, Connection* o
 
 void FENetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memoryConnections) {
      unsigned int n_bus_lines = memoryConnections.size();
-     std::cout << "N_bus_lines: " << n_bus_lines << std::endl;
     // Interconnect double reduction switches
     for(int i=0; i<double_switches.size(); i+=2) { //2 by 2 since each 2 aswitches form a single double switch
         unsigned int inputID = 2* ((i/2) /  n_bus_lines);
@@ -172,13 +171,10 @@ void FENetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
         FEASwitch* as_second = double_switches[i+1];
         assert(busID < memoryConnections.size()); //Making sure the CollectionBus returns the correct busLine
         assert((inputID+1) < memoryConnections[busID].size()); //Making sure the CollectionBus returns the correct busLine
-        std::cout << "SIZE: " << memoryConnections[busID].size() << std::endl;
         Connection* conn_first = memoryConnections[busID][inputID]; //Connecting as i to busID, inputID connection
         Connection* conn_second = memoryConnections[busID][inputID+1];
         as_first->setMemoryConnection(conn_first, busID, inputID);
         as_second->setMemoryConnection(conn_second, busID, inputID+1);
-        std::cout << "FEASwitch " << as_first->getLevel() << ":" << as_first->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
-        std::cout << "FEASwitch " << as_second->getLevel() << ":" << as_second->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID+1 << std::endl;
 
 
 
@@ -191,7 +187,6 @@ void FENetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
         FEASwitch* as = single_switches[i];
         Connection* conn = memoryConnections[busID][inputID];
         as->setMemoryConnection(conn, busID, inputID);
-        std::cout << "FEASwitch " << as->getLevel() << ":" << as->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
 
 
     }

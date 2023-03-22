@@ -416,7 +416,6 @@ class Conv2d(_ConvNd):
                         self.padding, self.dilation, self.groups)
 
     def forward(self, input: Tensor) -> Tensor:
-        print('Running forward method on extistent class')
         return self._conv_forward(input, self.weight)
 
 class Conv3d(_ConvNd):

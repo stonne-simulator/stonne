@@ -114,7 +114,7 @@ bool runConvCommand(int argc, char *argv[]) {
     //Calculating output parameters
     unsigned int X_= (X - R + strides) / strides;      // X_
     unsigned int Y_=(Y - S + strides) / strides;       // Y_
-    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << std::endl; 
+    std::cout << "Output Size: (X'=" << X_ << ", Y'=" << Y_ << ")" << std::endl; 
 
 
     //Creating arrays to store the ifmap ofmap and weights

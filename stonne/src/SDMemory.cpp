@@ -199,15 +199,15 @@ void SDMemory::setTile(Tile* current_tile) {
         VNAT_iter_S = this->iter_S;
         VNAT_iter_C = this->iter_C;
     }
-    std::cout << "dnn_layer_X_: " << dnn_layer->get_X_() << std::endl;
-    std::cout << "current_tile_X: " << current_tile->get_T_X_() << std::endl;
-    std::cout << "Iter_X=" << this->iter_X << std::endl;
-    std::cout << "dnn_layer_Y_: " << dnn_layer->get_Y_() << std::endl;
-    std::cout << "current_tile_y: " << current_tile->get_T_Y_() << std::endl;
-    std::cout << "Iter_Y=" << iter_Y << std::endl;
+    // std::cout << "dnn_layer_X_: " << dnn_layer->get_X_() << std::endl;
+    // std::cout << "current_tile_X: " << current_tile->get_T_X_() << std::endl;
+    // std::cout << "Iter_X=" << this->iter_X << std::endl;
+    // std::cout << "dnn_layer_Y_: " << dnn_layer->get_Y_() << std::endl;
+    // std::cout << "current_tile_y: " << current_tile->get_T_Y_() << std::endl;
+    // std::cout << "Iter_Y=" << iter_Y << std::endl;
     this->current_tile = current_tile;
     unsigned int num_vn = this->current_tile->get_Num_VNs();
-    std::cout << "num vn = " << num_vn << std::endl;
+    // std::cout << "num vn = " << num_vn << std::endl;
     this->current_output_pixel = 0; //Setting the current pixels computed
     //The number of opixels to compute is iter_N*iter_K*iter_X*iter_Y * num_vn since each neuron is going to perform those iterations.
     // Notice this number might be different to the number of opixels in the dnn (it would be dnn_layer->get_K()*dnn_layer->get_X_()*dnn_layer->get_Y()
@@ -215,10 +215,10 @@ void SDMemory::setTile(Tile* current_tile) {
     this->output_pixels_to_compute = this->iter_N*this->iter_G*this->iter_K*this->iter_X*this->iter_Y*VNAT_iter_R*VNAT_iter_S*VNAT_iter_C*num_vn;  
     //Number of output psums per each channel. Used to avoid sending packages of new k iterations if the previous have not been 
     //calculated yet;
-    std::cout << "dnn_layer X: " << this->dnn_layer->get_X_() << std::endl; 
+    // std::cout << "dnn_layer X: " << this->dnn_layer->get_X_() << std::endl; 
    
     this->output_psums_per_channel = this->dnn_layer->get_X_()*this->dnn_layer->get_Y_()*VNAT_iter_R*VNAT_iter_S*VNAT_iter_C; 
-    std::cout << "psums to compute " << this->output_pixels_to_compute << std::endl;
+    // std::cout << "psums to compute " << this->output_pixels_to_compute << std::endl;
     //Assigning to each VN an output initial address depending on N, K, X' and Y'
     this->VNAT = new VNAT_Register*[num_vn];
     for(unsigned n=0;n<this->current_tile->get_T_N(); n++) {

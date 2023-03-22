@@ -18,7 +18,6 @@ DSNetwork::DSNetwork(id_t id, std::string name, Config stonne_cfg, unsigned int 
     this->inputConnection = inputConnection;
     int nlevels = log10(ms_size) / log10(2); //All the levels without count the leaves (MSwitches)
     this->nlevels = nlevels;
-    std::cout << "n_levels: " << this->nlevels << std::endl;
     int switches_this_level = 1;
     unsigned int sw_id = 0; //id of each sw
     for(int i=0; i < this->nlevels; i++) {  //From root to leaves (without the MSs)

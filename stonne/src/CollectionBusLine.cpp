@@ -22,7 +22,6 @@ CollectionBusLine::CollectionBusLine(id_t id, std::string name, unsigned int bus
        
     }
     next_input_selected=0;
-    std::cout << "SIZE DESDE EL COLLECTIONBUSLINE: " << this->input_ports << std::endl;
 }
 
 CollectionBusLine::~CollectionBusLine() {

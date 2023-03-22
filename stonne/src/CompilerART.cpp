@@ -36,7 +36,6 @@ void CompilerART::configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLay
 void CompilerART::generate_art_enabling_links(unsigned int num_ms) {
 //Ultimo nivel recorrido aparte hasta el numero de ms
 // Los siguientes niveles son recorridos mirando abajo y mirando en la configuracion del nivel inferior. Si tiene hijo 
-    std::cout << "Generating ART Enabling links signals" << std::endl;
     int nlevels = log10(num_ms) / log10(2); //All the levels without count the leaves (MSwitches)
     int ms_used = this->current_tile->get_Num_VNs()*this->current_tile->get_VN_Size();
     int num_adders=num_ms / 2; //ALl the adders
@@ -134,10 +133,6 @@ void CompilerART::generate_art_enabling_links(unsigned int num_ms) {
 }  //end of the function
 
 void CompilerART::generate_art_signals(unsigned int num_ms) {
-   std::cout << "Generating ART signals" << std::endl;
-   std::cout << "Num Ms: " << num_ms << std::endl;
-   std::cout << "Num VNs: " << this->current_tile->get_Num_VNs() << std::endl;
-   std::cout << "VN Size: " << this->current_tile->get_VN_Size() << std::endl;
    int nlevels = log10(num_ms) / log10(2); //All the levels without count the leaves (MSwitches)
    //Vector initialization
    bool* vector_bits = new bool[num_ms];
@@ -438,7 +433,6 @@ void CompilerART::generate_art_signals(unsigned int num_ms) {
 void CompilerART::generate_art_enabling_links_sparse(unsigned int num_ms) {
 //Ultimo nivel recorrido aparte hasta el numero de ms
 // Los siguientes niveles son recorridos mirando abajo y mirando en la configuracion del nivel inferior. Si tiene hijo 
-    std::cout << "Generating ART Enabling links signals" << std::endl;
     int nlevels = log10(num_ms) / log10(2); //All the levels without count the leaves (MSwitches)
     int ms_used = 0;
     //Only one change performed in sparse 
@@ -540,9 +534,6 @@ void CompilerART::generate_art_enabling_links_sparse(unsigned int num_ms) {
 }  //end of the function
 
 void CompilerART::generate_art_signals_sparse(unsigned int num_ms) {
-   std::cout << "Generating ART signals" << std::endl;
-   std::cout << "Num Ms: " << num_ms << std::endl;
-   std::cout << "Num VNs: " << this->sparseVNs.size() << std::endl;
    int nlevels = log10(num_ms) / log10(2); //All the levels without count the leaves (MSwitches)
    unsigned int shift_this_vn = 0;
    //Vector initialization

@@ -92,9 +92,6 @@ void SparseSDMemory::setLayer(DNNLayer* dnn_layer, address_t MK_address, address
     this->M = this->dnn_layer->get_K();
     this->K = this->dnn_layer->get_S();   //Be careful. K in GEMMs (SIGMA taxonomy) is not the same as K in CNN taxonomy (number of filters)
     this->N = this->dnn_layer->get_X();  //In this case both parameters match each other.
-    std::cout << "Value of M=" << M << std::endl;
-    std::cout << "Value of N=" << N << std::endl;
-    std::cout << "Value of K=" << K << std::endl;
     sdmemoryStats.dataflow=dataflow; 
 
     if(dataflow==MK_STA_KN_STR) {
@@ -347,20 +344,20 @@ void SparseSDMemory::cycle() {
 	    assert(false);
 	}
 	for(int i=0; i<this->configurationVNs.size(); i++) {
-            std::cout << "Found a VN of size " << this->configurationVNs[i].get_VN_Size() << std::endl;
+            //std::cout << "Found a VN of size " << this->configurationVNs[i].get_VN_Size() << std::endl;
         }
         this->sdmemoryStats.n_sta_vectors_at_once_avg+=this->configurationVNs.size(); //accumul
 	if(this->configurationVNs.size() > this->sdmemoryStats.n_sta_vectors_at_once_max) {
             this->sdmemoryStats.n_sta_vectors_at_once_max = this->configurationVNs.size();
 	}
 	this->sdmemoryStats.n_reconfigurations++;
-	std::cout << "Configuring the Networks" << std::endl;
+	//std::cout << "Configuring the Networks" << std::endl;
 	this->multiplier_network->resetSignals(); //Reseting the values to default
 	this->multiplier_network->configureSparseSignals(this->configurationVNs, this->dnn_layer, this->num_ms);
 	//Configuring the reduce network
 	this->reduce_network->resetSignals(); //Reseting the values to default
 	this->reduce_network->configureSparseSignals(this->configurationVNs, this->dnn_layer, this->num_ms);
-	std::cout << "End configuring" << std::endl;
+	//std::cout << "End configuring" << std::endl;
 	//Number of psums to calculate in this iteration
 	this->output_size_iteration=this->configurationVNs.size()*this->dim_str;
 	

@@ -131,7 +131,6 @@ ASNetwork::~ASNetwork() {
 
 void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memoryConnections) {
      unsigned int n_bus_lines = memoryConnections.size();
-     std::cout << "N_bus_lines: " << n_bus_lines << std::endl;
 
      //If the accumulation buffer is enabled then the object must be created 
      if(this->accumulation_buffer_enabled > 0) {
@@ -148,7 +147,6 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
         ASwitch* as_second = double_switches[i+1];
         assert(busID < memoryConnections.size()); //Making sure the CollectionBus returns the correct busLine
         assert((inputID+1) < memoryConnections[busID].size()); //Making sure the CollectionBus returns the correct busLine
-        std::cout << "SIZE: " << memoryConnections[busID].size() << std::endl;
         Connection* mem_conn_first = memoryConnections[busID][inputID]; //Connecting as i to busID, inputID connection
         Connection* mem_conn_second = memoryConnections[busID][inputID+1];
 	if(this->accumulation_buffer_enabled==0)  { //If the accumulation buffer is not enabled
@@ -168,8 +166,6 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
 
 	}
 	connectionID+=2;
-        std::cout << "ASwitch " << as_first->getLevel() << ":" << as_first->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
-        std::cout << "ASwitch " << as_second->getLevel() << ":" << as_second->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID+1 << std::endl;
 
 
 
@@ -192,7 +188,6 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
             accbuffer_memory_connections.push_back(mem_conn);
 
 	}
-        std::cout << "ASwitch " << as->getLevel() << ":" << as->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
 
 	 connectionID+=1;
 
