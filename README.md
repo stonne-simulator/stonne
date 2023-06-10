@@ -110,7 +110,7 @@ These commands will generate a binary file `stonne/stonne`. This binary file can
 
 Currently, STONNE runs 5 types of operations: Convolution Layers, FC Layers, Dense GEMMs, Sparse GEMMs and SparseDense GEMMs. Please, note that almost any kernel can be, in the end, mapped using these operations. Others operations such as pooling layers will be supported in the future. However, these are the operations that usually dominate the execution time in machine learning applications. Therefore, we believe that they are enough to perform a comprehensive and realistic exploration. Besides, note that a sparse convolution might be also supported as all the convolution layers can be converted into a GEMM operation using the im2col algorithm.
 
-The sintax of a STONNE user interface command to run any of the available operations is as follows:
+The syntax of a STONNE user interface command to run any of the available operations is as follows:
 ```powershell
 ./stonne [-h | -CONV | -FC | -DenseGEMM | -SparseGEMM | SparseDense] [Hardware parameters] [Dimension and tile Parameters]
 ```
