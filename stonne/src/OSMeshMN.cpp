@@ -47,7 +47,10 @@ OSMeshMN::~OSMeshMN() {
     }
 
 
-
+    //Delete accbuff connections also
+    for (auto it: accbufferconnectiontable) {
+        delete it.second;
+    }
 
 
 }

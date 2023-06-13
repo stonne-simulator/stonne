@@ -19,6 +19,7 @@
 class MemoryController : Unit {        
 public:
     MemoryController(id_t id, std::string name) : Unit(id, name){}
+    virtual ~MemoryController() {}
     virtual void setLayer(DNNLayer* dnn_layer,  address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow) {assert(false);}
     virtual void setTile(Tile* current_tile) {assert(false);}
     virtual void setReadConnections(std::vector<Connection*> read_connections) {assert(false);}

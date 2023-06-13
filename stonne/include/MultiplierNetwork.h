@@ -21,6 +21,7 @@ public:
        input_ports, output_ports and forwarding_ports will be set as the single data size. If this implementation change for future tests, this can be change easily bu mofifying these three parameters.
      */
     MultiplierNetwork(id_t id, std::string name) : Unit(id, name){}
+    virtual ~MultiplierNetwork() {}
     //set connections from the distribution network to the multiplier network
     virtual void setInputConnections(std::map<int, Connection*> input_connections) {assert(false);}
     //Set connections from the Multiplier Network to the Reduction Network

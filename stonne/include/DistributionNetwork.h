@@ -21,6 +21,7 @@ private:
 public:
     //General constructor, just used to heritage with unit
     DistributionNetwork(id_t id, std::string name) : Unit(id, name) {}
+    virtual ~DistributionNetwork() {}
     //This just executes cycle over all the dsnetworks
     virtual void cycle() {assert(false);} 
     //Get last levels connections together. Useful to connect with mswitches later.
