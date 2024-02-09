@@ -46,6 +46,11 @@ vector<DataPackage*> Connection::receive() {
 	    return this->data;
     }
     //If there is no pending data
+    // free memory before clearing
+    for(int i=0; i<this->data.size(); i++) {
+        delete this->data[i];
+    }
+
     data.clear(); //Set the list of elements to return to 0
     this->pending_data = false;
     

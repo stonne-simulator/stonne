@@ -19,6 +19,10 @@ unsigned int nextPowerOf2(int x);
 
 std::string getstr(std::istringstream& instr);
 
+std::string get_string_layer_t(Layer_t kernelOperation);
+
+Layer_t get_type_layer_t(std::string kernelOperation);
+
 std::string to_lower(std::string str);
 
 TileGenerator::Target parseTileGeneratorTarget(std::string target);
@@ -51,13 +55,13 @@ Dataflow get_type_dataflow_type(std::string dataflow_type);
 
 std::string get_string_dataflow_type(Dataflow dataflow);
 
-
 float* generateMatrixDense(unsigned int rows, unsigned int cols, unsigned int sparsity);
 
 unsigned int* generateBitMapFromDense(float* denseMatrix, unsigned int rows, unsigned int cols, GENERATION_TYPE gen_type);
 
-float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, unsigned int rows, unsigned int cols, GENERATION_TYPE gen_type) ;
-float* generateMatrixSparseFromDense(float* denseMatrix, unsigned int* bitmap, unsigned int rows, unsigned int cols, GENERATION_TYPE gen_type);
+float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, unsigned int rows, unsigned int cols, GENERATION_TYPE gen_type, unsigned int & size) ;
+
+float* generateMatrixSparseFromDense(float* denseMatrix, unsigned int* bitmap, unsigned int rows, unsigned int cols, GENERATION_TYPE gen_type, unsigned int & size);
 
 /////
 int* generateMinorIDFromDense(float* denseMatrix, unsigned int rows, unsigned int cols, int &nnz, GENERATION_TYPE gen_type);

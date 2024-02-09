@@ -59,19 +59,19 @@ void MultiplierOS::resetSignals() {
     this->forward_bottom=false;
     this->VN=0;
     while(!left_fifo->isEmpty()) {
-        left_fifo->pop();
+        delete left_fifo->pop();
     }
 
     while(!right_fifo->isEmpty()) {
-        right_fifo->pop();
+        delete right_fifo->pop();
     }
 
     while(!top_fifo->isEmpty()) {
-        top_fifo->pop();
+        delete top_fifo->pop();
     }
 
     while(!bottom_fifo->isEmpty()) {
-        bottom_fifo->pop();
+        delete bottom_fifo->pop();
     }
 
 

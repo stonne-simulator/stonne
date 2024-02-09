@@ -17,6 +17,8 @@ public:
         this->name=name;
     }
 
+    virtual ~Unit() {}
+
     virtual void printStats(std::ofstream& out, unsigned int indent) {} //Print the stats of the component
     virtual void printEnergy(std::ofstream& out, unsigned int indent) {} //Print the counters to get the consumption of the unit
     virtual void cycle() {} //Execute a cycle in the component

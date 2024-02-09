@@ -32,7 +32,8 @@ public:
     virtual void cycle() {assert(false);}
     virtual bool isExecutionFinished() {assert(false);}
     virtual void setDenseSpatialData(unsigned int T_N, unsigned int T_K){assert(false);}
-    virtual void setSparseMatrixMetadata(metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer){assert(false);}
+    virtual void setSparseMatrixMetadata(metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer) {assert(false);}
+    virtual void setSparseMatrixMetadata(metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer, metadata_address_t KN_metadata_id, metadata_address_t KN_metadata_pointer) {assert(false);}
 
    
     virtual void printStats(std::ofstream& out, unsigned int indent) {assert(false);}

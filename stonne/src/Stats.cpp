@@ -57,7 +57,7 @@ void DSwitchStats::reset() {
 void DSwitchStats::print(std::ofstream& out, unsigned int indent) {
     counter_t idle_cycles=this->total_cycles-(this->n_broadcasts+this->n_unicasts); //Calculated statistic
     out << ind(indent) << "\"Total_cycles\" : " << this->total_cycles << "," << std::endl;
-    out << ind(indent) << "\"Idle_cycles\" : " << idle_cycles << "," << std::endl; //calculated statistic
+    out << ind(indent) << "\"Idle_cycles_dswitch\" : " << idle_cycles << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_broadcasts\" : " << this->n_broadcasts << "," << std::endl;
     out << ind(indent) << "\"N_unicasts\" : " << this->n_unicasts << "," << std::endl;
     out << ind(indent) << "\"N_left_sends\" : " << this->n_left_sends << "," << std::endl;
@@ -88,7 +88,7 @@ void MSwitchStats::reset() {
 void MSwitchStats::print(std::ofstream& out, unsigned int indent) {
     counter_t idle_cycles=this->total_cycles-(this->n_multiplications+this->n_psum_forwarding_send); //Calculated statistic
     out << ind(indent) << "\"Total_cycles\" : " << this->total_cycles << "," << std::endl;
-    out << ind(indent) << "\"Idle_cycles\" : " << idle_cycles << "," << std::endl; //calculated statistic
+    out << ind(indent) << "\"Idle_cycles_mswitch\" : " << idle_cycles << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_multiplications\" : " << this->n_multiplications << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_input_forwardings_send\" : " << this->n_input_forwardings_send << "," << std::endl;
     out << ind(indent) << "\"N_input_forwardings_receive\" : " << this->n_input_forwardings_receive << "," << std::endl;
@@ -121,7 +121,7 @@ void MultiplierOSStats::reset() {
 void MultiplierOSStats::print(std::ofstream& out, unsigned int indent) {
     counter_t idle_cycles=this->total_cycles-(this->n_multiplications); //Calculated statistic
     out << ind(indent) << "\"Total_cycles\" : " << this->total_cycles << "," << std::endl;
-    out << ind(indent) << "\"Idle_cycles\" : " << idle_cycles << "," << std::endl; //calculated statistic
+    out << ind(indent) << "\"Idle_cycles_osmswitch\" : " << idle_cycles << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_multiplications\" : " << this->n_multiplications << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_bottom_forwardings_send\" : " << this->n_bottom_forwardings_send << "," << std::endl;
     out << ind(indent) << "\"N_top_forwardings_receive\" : " << this->n_top_forwardings_receive << "," << std::endl;
@@ -155,7 +155,7 @@ void ASwitchStats::reset() {
 void ASwitchStats::print(std::ofstream& out, unsigned int indent) {
     counter_t idle_cycles=this->total_cycles-(this->n_2_1_sums+this->n_2_1_comps+this->n_3_1_sums+this->n_3_1_comps); //Calculated statistic
     out << ind(indent) << "\"Total_cycles\" : " << this->total_cycles << "," << std::endl;
-    out << ind(indent) << "\"Idle_cycles\" : " << idle_cycles << "," << std::endl; //calculated statistic
+    out << ind(indent) << "\"Idle_cycles_aswitch\" : " << idle_cycles << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_2_1_sums\" : " << this->n_2_1_sums << "," << std::endl;
     out << ind(indent) << "\"N_2_1_comps\" : " << this->n_2_1_comps << "," << std::endl;
     out << ind(indent) << "\"N_3_1_sums\" : " << this->n_3_1_sums << "," << std::endl;
@@ -210,20 +210,26 @@ void SDMemoryStats::reset() {
     this->n_SRAM_input_reads=0;
     this->n_SRAM_psum_reads=0;
     this->n_SRAM_psum_writes=0;
+    this->n_DRAM_psum_writes=0;
     this->sta_sparsity=0;
     this->str_sparsity=0;
     this->dataflow=CNN_DATAFLOW;
     this->n_sta_vectors_at_once_avg = 0;
     this->n_sta_vectors_at_once_max = 0;
     this->n_reconfigurations=0;
+    this->n_cycles_multiplying=0;
+    this->n_cycles_merging=0;
 }
 
 void SDMemoryStats::print(std::ofstream& out, unsigned int indent) {
     out << ind(indent) << "\"Total_cycles\" : " << this->total_cycles << "," << std::endl;
+    out << ind(indent) << "\"N_cycles_multiplying\" : " << this->n_cycles_multiplying << "," << std::endl;
+    out << ind(indent) << "\"N_cycles_merging\" : " << this->n_cycles_merging << "," << std::endl;
     out << ind(indent) << "\"N_SRAM_weight_reads\" : " << this->n_SRAM_weight_reads << "," << std::endl; //calculated statistic
     out << ind(indent) << "\"N_SRAM_input_reads\" : " << this->n_SRAM_input_reads << "," << std::endl;
     out << ind(indent) << "\"N_SRAM_psum_reads\" : " << this->n_SRAM_psum_reads << "," << std::endl;
     out << ind(indent) << "\"N_SRAM_psum_writes\" : " << this->n_SRAM_psum_writes << ","  << std::endl;  
+    out << ind(indent) << "\"N_DRAM_psum_writes\" : " << this->n_DRAM_psum_writes << ","  << std::endl;
     out << ind(indent) << "\"Dataflow\" : " << "\"" << get_string_dataflow_type(this->dataflow) << "\"" << ","  << std::endl;
     out << ind(indent) << "\"STA_sparsity\" : " << this->sta_sparsity << ","  << std::endl;
     out << ind(indent) << "\"STR_sparsity\" : " << this->str_sparsity << ","  << std::endl;

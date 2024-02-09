@@ -107,6 +107,11 @@ public:
     unsigned int port_width; //Bit width
     unsigned int n_multiplier_configurations; //Number of multiplier configurations
     unsigned int n_reduce_network_configurations; //Number of reduce network configurations
+    uint64_t weight_address; //Address where the weights are first stored
+    uint64_t input_address; //Address ehere the inputs are first stored
+    uint64_t output_address; //Address where the output are first stored
+    uint32_t data_width; //Number of bytes allocated to each data element. 
+    uint32_t n_write_mshr; // Number of parallel write requests that can be done in parallel
 
     void printConfiguration(std::ofstream& out, unsigned int indent);
 

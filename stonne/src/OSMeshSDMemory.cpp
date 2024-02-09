@@ -142,7 +142,7 @@ void OSMeshSDMemory::cycle() {
 	   int index_N=current_N*T_N;
 	   data = this->KN_address[(index_N+i)*this->K + this->current_K]; //Notice that in dense operation the KN matrix is actually NK 
 	   sdmemoryStats.n_SRAM_weight_reads++;  
-	   DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, UNICAST, i);
+	   DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, UNICAST, i, 0, 0);
 	   this->sendPackageToInputFifos(pck_to_send);
        }
 
@@ -152,7 +152,7 @@ void OSMeshSDMemory::cycle() {
 	   int index_M=current_M*T_M;
            data = this->MK_address[(index_M+i)*this->K + this->current_K]; 
            sdmemoryStats.n_SRAM_input_reads++;  
-           DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, i+this->ms_cols);
+           DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, i+this->ms_cols, 0, 0);
            this->sendPackageToInputFifos(pck_to_send);
        }
 
@@ -252,7 +252,7 @@ void OSMeshSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         //Send to all the ports with the flag broadcast enabled
         for(int i=0; i<this->n_read_ports; i++) {
             //Creating a replica of the package to be sent to each port
-            DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, BROADCAST); //Size, data, data_type, source (port in this case), BROADCAST
+            DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, BROADCAST,0,0); //Size, data, data_type, source (port in this case), BROADCAST
             //Sending the replica to the suitable fifo that correspond with the port
             if(pck->get_data_type() == PSUM) { //Actually a PSUM cannot be broadcast. But we put this for compatibility
                 psum_fifos[i]->push(pck_new);
@@ -273,7 +273,7 @@ void OSMeshSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         unsigned int input_port = dest / this->ms_size_per_input_port;
         unsigned int local_dest = dest % this->ms_size_per_input_port;
         //Creating the package 
-        DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), input_port, UNICAST, local_dest); //size, data, type, source (port), UNICAST, dest_local
+        DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), input_port, UNICAST, local_dest, 0, 0); //size, data, type, source (port), UNICAST, dest_local
         //Sending to the fifo corresponding with port input_port
         if(pck->get_data_type() == PSUM) { //Actually a PSUM cannot be broadcast. But we put this for compatibility
             psum_fifos[input_port]->push(pck_new);
@@ -301,7 +301,7 @@ void OSMeshSDMemory::sendPackageToInputFifos(DataPackage* pck) {
             }
 
             if(thereis_receiver) { //If this port have at least one ms to true then we send the data to this port i
-                DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port); 
+                DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port,0,0); 
                 if(pck->get_data_type() == PSUM) {
                     psum_fifos[i]->push(pck_new);
                 }

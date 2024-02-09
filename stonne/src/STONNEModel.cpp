@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include "cpptoml.h"
 
-Stonne::Stonne(Config stonne_cfg) {
+Stonne::Stonne(Config stonne_cfg, Memory<float> mem) : memHierarchy(mem) {
     this->stonne_cfg=stonne_cfg;
     this->ms_size = stonne_cfg.m_MSNetworkCfg.ms_size;
     this->layer_loaded=false;
@@ -29,6 +29,9 @@ Stonne::Stonne(Config stonne_cfg) {
 	case OS_MESH:
 	    this->msnet = new OSMeshMN(2, "OSMesh", stonne_cfg);
 	    break;
+	 case SPARSEFLEX_LINEAR:
+            this->msnet = new  SparseFlex_MSNetwork(2, "MSNetwork", stonne_cfg);
+            break;
 	default:
 	    assert(false);
     }
@@ -46,26 +49,36 @@ Stonne::Stonne(Config stonne_cfg) {
     case TEMPORALRN:
 	this->asnet = new TemporalRN(3, "TemporalRN", stonne_cfg, outputASConnection);
 	break;
+    case SPARSEFLEX_MERGER:
+	this->asnet = new SparseFlex_ASNetwork(3, "TemporalRN", stonne_cfg, outputASConnection);
+	break;
     default:
 	assert(false);
     }
 
-    this->collectionBus = new Bus(4, "CollectionBus", stonne_cfg); 
+    this->collectionBusRN = new Bus(4, "CollectionBusRN", stonne_cfg);
+    this->collectionBusMN = new Bus(10, "CollectionBusMN", stonne_cfg);
     this->lt = new LookupTable(5, "LookUpTable", stonne_cfg, outputASConnection, outputLTConnection);
 
     //switch(MemoryController). It is possible to create instances of other MemoryControllers
     switch(stonne_cfg.m_SDMemoryCfg.mem_controller_type) {
 	case SIGMA_SPARSE_GEMM:
-            this->mem = new SparseSDMemory(0, "SparseSDMemory", stonne_cfg, this->outputLTConnection);
+            this->mem = new SparseSDMemory(0, "SparseSDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
 	    break;
 	case MAERI_DENSE_WORKLOAD:
-	    this->mem = new  SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection);
+	    this->mem = new  SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
 	    break;
-	case MAGMA_SPARSE_DENSE:
-            this->mem = new  SparseDenseSDMemory(0, "SparseDenseSDMemory", stonne_cfg, this->outputLTConnection);
-            break;
 	case TPU_OS_DENSE:
 	    this->mem = new  OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
+	    break;
+	case MAGMA_SPARSE_DENSE:
+            this->mem = new  SparseDenseSDMemory(0, "SparseDenseSDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
+            break;
+	case OUTER_PRODUCT_GEMM:
+            this->mem = new OuterLoopSpGEMMSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection,  this->memHierarchy);
+            break;
+	case GUSTAVSONS_GEMM:
+	    this->mem  = new GustavsonsSpGEMMSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection,  this->memHierarchy);
 	    break;
 	default:
 	    assert(false);
@@ -82,6 +95,9 @@ Stonne::Stonne(Config stonne_cfg) {
     this->connectMSNandASN();
 
     this->connectASNandBus();
+    if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type == SPARSEFLEX_LINEAR) {
+        this->connectMSNandBus();
+    }
     this->connectBusandMemory();
   
     //DEBUG PARAMETERS
@@ -104,7 +120,8 @@ Stonne::~Stonne() {
     delete this->outputLTConnection;
     delete this->lt;
     delete this->mem;
-    delete this->collectionBus;
+    delete this->collectionBusMN;
+    delete this->collectionBusRN; 
     if(layer_loaded) {
         delete this->dnn_layer;
     }
@@ -139,16 +156,27 @@ void Stonne::connectMSNandASN() {
 }
 
 void Stonne::connectASNandBus() {
-        std::vector<std::vector<Connection*>> connectionsBus = this->collectionBus->getInputConnections(); //Getting the CollectionBus Connections
+        std::vector<std::vector<Connection*>> connectionsBus = this->collectionBusRN->getInputConnections(); //Getting the CollectionBus Connections
         this->asnet->setMemoryConnections(connectionsBus); //Send the connections to the ReduceNetwork to be connected according to its algorithm
    
    
     
 }
 
+void Stonne::connectMSNandBus() {
+        std::vector<std::vector<Connection*>> connectionsBus = this->collectionBusMN->getInputConnections(); //Getting the CollectionBus Connections
+        this->msnet->setMemoryConnections(connectionsBus); //Send the connections to the ReduceNetwork to be connected according to its algorithm
+
+}
+
 void Stonne::connectBusandMemory() {
-    std::vector<Connection*> write_port_connections = this->collectionBus->getOutputConnections();
-    this->mem->setWriteConnections(write_port_connections);
+    std::vector<Connection*> write_port_connections_rn = this->collectionBusRN->getOutputConnections();
+    std::vector<Connection*> write_port_connections_mn = this->collectionBusMN->getOutputConnections();
+    for(int i=0; i<write_port_connections_mn.size(); i++) {
+        write_port_connections_rn.push_back(write_port_connections_mn[i]); //We will pass all the connections to the memory in the same structure
+    }
+    this->mem->setWriteConnections(write_port_connections_rn);
+
        
 }
 
@@ -170,9 +198,9 @@ void Stonne::loadCONVLayer(std::string layer_name, unsigned int R, unsigned int 
     std::cout << "Loading a convolutional layer into STONNE" << std::endl;
 }
 
-void Stonne::loadFCLayer(std::string layer_name, unsigned int N, unsigned int S, unsigned int K, address_t input_address, address_t filter_address, address_t output_address)  {
+void Stonne::loadFCLayer(std::string layer_name, unsigned int N, unsigned int S, unsigned int K, address_t filter_address, address_t input_address, address_t output_address)  {
      //loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, N, 1, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
-    loadDNNLayer(FC, layer_name, 1, S, 1, K, 1, 1, N, S, 1, input_address, filter_address, output_address, CNN_DATAFLOW);
+    loadDNNLayer(FC, layer_name, 1, S, 1, N, 1, 1, K, S, 1, filter_address, input_address, output_address, CNN_DATAFLOW); 
     std::cout << "Loading a FC layer into STONNE" << std::endl;
 }
 
@@ -183,7 +211,7 @@ void Stonne::loadGEMM(std::string layer_name, unsigned int N, unsigned int K, un
     //K in CNN = M in SIGMA
     //input_matrix=KN 
     //filter_matrix = MK
-    loadDNNLayer(GEMM, layer_name, 1, K, 1, M, 1, 1, N, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
+    loadDNNLayer(GEMM, layer_name, 1, K, 1, N, 1, 1, M, K, 1, MK_matrix, KN_matrix, output_matrix, dataflow);
     std::cout << "Loading a GEMM into STONNE" << std::endl;
     this->mem->setSparseMetadata(MK_metadata, KN_metadata, output_metadata); 
     std::cout << "Loading metadata" << std::endl;
@@ -217,9 +245,34 @@ void Stonne::loadSparseDense(std::string layer_name, unsigned int N, unsigned in
     loadSparseDenseTile(T_N, T_K);
 }
 
+void Stonne::loadSparseOuterProduct(std::string layer_name, unsigned int N, unsigned int K, unsigned int M, address_t MK_matrix, address_t KN_matrix, metadata_address_t MK_metadata_id, metadata_address_t MK_metadata_pointer, metadata_address_t KN_metadata_id, metadata_address_t KN_metadata_pointer, address_t output_matrix) {
+    //Setting GEMM (from SIGMA) parameters onto CNN parameters:
+    //K in CNN=N here
+    //C in CNN =K here
+    //N in CNN = M here
+    //input_matrix=MK
+    //filter_matrix = KN
+    loadDNNLayer(SPARSE_DENSE, layer_name, 1, 1, K, N, 1, M, 1, 1, 1, MK_matrix, KN_matrix, output_matrix, SPARSE_DENSE_DATAFLOW);
+    std::cout << "Loading a Sparse multiplied by dense GEMM into STONNE" << std::endl;
+    /////To define in the new class
+    this->mem->setSparseMatrixMetadata(MK_metadata_id, MK_metadata_pointer, KN_metadata_id, KN_metadata_pointer);
+    std::cout << "Loading metadata" << std::endl;
+
+
+}
+
+
+void Stonne::loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M)  {
+    //loadTile(1, T_K, 1, T_M, 1, T_N, 1, 1);
+    loadTile(1, T_K, 1, T_N, 1, 1, T_M, 1);
+    assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == GEMM));   //Force to have the right layer with the GEMM parameters)
+    std::cout << "Loading a GEMM tile" << std::endl;
+}
+
+
+
 //To dense CNNs and GEMMs 
 void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsigned int T_K, unsigned int T_G, unsigned int T_N, unsigned int T_X_, unsigned int T_Y_) {
-
     assert(this->layer_loaded);
     if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type==LINEAR) {
         assert(this->ms_size >= (T_R*T_S*T_C*T_K*T_G*T_N*T_X_*T_Y_)); //There are enough mswitches
@@ -233,18 +286,18 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
     //Remove these lines if we want the architeture to compute the layer even if the tile does not fit. 
     // This will mean that some row, columns or output channels would remain without calculating. 
     if(stonne_cfg.m_SDMemoryCfg.mem_controller_type==MAERI_DENSE_WORKLOAD) { //Just for this maeri controller
-       // assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
-       // assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
-       // assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
-       // assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
-       // assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
-       // assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
-       // assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
-       // assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
+        assert((this->dnn_layer->get_R() % T_R) == 0);    // T_R must be multiple of R
+        assert((this->dnn_layer->get_S() % T_S) == 0);    // T_S must be multiple of S
+        assert((this->dnn_layer->get_C() % T_C) == 0);    // T_C must be multiple of C
+        assert((this->dnn_layer->get_K() % T_K) == 0);    // T_K must be multiple of K
+        assert((this->dnn_layer->get_G() % T_G) == 0);    // T_G must be multiple of G
+        assert((this->dnn_layer->get_N() % T_N) == 0);    // T_N must be multiple of N
+        assert((this->dnn_layer->get_X_() % T_X_) == 0);  // T_X_ must be multiple of X_
+        assert((this->dnn_layer->get_Y_() % T_Y_) == 0);  // T_Y_ must be multiple of Y_ 
     }
 
     //End check
-    unsigned int n_folding = ceil(this->dnn_layer->get_R() / (float) T_R)*ceil(this->dnn_layer->get_S() / (float)T_S) * ceil(this->dnn_layer->get_C() / (float)T_C) ;
+    unsigned int n_folding = (this->dnn_layer->get_R() / T_R)*(this->dnn_layer->get_S() / T_S) * (this->dnn_layer->get_C() / T_C) ;
     bool folding_enabled = false; //Condition to use extra multiplier. Note that if folding is enabled but some type of accumulation buffer is needed this is false as no fw ms is needed. 
     if((n_folding > 1) && (this->stonne_cfg.m_ASNetworkCfg.accumulation_buffer_enabled==0) && (this->stonne_cfg.m_ASNetworkCfg.reduce_network_type != FENETWORK)) { //If there is folding and the RN is not able to acumulate itself, we have to use an extra MS to accumulate
         folding_enabled = true; 
@@ -268,18 +321,11 @@ void Stonne::loadTile(unsigned int T_R, unsigned int T_S, unsigned int T_C, unsi
     this->mem->setTile(this->current_tile);
 }
 
-void Stonne::loadGEMMTile(unsigned int T_N, unsigned int T_K, unsigned int T_M)  {
-    //loadTile(1, T_K, 1, T_M, 1, T_N, 1, 1);
-    std::cout << "Loading a GEMM tile" << std::endl;
-    loadTile(1, T_K, 1, T_N, 1, 1, T_M, 1);
-    assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == GEMM));   //Force to have the right layer with the GEMM parameters)
-}
-
 void Stonne::loadFCTile(unsigned int T_S, unsigned int T_N, unsigned int T_K)  {
     //loadTile(1, T_S, 1, T_K, 1, T_N, 1, 1);
-    std::cout << "Loading a FC tile" << std::endl;
     loadTile(1, T_S, 1, T_K, 1, 1, T_N, 1);
     assert(this->layer_loaded && (this->dnn_layer->get_layer_type() == FC));   //Force to have the right layer with the FC parameters)
+    std::cout << "Loading a FC tile" << std::endl;
 }
 
 void Stonne::loadSparseDenseTile(unsigned int T_N, unsigned int T_K) {
@@ -498,54 +544,37 @@ void Stonne::generateTile(TileGenerator::Generator generator, TileGenerator::Tar
 
 void Stonne::run() {
     //Execute the cycles
-    this->cycle();
-}
-
-
-void Stonne::cycle() {
-    //this->testDSNetwork(this->ms_size);
-    //this->testTile(this->ms_size);
-    //this->printStats();
-    bool execution_finished=false;
+    bool execution_finished = false;
     while(!execution_finished) {
-        auto start = std::chrono::steady_clock::now();
-        this->mem->cycle();
-        auto end = std::chrono::steady_clock::now();
-        this->time_mem+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        start = std::chrono::steady_clock::now();
-        //this->lt->cycle();
-        end = std::chrono::steady_clock::now();
-        this->time_lt+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        this->collectionBus->cycle(); 
-        start = std::chrono::steady_clock::now();
-        this->asnet->cycle();
-        this->lt->cycle();
-//        this->collectionBus->cycle(); //This order since these are connections that have to be seen in next cycle
-        end = std::chrono::steady_clock::now();
-        this->time_as+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        start = std::chrono::steady_clock::now();
-        this->msnet->cycle();
-        end = std::chrono::steady_clock::now();
-        this->time_ms+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        start = std::chrono::steady_clock::now();
-        this->dsnet->cycle();
-        end = std::chrono::steady_clock::now();
-        this->time_ds+=std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        execution_finished = this->mem->isExecutionFinished();
-        this->n_cycles++;
+        this->cycle();
+	execution_finished = this->mem->isExecutionFinished();
     }
 
-    if(this->stonne_cfg.print_stats_enabled) { //If sats printing is enable
+     if(this->stonne_cfg.print_stats_enabled) { //If sats printing is enable
+	std::cout << "Printing Stats file" << std::endl;
         this->printStats();
         this->printEnergy();
     }
     std::cout << "Number of cycles running: " << this->n_cycles << std::endl;
-    std::cout << "Time mem: " << time_mem/1000000 << std::endl;
-    std::cout << "Time lt: " << time_lt/1000000 << std::endl;
-    std::cout << "Time as: " << time_as/1000000 << std::endl;
-    std::cout << "Time ms: " << time_ms/1000000 << std::endl;
-    std::cout << "Time ds: " << time_ds/1000000 << std::endl;
-    //std::cout << "Time routing ds: " << this->dsnet->get_time_routing()/1000000000 << std::endl;
+
+}
+
+bool Stonne::isExecutionFinished() {
+    return this->mem->isExecutionFinished();
+}
+
+
+void Stonne::cycle() {
+        this->mem->cycle();
+        this->collectionBusRN->cycle(); 
+	this->collectionBusMN->cycle();
+        this->asnet->cycle();
+        this->lt->cycle();
+        this->msnet->cycle();
+        this->dsnet->cycle();
+        this->n_cycles++;
+    
+
 }
 
 //General function to print all the STATS
@@ -602,7 +631,7 @@ void Stonne::printStats() {
         out << "," << std::endl;
         this->mem->printStats(out, indent);
         out << "," << std::endl;
-        this->collectionBus->printStats(out, indent);
+        this->collectionBusRN->printStats(out, indent);
         out << std::endl;
         
      
@@ -637,7 +666,7 @@ void Stonne::printEnergy() {
     out << "[GlobalBuffer]" << std::endl;
     this->mem->printEnergy(out, indent);
     out << "[CollectionBus]" << std::endl;
-    this->collectionBus->printEnergy(out, indent);
+    this->collectionBusRN->printEnergy(out, indent);
     out << std::endl;
 
     out.close();
@@ -706,7 +735,7 @@ void Stonne::testDSNetwork(unsigned int num_ms) {
     for(int i=0; i<6; i++)
         dests[i]=true;
 
-    DataPackage* data_to_send = new DataPackage(32, 1, IACTIVATION, 0, MULTICAST, dests, num_ms);
+    DataPackage* data_to_send = new DataPackage(32, 1, IACTIVATION, 0, MULTICAST, dests, num_ms,0,0);
     std::vector<DataPackage*> vector_to_send;
     vector_to_send.push_back(data_to_send);
     //this->inputDSConnection->send(vector_to_send);
@@ -741,4 +770,5 @@ void Stonne::testDSNetwork(unsigned int num_ms) {
     delete[] dests;
 
 }
+
 

@@ -6,7 +6,7 @@
 
 DSNetworkTop::DSNetworkTop(id_t id, std::string name, Config stonne_cfg) : DistributionNetwork(id,name) {
     this->n_input_ports = stonne_cfg.m_SDMemoryCfg.n_read_ports;
-    if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type==LINEAR) {
+    if((stonne_cfg.m_MSNetworkCfg.multiplier_network_type==LINEAR) || (stonne_cfg.m_MSNetworkCfg.multiplier_network_type==SPARSEFLEX_LINEAR) ) {
         this->ms_size_per_port = stonne_cfg.m_MSNetworkCfg.ms_size / n_input_ports;
     }
     else if(stonne_cfg.m_MSNetworkCfg.multiplier_network_type==OS_MESH) {
@@ -17,7 +17,7 @@ DSNetworkTop::DSNetworkTop(id_t id, std::string name, Config stonne_cfg) : Distr
         //Creating the top connection first
         Connection* conn = new Connection(this->port_width);
         //Creating the tree
-        std::string name = "ASNetworkTree "+i; 
+        std::string name = "ASNetworkTree "+std::to_string(i);
         DSNetwork* dsnet = new DSNetwork(i,name, stonne_cfg, this->ms_size_per_port, conn); //Creating the dsnetwork with the connection
         connections.push_back(conn);
         dsnetworks.push_back(dsnet);

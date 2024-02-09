@@ -1,14 +1,14 @@
 //
 // Created by Francisco Munoz on 19/06/19.
 //
-#include "ASNetwork.h"
+#include "SparseFlex_ASNetwork.h"
 #include <assert.h>
 #include "utility.h"
 #include <math.h>
 
 //TODO Conectar los enlaces intermedios de forwarding
 //This Constructor creates the reduction tree similar to the one shown in the paper
-ASNetwork::ASNetwork(id_t id, std::string name, Config stonne_cfg, Connection* outputConnection) : ReduceNetwork(id, name) {
+SparseFlex_ASNetwork::SparseFlex_ASNetwork(id_t id, std::string name, Config stonne_cfg, Connection* outputConnection) : ReduceNetwork(id, name) {
     // Collecting the parameters from configuration file
     this->stonne_cfg = stonne_cfg;
     this->port_width=stonne_cfg.m_ASwitchCfg.port_width;
@@ -23,8 +23,8 @@ ASNetwork::ASNetwork(id_t id, std::string name, Config stonne_cfg, Connection* o
     unsigned int as_id = 0;
     for(int i=0; i < this->nlevels; i++) {  //From root to leaves (without the MSs)
         for(int j=0; j < adders_this_level; j++) { // From left to right of the structure
-            std::string as_str="ASwitch "+std::to_string(as_id);
-            ASwitch* as = new ASwitch(as_id, as_str, i, j, stonne_cfg);
+            std::string as_str="SparseFlex_ASwitch "+std::to_string(as_id);
+            SparseFlex_ASwitch* as = new SparseFlex_ASwitch(as_id, as_str, i, j, stonne_cfg);
             as_id+=1; //increasing the as id 
             std::pair<int, int> levelandnum (i,j);
             aswitchtable[levelandnum] = as;
@@ -58,7 +58,7 @@ ASNetwork::ASNetwork(id_t id, std::string name, Config stonne_cfg, Connection* o
                     //Connecting fw link to the current one and the previous node, which has no shared parent
                     as->setForwardingConnection(fwconnection);
                     std::pair<int, int> previous_pair (i, j-1); 
-                    ASwitch* previous_as = aswitchtable[previous_pair];
+                    SparseFlex_ASwitch* previous_as = aswitchtable[previous_pair];
                     previous_as->setForwardingConnection(fwconnection); //Connected with the same fwlink
                     //Inserting to the list double reduction switch. We insert both as double but actually both are an unit
                     this->double_switches.push_back(previous_as);
@@ -101,9 +101,9 @@ ASNetwork::ASNetwork(id_t id, std::string name, Config stonne_cfg, Connection* o
     
 }
 
-ASNetwork::~ASNetwork() {
+SparseFlex_ASNetwork::~SparseFlex_ASNetwork() {
     //Delete the adders from aswitchtable
-    for(std::map<std::pair<int, int>, ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
+    for(std::map<std::pair<int, int>, SparseFlex_ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
         delete it->second; 
     }
     
@@ -129,8 +129,9 @@ ASNetwork::~ASNetwork() {
 }
 
 
-void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memoryConnections) {
+void SparseFlex_ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memoryConnections) {
      unsigned int n_bus_lines = memoryConnections.size();
+     std::cout << "N_bus_lines: " << n_bus_lines << std::endl;
 
      //If the accumulation buffer is enabled then the object must be created 
      if(this->accumulation_buffer_enabled > 0) {
@@ -143,10 +144,11 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
     for(int i=0; i<double_switches.size(); i+=2) { //2 by 2 since each 2 aswitches form a single double switch
         unsigned int inputID = 2* ((i/2) /  n_bus_lines);
         unsigned int busID = (i/2) % n_bus_lines;
-        ASwitch* as_first = double_switches[i];
-        ASwitch* as_second = double_switches[i+1];
+        SparseFlex_ASwitch* as_first = double_switches[i];
+        SparseFlex_ASwitch* as_second = double_switches[i+1];
         assert(busID < memoryConnections.size()); //Making sure the CollectionBus returns the correct busLine
         assert((inputID+1) < memoryConnections[busID].size()); //Making sure the CollectionBus returns the correct busLine
+        std::cout << "SIZE: " << memoryConnections[busID].size() << std::endl;
         Connection* mem_conn_first = memoryConnections[busID][inputID]; //Connecting as i to busID, inputID connection
         Connection* mem_conn_second = memoryConnections[busID][inputID+1];
 	if(this->accumulation_buffer_enabled==0)  { //If the accumulation buffer is not enabled
@@ -166,6 +168,8 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
 
 	}
 	connectionID+=2;
+        std::cout << "SparseFlex_ASwitch " << as_first->getLevel() << ":" << as_first->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
+        std::cout << "SparseFlex_ASwitch " << as_second->getLevel() << ":" << as_second->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID+1 << std::endl;
 
 
 
@@ -175,7 +179,7 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
         unsigned int inputID_Base = (double_switches.size() / n_bus_lines) + 1; //Noice that here we do not use 2*double_switches since there are single switches in the list considered as double
         unsigned  int inputID = inputID_Base + (i / n_bus_lines);
         unsigned int busID = (i+double_switches.size()) % n_bus_lines;
-        ASwitch* as = single_switches[i];
+        SparseFlex_ASwitch* as = single_switches[i];
         Connection* mem_conn = memoryConnections[busID][inputID];
         if(this->accumulation_buffer_enabled==0)  { //If the accumulation buffer is not enabled
             as->setMemoryConnection(mem_conn, busID, inputID);
@@ -188,6 +192,7 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
             accbuffer_memory_connections.push_back(mem_conn);
 
 	}
+        std::cout << "SparseFlex_ASwitch " << as->getLevel() << ":" << as->getNumInLevel() << " connected to BUS " << busID << " INPUT " << inputID << std::endl;
 
 	 connectionID+=1;
 
@@ -203,10 +208,10 @@ void ASNetwork::setMemoryConnections(std::vector<std::vector<Connection*>>  memo
 
 }
 
-std::map<int, Connection*> ASNetwork::getLastLevelConnections() {
+std::map<int, Connection*> SparseFlex_ASNetwork::getLastLevelConnections() {
     int last_level_index = this->nlevels-1; //The levels start from 0, so in the table the last level is nlevels-1
     std::map<int, Connection*> connectionsLastLevel; //Map with the connections of the last level of AS (the ones that must be cnnected with the MN)
-    for(int i=0; i<this->ms_size; i++) {  //Each multiplier must have its own connection if the ASNetwork has been created correctly
+    for(int i=0; i<this->ms_size; i++) {  //Each multiplier must have its own connection if the SparseFlex_ASNetwork has been created correctly
         std::pair<int,int> current_connection (last_level_index, i);
         connectionsLastLevel[i]=this->inputconnectiontable[current_connection];
     }
@@ -217,13 +222,13 @@ std::map<int, Connection*> ASNetwork::getLastLevelConnections() {
     This function set a different configuration for each switch of the network. Each pair i, j corresponds to the level and the id in the
     level for each switch. Each pair has a correspondency with a configuration (ADD_2_1, ADD_3_1, ..., etc.)
 */
-void ASNetwork::addersConfiguration(std::map<std::pair<int,int>, adderconfig_t> adder_configurations) {
+void SparseFlex_ASNetwork::addersConfiguration(std::map<std::pair<int,int>, adderconfig_t> adder_configurations) {
   /* This code is for iterating over all the switches. Forcing the user to set a configuration for each switch (when maybe there is some switch that does not have to)
     int switches_this_level = 1;
     for(int i=0; i< nlevels; i++) {
         for(int j=0; j < switches_this_level; j++) {
             std::pair<int, int> current_switch_pair(i,j);
-            ASwitch* as = aswitchtable[current_switch_pair];
+            SparseFlex_ASwitch* as = aswitchtable[current_switch_pair];
             adderconfig_t conf = adder_configurations[current_switch_pair]; //Getting the configuration for that specific adder
             as->setConfigurationMode(conf);
             //Setting
@@ -235,39 +240,39 @@ void ASNetwork::addersConfiguration(std::map<std::pair<int,int>, adderconfig_t> 
    */
     for(std::map<std::pair<int,int>, adderconfig_t>::iterator it=adder_configurations.begin(); it != adder_configurations.end(); ++it) {
         adderconfig_t conf = it->second;
-        ASwitch* as = aswitchtable[it->first]; //pair index
+        SparseFlex_ASwitch* as = aswitchtable[it->first]; //pair index
         as->setConfigurationMode(conf);
     }
 }
 
-void ASNetwork::forwardingConfiguration(std::map<std::pair<int,int>, fl_t> fl_configurations) {
+void SparseFlex_ASNetwork::forwardingConfiguration(std::map<std::pair<int,int>, fl_t> fl_configurations) {
     for(std::map<std::pair<int,int>,fl_t>::iterator it=fl_configurations.begin(); it != fl_configurations.end(); ++it) {
-        ASwitch* as = aswitchtable[it->first]; //Pair index
+        SparseFlex_ASwitch* as = aswitchtable[it->first]; //Pair index
         as->setForwardingLinkDirection(it->second); //Setting the direction
     }
 }
 
-void ASNetwork::childsLinksConfiguration(std::map<std::pair<int,int>, std::pair<bool,bool>> childs_configuration) {
+void SparseFlex_ASNetwork::childsLinksConfiguration(std::map<std::pair<int,int>, std::pair<bool,bool>> childs_configuration) {
     for(std::map<std::pair<int,int>, std::pair<bool,bool>>::iterator it=childs_configuration.begin(); it != childs_configuration.end(); ++it)
     {
-        ASwitch* as = aswitchtable[it->first];
+        SparseFlex_ASwitch* as = aswitchtable[it->first];
         bool left_child_enabled = std::get<0>(it->second);
         bool right_child_enabled = std::get<1>(it->second);
         as->setChildsEnabled(left_child_enabled, right_child_enabled);
    } 
 }
 
-void ASNetwork::forwardingToMemoryConfiguration(std::map<std::pair<int,int>, bool> forwarding_to_memory_enabled) {
+void SparseFlex_ASNetwork::forwardingToMemoryConfiguration(std::map<std::pair<int,int>, bool> forwarding_to_memory_enabled) {
     for(std::map<std::pair<int,int>, bool>::iterator it=forwarding_to_memory_enabled.begin(); it != forwarding_to_memory_enabled.end(); ++it) {
-        ASwitch* as = aswitchtable[it->first];
+        SparseFlex_ASwitch* as = aswitchtable[it->first];
         bool forwarding_to_memory = it->second;
         as->setForwardingToMemoryEnabled(forwarding_to_memory);
     }
 }
 
-void ASNetwork::resetSignals() {
-    for(std::map<std::pair<int, int>, ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
-        ASwitch* as = it->second;
+void SparseFlex_ASNetwork::resetSignals() {
+    for(std::map<std::pair<int, int>, SparseFlex_ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
+        SparseFlex_ASwitch* as = it->second;
 	as->resetSignals();
     }
 
@@ -276,7 +281,7 @@ void ASNetwork::resetSignals() {
     }
 }
 
-void ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsigned int ms_size, unsigned int n_folding) {
+void SparseFlex_ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsigned int ms_size, unsigned int n_folding) {
     CompilerART* compiler_art = new CompilerART(); //Creating the object
     compiler_art->configureSignals(current_tile, dnn_layer, ms_size, n_folding);  
     std::map<std::pair<int,int>,adderconfig_t> as_signals = compiler_art->get_switches_configuration();
@@ -294,7 +299,21 @@ void ASNetwork::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsign
 
 } 
 
-void ASNetwork::configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLayer* dnn_layer, unsigned int ms_size) {
+void SparseFlex_ASNetwork::configureSignalsSortTree(adderconfig_t sort_configuration) {
+     for(std::map<std::pair<int, int>, SparseFlex_ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
+        SparseFlex_ASwitch* as = it->second;
+        as->setConfigurationMode(sort_configuration);
+
+    }
+    std::pair<int,int> parent_switch(0,0);
+    SparseFlex_ASwitch* parent_node = aswitchtable[parent_switch];
+    parent_node->setForwardingToMemoryEnabled(true);
+    if(this->accumulation_buffer_enabled > 0) {
+        this->accumulationBuffer->configureSignals(NULL, NULL, 1, 1);
+    }
+}
+
+void SparseFlex_ASNetwork::configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLayer* dnn_layer, unsigned int ms_size) {
     CompilerART* compiler_art = new CompilerART(); //Creating the object
     compiler_art->configureSparseSignals(sparseVNs, dnn_layer, ms_size);
 
@@ -312,7 +331,7 @@ void ASNetwork::configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLayer
 
 
 //TODO Implementar esto bien
-void ASNetwork::cycle() {
+void SparseFlex_ASNetwork::cycle() {
 
     //Accumulation buffer cycle if needed
     if(this->accumulation_buffer_enabled > 0) {
@@ -325,17 +344,17 @@ void ASNetwork::cycle() {
     int switches_this_level = 2; //Only one switch in the root
     //Going down to the leaves (no count the MSs)
     std::pair<int,int> current_switch_pair(0,0); //First node
-    ASwitch* as = aswitchtable[current_switch_pair];
+    SparseFlex_ASwitch* as = aswitchtable[current_switch_pair];
     as->cycle();
     for(int i=1; i < this->nlevels; i++) { //From level 1  
         int j = 0;
         while(j < switches_this_level) {
             std::pair<int,int> current_switch_pair (i,j);
-            ASwitch* as = aswitchtable[current_switch_pair]; //Current node j
+            SparseFlex_ASwitch* as = aswitchtable[current_switch_pair]; //Current node j
             //Determining the order of execution if the forwarding link is enabled
             if(as->isFwEnabled()) { //If there is fw link in this node
                 std::pair<int,int> current_switch_pair (i,j+1); //Getting the next which is connected witht his
-                ASwitch* as_next = aswitchtable[current_switch_pair];
+                SparseFlex_ASwitch* as_next = aswitchtable[current_switch_pair];
                 //Determining the order.
                 if(as->getFlDirection() == SEND) { //If the current one is who send the data, the next goes first since it has to take the data in the next cycle
                     as_next->cycle();
@@ -358,26 +377,26 @@ void ASNetwork::cycle() {
 
 }
 
-//Print configuration of the ASNetwork 
-void ASNetwork::printConfiguration(std::ofstream& out, unsigned int indent) {
+//Print configuration of the SparseFlex_ASNetwork 
+void SparseFlex_ASNetwork::printConfiguration(std::ofstream& out, unsigned int indent) {
 
-    out << ind(indent) << "\"ASNetworkConfiguration\" : {" << std::endl;
+    out << ind(indent) << "\"SparseFlex_ASNetworkConfiguration\" : {" << std::endl;
         //out << ind(indent+IND_SIZE) << "\"ms_size\" : " << this->ms_size  << std::endl; DSNetwork global parameters
-        out << ind(indent+IND_SIZE) << "\"ASwitchConfiguration\" : [" << std::endl;   //One entry per DSwitch
+        out << ind(indent+IND_SIZE) << "\"SparseFlex_ASwitchConfiguration\" : [" << std::endl;   //One entry per DSwitch
         int switches_this_level = 1;
         for(int i=0; i < this->nlevels; i++) {  //From root to leaves (without the MSs)
         //Calculating the output ports in this level
-            //One array for each level will allow the access to the ASwitch easier
+            //One array for each level will allow the access to the SparseFlex_ASwitch easier
             out << ind(indent+IND_SIZE+IND_SIZE) << "[" << std::endl;
             for(int j=0; j < switches_this_level; j++) { // From left to right of the structure
                 std::pair<int,int> current_switch_pair (i,j);
-                ASwitch* as = aswitchtable[current_switch_pair];
+                SparseFlex_ASwitch* as = aswitchtable[current_switch_pair];
                 as->printConfiguration(out, indent+IND_SIZE+IND_SIZE+IND_SIZE);
                 if(j==(switches_this_level-1)) {  //If I am in the last switch of the level, the comma to separate the swes is not added
                     out << std::endl; //This is added because the call to ds print do not show it (to be able to put the comma, if neccesary)
                 }
                 else {
-                    out << "," << std::endl; //Comma and line break are added to separate with the next ASwitch in the array of this level
+                    out << "," << std::endl; //Comma and line break are added to separate with the next SparseFlex_ASwitch in the array of this level
                 }
 
             }
@@ -398,25 +417,25 @@ void ASNetwork::printConfiguration(std::ofstream& out, unsigned int indent) {
 }
 
 //Printing stats
-void ASNetwork::printStats(std::ofstream& out, unsigned int indent) {
+void SparseFlex_ASNetwork::printStats(std::ofstream& out, unsigned int indent) {
 
-    out << ind(indent) << "\"ASNetworkStats\" : {" << std::endl; 
+    out << ind(indent) << "\"SparseFlex_ASNetworkStats\" : {" << std::endl; 
         //out << ind(indent+IND_SIZE) << "\"ms_size\" : " << this->ms_size  << std::endl; DSNetwork global parameters
-        out << ind(indent+IND_SIZE) << "\"ASwitchStats\" : [" << std::endl;   //One entry per DSwitch
+        out << ind(indent+IND_SIZE) << "\"SparseFlex_ASwitchStats\" : [" << std::endl;   //One entry per DSwitch
         int switches_this_level = 1;
         for(int i=0; i < this->nlevels; i++) {  //From root to leaves (without the MSs)
         //Calculating the output ports in this level
-            //One array for each level will allow the access to the ASwitch easier
+            //One array for each level will allow the access to the SparseFlex_ASwitch easier
             out << ind(indent+IND_SIZE+IND_SIZE) << "[" << std::endl;
             for(int j=0; j < switches_this_level; j++) { // From left to right of the structure
                 std::pair<int,int> current_switch_pair (i,j);
-                ASwitch* as = aswitchtable[current_switch_pair];
+                SparseFlex_ASwitch* as = aswitchtable[current_switch_pair];
                 as->printStats(out, indent+IND_SIZE+IND_SIZE+IND_SIZE);
                 if(j==(switches_this_level-1)) {  //If I am in the last switch of the level, the comma to separate the swes is not added
                     out << std::endl; //This is added because the call to ds print do not show it (to be able to put the comma, if neccesary)
                 }
                 else {
-                    out << "," << std::endl; //Comma and line break are added to separate with the next ASwitch in the array of this level
+                    out << "," << std::endl; //Comma and line break are added to separate with the next SparseFlex_ASwitch in the array of this level
                 }
 
             }
@@ -443,10 +462,10 @@ void ASNetwork::printStats(std::ofstream& out, unsigned int indent) {
     out << ind(indent) << "}";
 }
 
-void ASNetwork::printEnergy(std::ofstream& out, unsigned int indent) {
+void SparseFlex_ASNetwork::printEnergy(std::ofstream& out, unsigned int indent) {
      /*
-      The ASNetwork component prints the counters for the next subcomponents:
-          - ASwitches
+      The SparseFlex_ASNetwork component prints the counters for the next subcomponents:
+          - SparseFlex_ASwitches
           - wires that connect each aswitch with its childs (including the level of wires that connects with the MSNetwork)
           - augmented wires between adders
 
@@ -466,9 +485,9 @@ void ASNetwork::printEnergy(std::ofstream& out, unsigned int indent) {
          conn->printEnergy(out, indent, "RN_WIRE");
      }
 
-    //Printing the ASwitches energy stats and their fifos stats
-     for(std::map<std::pair<int,int>,ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
-        ASwitch* as = aswitchtable[it->first]; //Pair index
+    //Printing the SparseFlex_ASwitches energy stats and their fifos stats
+     for(std::map<std::pair<int,int>,SparseFlex_ASwitch*>::iterator it=aswitchtable.begin(); it != aswitchtable.end(); ++it) {
+        SparseFlex_ASwitch* as = aswitchtable[it->first]; //Pair index
         as->printEnergy(out, indent); //Setting the direction
      }
 

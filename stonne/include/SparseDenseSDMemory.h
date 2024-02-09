@@ -14,6 +14,7 @@
 #include "MemoryController.h"
 #include "MultiplierNetwork.h"
 #include "ReduceNetwork.h"
+#include "Memory.h"
 
 
 class SparseDenseSDMemory : public MemoryController {
@@ -70,6 +71,14 @@ private:
     //Metadata addresses
     metadata_address_t MK_col_id;
     metadata_address_t MK_row_pointer;
+
+    /* SST variables */
+    uint64_t weight_dram_location;
+    uint64_t input_dram_location;
+    uint64_t output_dram_location;
+
+    uint32_t data_width;
+    uint32_t n_write_mshr;
     
     //Tile parameters
     unsigned int T_N_min;       //Minimum value of T_N
@@ -79,9 +88,6 @@ private:
     unsigned int iter_N;
     unsigned int iter_K;  //This one will change for every value of V (vertex)
     unsigned int iter_M;
-    
-    unsigned int* clocked_op;
-
     
     //Current parameters
     unsigned int current_M;
@@ -127,16 +133,21 @@ private:
    std::vector<Connection*> write_port_connections; 
    cycles_t local_cycle;
    SDMemoryStats sdmemoryStats; //To track information
+
+   //SST Memory hierarchy component structures and variables
+   Memory<float>& mem;
    
    //Aux functions
    void receive();
    void send();
+   bool doLoad(uint64_t addr, DataPackage* data_package);
+   bool doStore(uint64_t addr, DataPackage* data_package);
    void sendPackageToInputFifos(DataPackage* pck);
    std::vector<Connection*> getWritePortConnections()    const {return this->write_port_connections;}
     
     
 public:
-    SparseDenseSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection);
+    SparseDenseSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem);
     ~SparseDenseSDMemory();
     void setLayer(DNNLayer* dnn_layer,  address_t KN_address, address_t MK_address, address_t output_address, Dataflow dataflow);
     void setTile(Tile* current_tile) {assert(false);}
@@ -152,7 +163,6 @@ public:
     void setMultiplierNetwork(MultiplierNetwork* multiplier_network) {this->multiplier_network = multiplier_network;}
     void printStats(std::ofstream& out, unsigned int indent);
     void printEnergy(std::ofstream& out, unsigned int indent);
-    void setClocking(unsigned int* clocked_op){this->clocked_op=clocked_op;}
     SDMemoryStats getStats() {return this->sdmemoryStats;}
 
 };

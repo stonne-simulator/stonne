@@ -22,7 +22,7 @@ FENetwork::FENetwork(id_t id, std::string name, Config stonne_cfg, Connection* o
     unsigned int as_id = 0;
     for(int i=0; i < this->nlevels; i++) {  //From root to leaves (without the MSs)
         for(int j=0; j < adders_this_level; j++) { // From left to right of the structure
-            std::string as_str="FEASwitch "+as_id;
+            std::string as_str="FEASwitch "+std::to_string(as_id);
             FEASwitch* as = new FEASwitch(as_id, as_str, i, j, stonne_cfg);
             as_id+=1; //increasing the as id 
             std::pair<int, int> levelandnum (i,j);

@@ -23,7 +23,7 @@ DSNetwork::DSNetwork(id_t id, std::string name, Config stonne_cfg, unsigned int 
     for(int i=0; i < this->nlevels; i++) {  //From root to leaves (without the MSs)
         //Calculating the output ports in this level
         for(int j=0; j < switches_this_level; j++) { // From left to right of the structure
-            std::string sw_str="DSwitch "+sw_id; 
+            std::string sw_str="DSwitch "+std::to_string(sw_id);
             DSwitch* ds = new DSwitch(sw_id, sw_str, i, j, stonne_cfg, this->ms_size);
             std::pair<int, int> levelandnum (i,j);
             dswitchtable[levelandnum] = ds;

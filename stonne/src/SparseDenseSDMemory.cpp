@@ -5,14 +5,21 @@
 #include "utility.h"
 #include <math.h>
 
-SparseDenseSDMemory::SparseDenseSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection) : MemoryController(id, name) {
+SparseDenseSDMemory::SparseDenseSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem) : MemoryController(id, name), mem(mem) {
     this->write_connection = write_connection;
+
     //Collecting parameters from the configuration file
     this->num_ms = stonne_cfg.m_MSNetworkCfg.ms_size;  //Used to send data
     this->n_read_ports=stonne_cfg.m_SDMemoryCfg.n_read_ports;
     this->n_write_ports=stonne_cfg.m_SDMemoryCfg.n_write_ports;
     this->write_buffer_capacity=stonne_cfg.m_SDMemoryCfg.write_buffer_capacity;
     this->port_width=stonne_cfg.m_SDMemoryCfg.port_width;
+    this->weight_dram_location=stonne_cfg.m_SDMemoryCfg.weight_address;
+    this->input_dram_location=stonne_cfg.m_SDMemoryCfg.input_address;
+    this->output_dram_location=stonne_cfg.m_SDMemoryCfg.output_address;
+    this->data_width=stonne_cfg.m_SDMemoryCfg.data_width;
+    this->n_write_mshr=stonne_cfg.m_SDMemoryCfg.n_write_mshr;
+
     //End collecting parameters from the configuration file
     //Initializing parameters
     this->ms_size_per_input_port = this->num_ms / this->n_read_ports;
@@ -142,7 +149,6 @@ void SparseDenseSDMemory::setDenseSpatialData(unsigned int T_N, unsigned int T_K
 
 
 void SparseDenseSDMemory::cycle() {
-   // std::cout<<"Hello, its me";
     //Here MK(sparse) matrix is stationary and KN(dense) matrix is streaming
     //Sending input data over read_connection
     assert(this->layer_loaded);  // Layer has been loaded
@@ -151,12 +157,36 @@ void SparseDenseSDMemory::cycle() {
     //std::vector<DataPackage*> psum_to_send; // psum temporal storage
     this->local_cycle+=1;
     this->sdmemoryStats.total_cycles++; //To track information
+
+          //Processing the memory requests
+    while(mem.get_read_buffer_size() > 0) {
+      DataPackage * pck = mem.get_read_buffer_front();
+      mem.pop_read_buffer();
+      this->sendPackageToInputFifos(pck); //This is for STA data
+
+    }
+
+    //Processing write memory requests
+    while(mem.get_write_buffer_size() > 0) {
+      DataPackage * pck = mem.get_write_buffer_front();
+      mem.pop_write_buffer();
+
+      data_t data = pck->get_data();
+      uint64_t addr = pck->get_address();
+      addr = addr - this->output_dram_location; //To access to the array. If we remove the array feature this is no longer necessary
+      addr = addr / this->data_width;
+
+      this->output_address[addr]=data;
+      delete pck;
+    }
+
+    if((mem.get_read_buffer_size() == 0) && (mem.get_write_buffer_size() < this->n_write_mshr)) {
+
     if(current_state==CONFIGURING)
     {	//Initialize these for the first time
     	this->K_nnz=MK_row_pointer[current_M+1]-MK_row_pointer[current_M];
     	this->STA_base = MK_row_pointer[current_M];			
     	this->iter_K = K_nnz/T_K + (K_nnz%T_K!=0);
-	//std::cout << "Starting to compute output row " << current_M << "/" << M << std::endl;
 	
 	 Tile* tile1 = new Tile(1, 1, T_K, T_N, 1, 1, 1, 1, false);
 	 this->multiplier_network->resetSignals();
@@ -166,194 +196,6 @@ void SparseDenseSDMemory::cycle() {
 	this->current_K_nnz = 0;
 	STA_complete=false;
     }
-//    if(current_state==CONFIGURING) {   //If the architecture has not been configured
-//        //int i=sta_current_index_metadata;  //Rows
-//        
-//        //Configure VN in terms of TK and TN
-////        int i = current_M;
-////	int j=0;  //Columns
-////	int n_ms = 0; //Number of multipliers assigned
-////	int n_current_cluster = 0;
-//////	this->configurationVNs.clear();
-////	this->vnat_table.clear();
-//	
-//	
-///*
-//	if(this->sta_current_j_metadata > 0)  { // We are managing one cluster with folding
-//            n_ms++; //One for the psum
-//	    j=this->sta_current_j_metadata;
-//	    while((n_ms < this->num_ms) && (j < K)) { //TODO change MK if it is another dw
-//                if(this->STA_metadata[i*STA_DIST_VECTOR + j*STA_DIST_ELEM]) { //If the bit is enabled in the stationary bitmap
-//                    //Add to the cluster
-//                    this->sta_counters_table[i*STA_DIST_VECTOR + j*STA_DIST_ELEM]=n_ms; //DEST
-//                    n_ms++;
-//                    n_current_cluster++;
-//                }
-//                
-//		j++;
-
-//	    }
-//	    /*
-//	    //Making sure that if there is next cluster, that cluster have size >=3
-//	    if((j < K) && ((K-j) < 3)) {
-//                int n_elements_to_make_cluster_3 = 3-(K-j);
-//                j-=n_elements_to_make_cluster_3;
-//                n_current_cluster-=n_elements_to_make_cluster_3;
-
-//	    }
-
-
-
-//            SparseVN VN(n_current_cluster, true); //Here folding is enabled and the SparseVN increments 1 to size
-//            this->configurationVNs.push_back(VN);
-//	    this->vnat_table.push_back(0); //Adding the current calculation (row or column) of this VN.
-//	    //Searching if there are more values in the next cluster. If not, update sta_last_j_metadata to K to indicate that in the next iteration the next sta dim must be evaluated
-//	    int remaining_values = 0;
-//	    for(int r=j; r<K; r++) {
-//                if(this->STA_metadata[i*STA_DIST_VECTOR + r*STA_DIST_ELEM]) {
-//                    remaining_values+=1;
-//	        }
-//	    }
-//	    if(remaining_values > 0) {
-//	        this->sta_last_j_metadata=j;
-//	    }
-
-//	    else {
-//                this->sta_last_j_metadata = K;
-//	    }
-
-
-
-//	}
-
-//	else { //Whole rows
-//	    while((n_ms < this->num_ms) && (i*K+j < dim_sta*K)) { //TODO change MK if it is another dw
-//                if(this->STA_metadata[i*STA_DIST_VECTOR + j*STA_DIST_ELEM]) { //If the bit is enabled in the stationary bitmap
-//                    //Add to the cluster
-//		    this->sta_counters_table[i*STA_DIST_VECTOR + j*STA_DIST_ELEM]=n_ms; //DEST
-//		    n_ms++;
-//		    n_current_cluster++; 
-//	        }
-
-
-//                j++; // Next elem in vector
-//	        if(j==K) {
-//		    //Change cluster since we change of vector
-//                    j=0; //elem = 0
-//		    i++; // Next vector
-//		    if(n_current_cluster > 0) {
-//                        //Creating the cluster for this row
-//		        SparseVN VN(n_current_cluster, false);
-//                        this->configurationVNs.push_back(VN); //Adding to the list 
-//		        this->vnat_table.push_back(0); //Adding the current calculation (row or column) of this VN.
-//		        n_current_cluster = 0;
-
-//		    }
-//	        }
-
-//	    }
-
-//	    if((this->configurationVNs.size() > 0) && (j<K)) {
-//                //Find if there is a last cluster
-//		int remaining_values = 0;
-//                for(int r=j; r<K; r++) {
-//                    if(this->STA_metadata[i*STA_DIST_VECTOR + r*STA_DIST_ELEM]) {
-//                        remaining_values+=1;
-//                    }
-//                }
-//		//Its the last element
-//                if(remaining_values == 0) {
-//		    if(n_current_cluster > 0) {
-//			SparseVN VN(n_current_cluster, false);
-//                        this->configurationVNs.push_back(VN); //Adding to the list
-//                        this->vnat_table.push_back(0); //Adding the current calculation (row or column) of this VN.
-//		    }
-
-//                }
-//	    
-//	    }
-
-//	    if(this->configurationVNs.size()==0) { //If any entire cluster fits, then folding is needed to manage this cluster
-//		   /*
-//		if((K-j) < 3) { //The next cluster must have cluster size greater or equal than 3
-//                    int n_elements_to_make_cluster_3 = 3-(K-j);
-//		    j-=n_elements_to_make_cluster_3;
-//		    n_current_cluster-=n_elements_to_make_cluster_3;
-//		}
-//		
-//	        SparseVN VN(n_current_cluster, false); //Here folding is still disabled as this is the first iteration
-//	        this->configurationVNs.push_back(VN);
-//		this->vnat_table.push_back(0); //Adding the current calculation (row or column) of this VN.
-//		           //Searching if there are more values in the next cluster. If not, update sta_last_j_metadata to K to indicate that in the next iteration the next sta dim must be evaluated
-//                int remaining_values = 0;
-//                for(int r=j; r<K; r++) {
-//                    if(this->STA_metadata[i*STA_DIST_VECTOR + r*STA_DIST_ELEM]) {
-//                        remaining_values+=1;
-//                    }
-//                }
-//                if(remaining_values > 0) {
-//                    this->sta_last_j_metadata=j;
-//                }
-
-//                else {
-//                    this->sta_last_j_metadata = K;
-//                }
-
-//              
-//	    }
-
-//	    else { //If there is at least one cluster, then all of them has size K and it is necessary to stream K
-//		   //K elements
-//		   this->sta_last_j_metadata=this->K;
-
-//            }
-
-//        } //end else whole rows
-
-//*/
-
-//	//Calculating the STR SOURCE TABLE with the indexes of each value
-//	unsigned int source_id = 0;
-//	for(int i=0; i<dim_str; i++) {
-//            for(int j=0; j<K; j++) {
-//                if(this->STR_metadata[i*STR_DIST_VECTOR+j*STR_DIST_ELEM]) {
-//		    //std::cout << "Value (" << i << ", " << j << "): " << source_id << std::endl;
-//                    this->str_counters_table[i*STR_DIST_VECTOR + j*STR_DIST_ELEM]=source_id;
-//		    source_id++;
-//		}
-//	    }
-//	}
-
-//	this->n_ones_str_matrix = source_id;
-
-
-//	//Once the VNs has been selected, lets configure the RN and MN
-//        // Configuring the multiplier network
-//	if(this->configurationVNs.size()==0) {
-//            std::cout << "Cluster size exceeds the number of multipliers in row " << this->sta_current_index_metadata << std::endl;
-//	    assert(false);
-//	}
-//	for(int i=0; i<this->configurationVNs.size(); i++) {
-//            std::cout << "Found a VN of size " << this->configurationVNs[i].get_VN_Size() << std::endl;
-//        }
-//        this->sdmemoryStats.n_sta_vectors_at_once_avg+=this->configurationVNs.size(); //accumul
-//	if(this->configurationVNs.size() > this->sdmemoryStats.n_sta_vectors_at_once_max) {
-//            this->sdmemoryStats.n_sta_vectors_at_once_max = this->configurationVNs.size();
-//	}
-//	this->sdmemoryStats.n_reconfigurations++;
-//	std::cout << "Configuring the Networks" << std::endl;
-//	this->multiplier_network->resetSignals(); //Reseting the values to default
-//	this->multiplier_network->configureSparseSignals(this->configurationVNs, this->dnn_layer, this->num_ms);
-//	//Configuring the reduce network
-//	this->reduce_network->resetSignals(); //Reseting the values to default
-//	this->reduce_network->configureSparseSignals(this->configurationVNs, this->dnn_layer, this->num_ms);
-//	std::cout << "End configuring" << std::endl;
-//	//Number of psums to calculate in this iteration
-//	this->output_size_iteration=this->configurationVNs.size()*this->dim_str;
-//	
-
-//    }
-
     if(current_state == DIST_STA_MATRIX) {
        //Distribution of the stationary matrix
        unsigned int dest = 0; //MS destination
@@ -368,26 +210,32 @@ void SparseDenseSDMemory::cycle() {
 //	   }
            for(int j=0; j<this->T_K; j++) {
 	       data_t data;//Accessing to memory
-	       if(index_K<K_nnz)
-	       {					//This may solve zero remainder constraint too
-	       	     data = this->MK_address[STA_base+index_K]; 
-	       	     sdmemoryStats.n_SRAM_weight_reads++;
-	       	     this->n_ones_sta_matrix++;
-	       }
-	       else
-	       {
-	             data = 0.0;
-	       }
-               bool* destinations = new bool[this->num_ms];
+	       bool* destinations = new bool[this->num_ms];
                for(int i=0; i<this->num_ms; i++) {
                    destinations[i]=false;
                }
                for(int i=0;i<this->T_N;i++){
                    destinations[i*T_K+j]=true;
                }
+
+	       if(index_K<K_nnz)
+	       {					//This may solve zero remainder constraint too
+	       	     // data = this->MK_address[STA_base+index_K]; 
+		         uint64_t new_addr = this->input_dram_location + (STA_base + index_K)*this->data_width;
+	       	     data = 0.0;
+	       	     sdmemoryStats.n_SRAM_weight_reads++;
+	       	     this->n_ones_sta_matrix++;
+		     DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, destinations, this->num_ms,0,0);
+		     doLoad(new_addr, pck_to_send);
+	       }
+	       else
+	       {
+	             data = 0.0;
+		     DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, destinations, this->num_ms,0,0);
+                     this->sendPackageToInputFifos(pck_to_send);
+
+	       }
             
-	       DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, destinations, this->num_ms);
-	       this->sendPackageToInputFifos(pck_to_send);
 	       index_K++;
 	   }
        //}
@@ -412,83 +260,35 @@ void SparseDenseSDMemory::cycle() {
 	       if(index_K<K_nnz)
 	       {
 		     if(index_N < N) {  //Zero-remainder constraint for N-dim
-	       	         data = this->KN_address[MK_col_id[STA_base+index_K]*N+index_N]; //Row of the dense matrix is indexed by the col id of sparse matrix
+	       	         //data = this->KN_address[MK_col_id[STA_base+index_K]*N+index_N]; //Row of the dense matrix is indexed by the col id of sparse matrix
+			 uint64_t new_addr = this->weight_dram_location + (MK_col_id[STA_base+index_K]*N+index_N)*this->data_width;
+	       	         data = 0.0; //Row of the dense matrix is indexed by the col id of sparse matrix
 			 sdmemoryStats.n_SRAM_input_reads++;
+			 DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, dest,0,0);
+			 doLoad(new_addr, pck_to_send);
+
 
 		     }
 		     else {
                          data = 0.0;
+			 DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, dest,0,0);
+	                 this->sendPackageToInputFifos(pck_to_send);
 		     }
 	       }
 	       else
 	       {
 	             data = 0.0;
+		     DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, dest,0,0);
+                     this->sendPackageToInputFifos(pck_to_send);
 	       }
 	       
-	       DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, dest);
-	       this->sendPackageToInputFifos(pck_to_send);
 	       
        		index_K++;
        		dest++;
        	   }
        	   index_N++;
        }
-      /* int init_point_str = this->sta_current_j_metadata;
-       int end_point_str = this->sta_last_j_metadata;
-       if(this->sta_current_j_metadata > 0) { //If folding is enabled there is just a row on  fly
-           assert(this->configurationVNs.size()==1);
-           //send psum
-	   unsigned int addr_offset = (sta_current_index_metadata)*OUT_DIST_VN + str_current_index*OUT_DIST_VN_ITERATION;
-	   bool* destinations = new bool[this->num_ms];
-           for(int i=0; i<this->num_ms; i++) {
-               destinations[i]=false;
-           }
-	   destinations[0]=true;
 
-	   data_t psum = this->output_address[addr_offset];  //Reading the current psum
-	   DataPackage* pck = new DataPackage(sizeof(data_t), psum, PSUM,0, MULTICAST, destinations, this->num_ms);
-           this->sdmemoryStats.n_SRAM_psum_reads++; //To track information
-	   this->sendPackageToInputFifos(pck);
-	   
-       }
-       for(int j=init_point_str; j<end_point_str; j++) {   //For each element in the current vector in the str matrix
-         //Creating the bit vector for this value
-	 bool* destinations = new bool[this->num_ms];
-	 for(int i=0; i<this->num_ms; i++) {
-             destinations[i]=false;
-	 }
-
-	 //Send the value i times with bit on bitmap enabled
-	 //Searching for destinations for this elemeent
-	 unsigned int first_sta_vector = sta_current_index_metadata;
-	 unsigned int last_sta_vector = sta_current_index_metadata + this->configurationVNs.size();
-         for(int i=first_sta_vector; i<last_sta_vector; i++) { //For each vector in the sta matrix could exist a value to send the str value
-             if(STA_metadata[i*STA_DIST_VECTOR + j*STA_DIST_ELEM]) { //ADD Destination
-		 unsigned int dest = sta_counters_table[i*STA_DIST_VECTOR + j*STA_DIST_ELEM];
-                 destinations[dest]=true;
-	     }
-	 }
-
-	 //Accessing to the element in the str matrix
-	 data_t data;
-	 if(STR_metadata[str_current_index*STR_DIST_VECTOR + j*STR_DIST_ELEM]) { 
-	     unsigned int src = str_counters_table[str_current_index*STR_DIST_VECTOR + j*STR_DIST_ELEM];
-	     data = STR_address[src];
-	     sdmemoryStats.n_SRAM_input_reads++;
-	 }
-
-	 else {
-             data=0.0; //If the STA matrix has a value then the STR matrix must be sent even if the value is 0
-         }
-
-	 //Creating the package
-         DataPackage* pck = new DataPackage(sizeof(data_t), data,IACTIVATION,0, MULTICAST, destinations, this->num_ms);
-
-	 this->sendPackageToInputFifos(pck);
-       } 
-
-       // str_current_index++;
-    */   
         //Update dimensions
        
        this->current_K_nnz+=1;
@@ -499,57 +299,13 @@ void SparseDenseSDMemory::cycle() {
                     this->current_N = 0;
                     this->current_M+=1;
                     this->STA_complete=true;
-                    //if(current_M<iter_M){
-                   // 	this->K_nnz=MK_row_pointer[current_M+1]-MK_row_pointer[current_M];	
-                   // 	this->STA_base = MK_row_pointer[current_M];
-		   //	std::cout << "The second value of iter_k is: " << this->iter_K << std::endl;
-
-                    		
-                    //if(this->current_M == iter_M) {
-                     //                             this->STA_complete=true;
-
-//                                            //Update K. Weight distribution neccesary first!
-//                                                this->current_N = 0;
-//                                                this->weights_distributed = true; //Avoid distribution
-//                                                this->weights_finished=true;
-//                                                //Current_K updated when weights are distributed
-//                                                //Checking if all the inputs have been delivered ()
-//                                                if(weights_finished) {
-//                                                    this->input_finished=true;
-//                                                }
-                    //} //end iter_M
                 } //end iter_N
             } //end iter_K_nnz
        
     }
-/*
-      //Update dimensions
 
-       this->current_K_nnz+=1;
-            if(this->current_K_nnz == this->iter_K) {
-                this->current_K_nnz = 0;
-                this->current_N+=1;
-                if(this->current_N == iter_N) {
-                    this->current_N = 0;
-                    this->current_M+=1;
-                    this->K_nnz=MK_row_pointer[current_M+1]-MK_row_pointer[current_M];		
-    		    this->iter_K = K_nnz/T_K + (K_nnz%T_K!=0);
-                    if(this->current_M == iter_M) {
-//                                            //Update K. Weight distribution neccesary first!
-//                                                this->current_N = 0;
-//                                                this->weights_distributed = true; //Avoid distribution
-//                                                this->weights_finished=true;
-//                                                //Current_K updated when weights are distributed
-//                                                //Checking if all the inputs have been delivered ()
-//                                                if(weights_finished) {
-//                                                    this->input_finished=true;
-//                                                }
-                    } //end iter_N
-                } //end iter_N
-            } //end iter_K_nnz
-            
- */
-    
+    } //End if there is no peding memory requests
+   
     //Receiving output data from write_connection
     this->receive();
     if(!write_fifo->isEmpty()) {
@@ -561,8 +317,10 @@ void SparseDenseSDMemory::cycle() {
 	    //unsigned int addr_offset = vnat_table[vn]*T_N + vn; 
 	    unsigned int addr_offset = vnat_table_iterm[vn]*N + vnat_table_itern[vn]*T_N+vn;
 	    if((vnat_table_itern[vn]*T_N+vn) < N) { //Zero-remainder constraint
-                this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
-                //this->clocked_op[addr_offset]=local_cycle;
+		uint64_t new_addr = this->output_dram_location + addr_offset*this->data_width;
+		pck_received->set_address(new_addr);
+		doStore(new_addr, pck_received);
+                //this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
                 this->sdmemoryStats.n_SRAM_psum_writes++; //To track information
             }
 
@@ -572,9 +330,9 @@ void SparseDenseSDMemory::cycle() {
                 vnat_table_iterm[vn]++;
             } 
             current_output++;
-	    //if((current_output % 1000) == 0) {
-               // std::cout << "Output completed " << current_output << "/" << M*N << ")" << std::endl;
-            // }
+	    if((current_output % 1000) == 0) {
+                std::cout << "Output completed " << current_output << "/" << M*N << ")" << std::endl;
+            }
 
 	    int N_and_pad = iter_N*T_N; 
 	    if(current_output == M*N_and_pad) {
@@ -587,7 +345,7 @@ void SparseDenseSDMemory::cycle() {
 		    STA_complete=true;
 		}
 	    }
-            delete pck_received; //Deleting the current package
+        //    delete pck_received; //Deleting the current package
             
         }
     }
@@ -622,43 +380,9 @@ void SparseDenseSDMemory::cycle() {
 	} 
     }
 
-    //else if(current_state==WAITING_FOR_NEXT_STA_ITER) {
-        
-    //}  //This state is modified when receiving data
 
     else if(current_state==ALL_DATA_SENT) {
     
-//	this->str_current_index = 0;
-//	this->sta_iter_completed=false;
-//        if(this->configurationVNs.size()==1) {//If there is only one VN, then maybe foliding has been needed
-//            this->sta_current_j_metadata=this->sta_last_j_metadata;
-//	   // if(this->configurationVNs[0].getFolding()) {
-//           //     this->sta_current_j_metadata-=1;
-//	   // }
-
-//	    if(this->sta_current_j_metadata == this->K) { //If this is the end of the cluster, it might start to the next 
-//                this->sta_current_index_metadata+=1;
-//		this->sta_current_j_metadata = 0;
-//		std::cout << "STONNE: STA dimensions completed (" << this->sta_current_index_metadata << "/" << this->dim_sta << ")" << std::endl;
-
-
-//            }
-//	}
-
-//	else {
-//	    this->sta_current_index_metadata+=this->configurationVNs.size();
-//	    std::cout << "STONNE: STA dimensions completed (" << this->sta_current_index_metadata << "/" << this->dim_sta << ")" << std::endl;
-//	    this->sta_current_j_metadata = 0;
-//	}
-//	unsigned int total_size = 0;
-//	for(int i=0; i<this->configurationVNs.size(); i++) {
-//            total_size+=this->configurationVNs[i].get_VN_Size();
-//	    if(this->configurationVNs[i].getFolding()) {
-//                total_size-=1; //Sustract the -1 of the extra multiplier 
-//	    }
-//        }
-//	this->sta_current_index_matrix+=total_size;
-
 //	if(current_M>=this->M) {
 	    //Calculating sparsity values  and some final stats
 	    unsigned int sta_size = this->M*this->K;
@@ -680,7 +404,7 @@ void SparseDenseSDMemory::cycle() {
 }
 
 bool SparseDenseSDMemory::isExecutionFinished() {
-    return this->execution_finished;
+	return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -690,7 +414,7 @@ void SparseDenseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         //Send to all the ports with the flag broadcast enabled
         for(int i=0; i<this->n_read_ports; i++) {
             //Creating a replica of the package to be sent to each port
-            DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, BROADCAST); //Size, data, data_type, source (port in this case), BROADCAST
+            DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, BROADCAST, pck->getRow(), pck->getCol()); //Size, data, data_type, source (port in this case), BROADCAST
             //Sending the replica to the suitable fifo that correspond with the port
             if(pck->get_data_type() == PSUM) { //Actually a PSUM cannot be broadcast. But we put this for compatibility
                 psum_fifos[i]->push(pck_new);
@@ -711,7 +435,7 @@ void SparseDenseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         unsigned int input_port = dest / this->ms_size_per_input_port;
         unsigned int local_dest = dest % this->ms_size_per_input_port;
         //Creating the package 
-        DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), input_port, UNICAST, local_dest); //size, data, type, source (port), UNICAST, dest_local
+        DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), input_port, UNICAST, local_dest, pck->getRow(), pck->getCol()); //size, data, type, source (port), UNICAST, dest_local
         //Sending to the fifo corresponding with port input_port
         if(pck->get_data_type() == PSUM) { //Actually a PSUM cannot be broadcast. But we put this for compatibility
             psum_fifos[input_port]->push(pck_new);
@@ -739,7 +463,7 @@ void SparseDenseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
             }
 
             if(thereis_receiver) { //If this port have at least one ms to true then we send the data to this port i
-                DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port); 
+                DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port, pck->getRow(), pck->getCol()); 
                 if(pck->get_data_type() == PSUM) {
                     psum_fifos[i]->push(pck_new);
                 }
@@ -843,4 +567,17 @@ void SparseDenseSDMemory::printEnergy(std::ofstream& out, unsigned int indent) {
    out << ind(indent) << " WRITE=" << writes << std::endl;
         
 }
+
+bool SparseDenseSDMemory::doLoad(uint64_t addr, DataPackage* data_package)
+    {
+        mem.load(addr, data_package);
+        return 1;
+    }
+
+
+   bool SparseDenseSDMemory::doStore(uint64_t addr, DataPackage* data_package)
+    {
+        mem.store(addr, data_package);
+        return 1;
+    }
 

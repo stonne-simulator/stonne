@@ -9,15 +9,15 @@ Bus::Bus(id_t id, std::string name, Config stonne_cfg) : Unit(id, name) {
    this->connection_width = stonne_cfg.m_SDMemoryCfg.port_width;
    this->fifo_size = 100; //TODO 
    for(int i=0; i<n_bus_lines; i++) {
-       std::string name="CollectionBusLine "+i;
+       std::string name="CollectionBusLine "+std::to_string(i);
        CollectionBusLine* busline = new CollectionBusLine(i, name, i, this->input_ports_bus_line, this->connection_width, this->fifo_size); 
        collection_bus_lines.push_back(busline);
    }
 }
 
 Bus::~Bus() {
-    for(int i=0; i<n_bus_lines; i++) {
-       delete collection_bus_lines[i]; 
+    for(int i=0; i<collection_bus_lines.size(); i++) {
+       delete collection_bus_lines[i];
     }
 }
 

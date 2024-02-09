@@ -23,19 +23,19 @@ private:
     
 public:
     Bus(id_t id, std::string name, Config stonne_cfg);
+    ~Bus();
     unsigned int getNBusLines()    {return this->n_bus_lines;}
     unsigned int getInputPortsBusLine()   {return this->input_ports_bus_line;}
-    std::vector<std::vector<Connection*>> getInputConnections();    
+    std::vector<std::vector<Connection*>> getInputConnections();
     std::vector<Connection*> getOutputConnections(); //Get the output connections of all the lines
     Connection* getInputConnectionFromBusLine(unsigned int busID, unsigned int inputID); //Get a specific inpur from a specific bus line
 
 
     void cycle(); //Get the inputs and send as many as posssible to the outputs
-  
+
     void printStats(std::ofstream& out, unsigned int indent);
     void printEnergy(std::ofstream& out, unsigned int indent);
-    ~Bus();
-   
+
 
     
 };

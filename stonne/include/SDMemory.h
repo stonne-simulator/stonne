@@ -13,6 +13,7 @@
 #include "DataPackage.h"
 #include "Stats.h"
 #include "MemoryController.h"
+#include "Memory.h"
 
 //This class contains for each VN the next address to write 
 class VNAT_Register {
@@ -37,19 +38,11 @@ public:
     unsigned int iter_R;
     unsigned int iter_S;
     unsigned int iter_C;
-
-    //Bases to figure out each vn associated dimensions
-    unsigned int base_N;
-    unsigned int base_G;
-    unsigned int base_K;
-    unsigned int base_X;
-    unsigned int base_Y;
     unsigned int n_psums; //psums per window
     unsigned int current_psum;
     DNNLayer* dnn_layer;
     Tile* current_tile;
     bool finished;
-    bool valid_value; //Zero-remainder constraint 
   
    
     VNAT_Register(unsigned int VN, unsigned int addr, unsigned int N, unsigned int G, unsigned int K, unsigned int X, unsigned int Y,  
@@ -89,6 +82,13 @@ private:
     address_t filter_address;
     address_t input_address;
     address_t output_address;
+
+    uint64_t weight_dram_location;
+    uint64_t input_dram_location;
+    uint64_t output_dram_location;
+
+    uint32_t data_width;
+    uint32_t n_write_mshr;
 
     //Signals
     bool weights_distributed; //Indicates if the weights have been distributed for a certain iteration
@@ -139,16 +139,21 @@ private:
    VNAT_Register** VNAT;  //VNAT with as many registers as VN configured in the accelerator
    cycles_t local_cycle;
    SDMemoryStats sdmemoryStats; //To track information
-   
+
+   //SST Memory hierarchy component structures and variables
+   Memory<float>& mem;
+
    //Aux functions
    void receive();
    void sendPackageToInputFifos(DataPackage* pck);
    void send();
+   bool doLoad(uint64_t addr, DataPackage* data_package);
+   bool doStore(uint64_t addr, DataPackage* data_package);
    std::vector<Connection*> getWritePortConnections()    const {return this->write_port_connections;}
     
     
 public:
-    SDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection);
+    SDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem);
     ~SDMemory();
     void setLayer(DNNLayer* dnn_layer,  address_t input_address, address_t filter_address, address_t output_address, Dataflow dataflow);
     void setTile(Tile* current_tile);
@@ -165,7 +170,6 @@ public:
    
     void printStats(std::ofstream& out, unsigned int indent);
     void printEnergy(std::ofstream& out, unsigned int indent);
-    SDMemoryStats getStats() {return this->sdmemoryStats;}
 };
 
 

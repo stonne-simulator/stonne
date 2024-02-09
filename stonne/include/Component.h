@@ -22,6 +22,8 @@ public:
         this->totalCycles = 0;
     }
 
+    virtual ~Component() {}
+
     const string& getComponentName() const       {return componentName;}
     const bool isEnabled() const                 {return enabled;}
     const cycles_t getIdleCycles() const         {return idleCycles;}

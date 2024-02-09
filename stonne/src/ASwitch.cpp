@@ -106,23 +106,23 @@ void ASwitch::resetSignals() {
     this->fw_enabled = false; 
     this->forward_to_memory=false;
           while(!input_psum_left_fifo->isEmpty()) {
-        input_psum_left_fifo->pop();
+        delete input_psum_left_fifo->pop();
     }
 
       while(!input_psum_right_fifo->isEmpty()) {
-        input_psum_right_fifo->pop();
+        delete input_psum_right_fifo->pop();
     }
 
       while(!output_psum_fifo->isEmpty()) {
-        output_psum_fifo->pop();
+        delete output_psum_fifo->pop();
     }
 
       while(!input_fw_fifo->isEmpty()) {
-        input_fw_fifo->pop();
+        delete input_fw_fifo->pop();
     }
 
       while(!output_fw_fifo->isEmpty()) {
-        output_fw_fifo->pop();
+        delete output_fw_fifo->pop();
     }
 
 }
@@ -333,7 +333,7 @@ DataPackage* ASwitch::perform_operation_2_operands(DataPackage* pck_left, DataPa
             assert(false); // This case must not occur in this type of configuration adder
     }
     //Creating the result package with the output
-    DataPackage* result_pck = new DataPackage (sizeof(data_t), result, PSUM, this->level, pck_left->get_vn(), this->operation_mode);  //TODO the size of the package corresponds with the data size
+    DataPackage* result_pck = new DataPackage (sizeof(data_t), result, PSUM, this->level, pck_left->get_vn(), this->operation_mode, pck_left->getRow(), pck_left->getCol());  //TODO the size of the package corresponds with the data size
     //Adding to the creation list to be deleted afterward
 //    this->psums_created.push_back(result_pck);
     return result_pck;
@@ -373,7 +373,7 @@ DataPackage* ASwitch::perform_operation_3_operands(DataPackage* pck_left, DataPa
     }
 
     //Wrapping over a package
-    DataPackage* result_pck = new DataPackage (sizeof(data_t), result, PSUM, this->level, pck_left->get_vn(), this->operation_mode);  //TODO the size of the package corresponds with the data size
+    DataPackage* result_pck = new DataPackage (sizeof(data_t), result, PSUM, this->level, pck_left->get_vn(), this->operation_mode, pck_left->getRow(), pck_left->getCol());  //TODO the size of the package corresponds with the data size
     //std::cout << "ASwitch " << level << ":" << num_in_level << " Has computed a value" << std::endl;
     //Adding to the creation list to be deleted afterward
     //this->psums_created.push_back(result_pck);

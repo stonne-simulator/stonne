@@ -19,6 +19,7 @@ private:
     FifoStats fifoStats; //Tracking parameters
 public:
     Fifo(unsigned int capacity);
+    ~Fifo();
     bool isEmpty();
     bool isFull();
     void push(DataPackage* data);

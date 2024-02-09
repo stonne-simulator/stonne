@@ -6,32 +6,34 @@
 
 //General constructor implementation
 
-DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source) {
+DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source, unsigned int row, unsigned int col) {
     this->size_package = size_package;
     this->data = data;
     this->data_type =data_type;
     this->source = source;
     this->traffic_type = UNICAST; //Default
+    this->row = row;
+    this->col = col;
 }
 
-DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source,traffic_t traffic_type) : DataPackage(size_package, data, data_type, source) {
+DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source,traffic_t traffic_type, unsigned int row, unsigned int col) : DataPackage(size_package, data, data_type, source, row, col) {
     this->traffic_type = traffic_type;
     this->dests = NULL;
 }
 // Unicast package constructor. 
-DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source,traffic_t traffic_type, unsigned int unicast_dest) : 
-DataPackage(size_package, data, data_type, source, traffic_type) {
+DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source,traffic_t traffic_type, unsigned int unicast_dest, unsigned int row, unsigned int col) : 
+DataPackage(size_package, data, data_type, source, traffic_type, row, col) {
     assert(traffic_type == UNICAST);
     this->unicast_dest = unicast_dest;
 }
 //Multicast package. dests must be dynamic memory since the array is not copied. 
-DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source,traffic_t traffic_type, bool* dests, unsigned int n_dests) : DataPackage(size_package, data, data_type, source, traffic_type) {
+DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source,traffic_t traffic_type, bool* dests, unsigned int n_dests, unsigned int row, unsigned int col) : DataPackage(size_package, data, data_type, source, traffic_type, row, col) {
     this->dests = dests;
     this->n_dests = n_dests;
 }
 
 //psum package
-DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source, unsigned int VN, adderoperation_t operation_mode): DataPackage(size_package, data, data_type, source) {
+DataPackage::DataPackage(size_t size_package, data_t data, operand_t data_type, id_t source, unsigned int VN, adderoperation_t operation_mode, unsigned int row, unsigned int col): DataPackage(size_package, data, data_type, source, row, col) {
     this->VN = VN;
     this->operation_mode = operation_mode;
 }
@@ -56,6 +58,8 @@ DataPackage::DataPackage(DataPackage* pck) {
     this->operation_mode = pck->get_operation_mode();
     this->output_port = output_port;
     this->iteration_k=pck->getIterationK();
+    this->row=pck->getRow();
+    this->col=pck->getCol();
     if(this->traffic_type == MULTICAST) {
         this->n_dests = pck->get_n_dests();  
         const bool* prev_pck_dests = pck->get_dests();

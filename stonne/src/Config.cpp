@@ -247,6 +247,11 @@ void Config::reset() {
     m_SDMemoryCfg.n_read_ports=4; 
     m_SDMemoryCfg.n_write_ports=4; 
     m_SDMemoryCfg.port_width=16;
+    m_SDMemoryCfg.weight_address=0;
+    m_SDMemoryCfg.input_address=10000;
+    m_SDMemoryCfg.output_address=20000;
+    m_SDMemoryCfg.data_width=4;
+    m_SDMemoryCfg.n_write_mshr=16;
 
 
 }

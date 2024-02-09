@@ -7,6 +7,13 @@ Fifo::Fifo(unsigned int capacity) {
     this->capacity_words = capacity / sizeof(data_t); //Data size
 }
 
+Fifo::~Fifo() {
+    //Freeing the memory of the elements in the fifo
+    while(!fifo.empty()) {
+        delete pop();
+    }
+}
+
 bool Fifo::isFull() {
     return  this->fifo.size() >= this->capacity_words;  // > is forbidden
 }

@@ -26,6 +26,7 @@ public:
     virtual void setOutputConnection(Connection* outputConnection)  {assert(false);} //This function set the outputConnection with the Prefetch buffer
     virtual void configureSignals(Tile* current_tile, DNNLayer* dnn_layer, unsigned int ms_size, unsigned int n_folding) {assert(false);}
     virtual void configureSparseSignals(std::vector<SparseVN> sparseVNs, DNNLayer* dnn_layer, unsigned int ms_size) {assert(false);}
+    virtual void configureSignalsSortTree(adderconfig_t sort_configuration) {assert(false);}
     virtual void resetSignals() {assert(false);}
 
 

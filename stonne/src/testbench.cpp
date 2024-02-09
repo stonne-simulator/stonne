@@ -90,7 +90,9 @@ unsigned int T_X_, unsigned int T_Y_, Config stonne_cfg, unsigned int n_test) {
     sequential_layer(R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap_cpu); 
 
     //Computing the CNN Layer with the simulator
-    Stonne* stonne_instance = new Stonne(stonne_cfg); //Creating instance of the simulator
+    // TODO Random size just to test, remove later
+    Memory<float> memHierarchy(100 * 1024 * 1024); //Creating memory hierarchy
+    Stonne* stonne_instance = new Stonne(stonne_cfg, memHierarchy); //Creating instance of the simulator
     stonne_instance->loadDNNLayer(CONV, "TestLayer", R, S, C, K, G, N, X, Y, strides, ifmap, filter, ofmap, CNN_DATAFLOW); //Loading the layer
     stonne_instance->loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_); //Loading the tile
     stonne_instance->run(); //Running the simulator 

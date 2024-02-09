@@ -4,7 +4,7 @@
 #include <iostream>
 #include "utility.h"
 
-SparseSDMemory::SparseSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection) : MemoryController(id, name) {
+SparseSDMemory::SparseSDMemory(id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem) : MemoryController(id, name), mem(mem) {
     this->write_connection = write_connection;
     //Collecting parameters from the configuration file
     this->num_ms = stonne_cfg.m_MSNetworkCfg.ms_size;  //Used to send data
@@ -12,6 +12,12 @@ SparseSDMemory::SparseSDMemory(id_t id, std::string name, Config stonne_cfg, Con
     this->n_write_ports=stonne_cfg.m_SDMemoryCfg.n_write_ports;
     this->write_buffer_capacity=stonne_cfg.m_SDMemoryCfg.write_buffer_capacity;
     this->port_width=stonne_cfg.m_SDMemoryCfg.port_width;
+    this->weight_dram_location=stonne_cfg.m_SDMemoryCfg.weight_address;
+    this->input_dram_location=stonne_cfg.m_SDMemoryCfg.input_address;
+    this->output_dram_location=stonne_cfg.m_SDMemoryCfg.output_address;
+    this->data_width=stonne_cfg.m_SDMemoryCfg.data_width;
+    this->n_write_mshr=stonne_cfg.m_SDMemoryCfg.n_write_mshr;
+
     //End collecting parameters from the configuration file
     //Initializing parameters
     this->ms_size_per_input_port = this->num_ms / this->n_read_ports;
@@ -89,9 +95,9 @@ void SparseSDMemory::setLayer(DNNLayer* dnn_layer, address_t MK_address, address
 
     //Loading parameters according to the equivalence between CNN layer and GEMM. This is done
     //in this way to keep the same interface.
-    this->M = this->dnn_layer->get_K();
+    this->N = this->dnn_layer->get_K();
     this->K = this->dnn_layer->get_S();   //Be careful. K in GEMMs (SIGMA taxonomy) is not the same as K in CNN taxonomy (number of filters)
-    this->N = this->dnn_layer->get_X();  //In this case both parameters match each other.
+    this->M = this->dnn_layer->get_X();  //In this case both parameters match each other.
     sdmemoryStats.dataflow=dataflow; 
 
     if(dataflow==MK_STA_KN_STR) {
@@ -100,6 +106,9 @@ void SparseSDMemory::setLayer(DNNLayer* dnn_layer, address_t MK_address, address
 	this->dim_sta = M;
 	this->STR_address = KN_address;
 	this->dim_str = N;
+
+	this->STA_dram_location = input_dram_location;
+	this->STR_dram_location = weight_dram_location;
 
     
 	//MK_sta_ KN STR dataflow. According to the distribution of the bitmap
@@ -122,6 +131,8 @@ void SparseSDMemory::setLayer(DNNLayer* dnn_layer, address_t MK_address, address
 	this->STR_address = MK_address;
 	this->dim_str= M;
 
+	this->STA_dram_location = weight_dram_location;
+	this->STR_dram_location = input_dram_location;
 	this->STA_DIST_ELEM=dim_sta;
 	this->STA_DIST_VECTOR=1;
 
@@ -182,7 +193,29 @@ void SparseSDMemory::cycle() {
     std::vector<DataPackage*> psum_to_send; // psum temporal storage
     this->local_cycle+=1;
     this->sdmemoryStats.total_cycles++; //To track information
-    
+
+    //Processing the memory requests
+    while(mem.get_read_buffer_size() > 0) {
+      DataPackage * pck = mem.get_read_buffer_front();
+      mem.pop_read_buffer();
+      this->sendPackageToInputFifos(pck); //This is for STA data
+    }
+
+    //Processing write memory requests
+    while(mem.get_write_buffer_size() > 0) {
+      DataPackage * pck = mem.get_write_buffer_front();
+      mem.pop_write_buffer();
+
+      data_t data = pck->get_data();
+      uint64_t addr = pck->get_address();
+      addr = addr - this->output_dram_location; //To access to the array. If we remove the array feature this is no longer necessary
+      addr = addr / this->data_width;
+      this->output_address[addr]=data;
+      delete pck;
+    }
+
+    if((mem.get_read_buffer_size() == 0)) {
+
     if(current_state==CONFIGURING) {   //If the architecture has not been configured
         int i=sta_current_index_metadata;  //Rows
 	int j=0;  //Columns
@@ -285,7 +318,7 @@ void SparseSDMemory::cycle() {
 	    
 	    }
 
-	    if(this->configurationVNs.size()==0) { //If any entire cluster fits, then folding is needed to manage this cluster
+	    if(this->configurationVNs.size()==0 && n_ms > 0) { //If any entire cluster fits (at least 1 element), then folding is needed to manage this cluster
 		   /*
 		if((K-j) < 3) { //The next cluster must have cluster size greater or equal than 3
                     int n_elements_to_make_cluster_3 = 3-(K-j);
@@ -314,8 +347,7 @@ void SparseSDMemory::cycle() {
               
 	    }
 
-	    else { //If there is at least one cluster, then all of them has size K and it is necessary to stream K
-		   //K elements
+	    else { //If there is at least one cluster, then all of them has size K and it is necessary to stream K elements
 		   this->sta_last_j_metadata=this->K;
 
             }
@@ -339,7 +371,7 @@ void SparseSDMemory::cycle() {
 
 	//Once the VNs has been selected, lets configure the RN and MN
         // Configuring the multiplier network
-	if(this->configurationVNs.size()==0) {
+	if(this->configurationVNs.size()==0 && n_current_cluster > 0) { // Not enough MSs to fill the VN cluster
             std::cout << "Cluster size exceeds the number of multipliers in row " << this->sta_current_index_metadata << std::endl;
 	    assert(false);
 	}
@@ -351,13 +383,11 @@ void SparseSDMemory::cycle() {
             this->sdmemoryStats.n_sta_vectors_at_once_max = this->configurationVNs.size();
 	}
 	this->sdmemoryStats.n_reconfigurations++;
-	//std::cout << "Configuring the Networks" << std::endl;
 	this->multiplier_network->resetSignals(); //Reseting the values to default
 	this->multiplier_network->configureSparseSignals(this->configurationVNs, this->dnn_layer, this->num_ms);
 	//Configuring the reduce network
 	this->reduce_network->resetSignals(); //Reseting the values to default
 	this->reduce_network->configureSparseSignals(this->configurationVNs, this->dnn_layer, this->num_ms);
-	//std::cout << "End configuring" << std::endl;
 	//Number of psums to calculate in this iteration
 	this->output_size_iteration=this->configurationVNs.size()*this->dim_str;
 	
@@ -377,13 +407,15 @@ void SparseSDMemory::cycle() {
 	   }
            for(; j<this->configurationVNs[i].get_VN_Size(); j++) {
 	       //Accessing to memory
-	       data_t data = this->STA_address[sta_current_index_matrix+sub_address]; //In both dataflows adjacents elements are consecutive in mem
+	       //data_t data = this->STA_address[sta_current_index_matrix+sub_address]; //In both dataflows adjacents elements are consecutive in mem
+	       uint64_t new_addr = this->STA_dram_location + (sta_current_index_matrix+sub_address)*this->data_width;
+	       data_t data = 0.0;
 	       sdmemoryStats.n_SRAM_weight_reads++;
 	       this->n_ones_sta_matrix++; 
-	       DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, UNICAST, dest);
-	       this->sendPackageToInputFifos(pck_to_send);
+	       DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, UNICAST, dest,0,0);
                dest++;
 	       sub_address++;
+	       doLoad(new_addr, pck_to_send);
 	   }
        }
 
@@ -402,10 +434,14 @@ void SparseSDMemory::cycle() {
            }
 	   destinations[0]=true;
 
-	   data_t psum = this->output_address[addr_offset];  //Reading the current psum
-	   DataPackage* pck = new DataPackage(sizeof(data_t), psum, PSUM,0, MULTICAST, destinations, this->num_ms);
+	   //data_t psum = this->output_address[addr_offset];  //Reading the current psum
+	   uint64_t new_addr = addr_offset*this->data_width + this->output_dram_location;
+	   data_t psum = 0.0;  //Reading the current psum
+	   DataPackage* pck = new DataPackage(sizeof(data_t), psum, PSUM,0, MULTICAST, destinations, this->num_ms,0,0);
+	   //std::cout << "Distributing streaming matrix" << std::endl;
            this->sdmemoryStats.n_SRAM_psum_reads++; //To track information
-	   this->sendPackageToInputFifos(pck);
+	   //this->sendPackageToInputFifos(pck);
+	   doLoad(new_addr, pck);
 	   
        }
        for(int j=init_point_str; j<end_point_str; j++) {   //For each element in the current vector in the str matrix
@@ -430,24 +466,27 @@ void SparseSDMemory::cycle() {
 	 data_t data;
 	 if(STR_metadata[str_current_index*STR_DIST_VECTOR + j*STR_DIST_ELEM]) { 
 	     unsigned int src = str_counters_table[str_current_index*STR_DIST_VECTOR + j*STR_DIST_ELEM];
-	     data = STR_address[src];
+	     //data = STR_address[src];
+	     uint64_t new_addr = STR_dram_location + src*this->data_width;
+	     data = 0.0;
 	     sdmemoryStats.n_SRAM_input_reads++;
+	     DataPackage* pck = new DataPackage(sizeof(data_t), data,IACTIVATION,0, MULTICAST, destinations, this->num_ms,0,0);
+	     doLoad(new_addr, pck);
+
 	 }
 
 	 else {
              data=0.0; //If the STA matrix has a value then the STR matrix must be sent even if the value is 0
+	     DataPackage* pck = new DataPackage(sizeof(data_t), data,IACTIVATION,0, MULTICAST, destinations, this->num_ms,0,0); 
+	     this->sendPackageToInputFifos(pck); //Access to memory is not required as the data is 0
          }
 
-	 //Creating the package
-         DataPackage* pck = new DataPackage(sizeof(data_t), data,IACTIVATION,0, MULTICAST, destinations, this->num_ms);
-
-	 this->sendPackageToInputFifos(pck);
        } 
 
        str_current_index++;
     }
 
-
+    } //End if there is no pending memory requests
          
     
     //Receiving output data from write_connection
@@ -460,37 +499,49 @@ void SparseSDMemory::cycle() {
             data_t data = pck_received->get_data();
             this->sdmemoryStats.n_SRAM_psum_writes++; //To track information 
 	    unsigned int addr_offset = (sta_current_index_metadata+vn)*OUT_DIST_VN + vnat_table[vn]*OUT_DIST_VN_ITERATION; 
+	    uint64_t new_addr = this->output_dram_location + addr_offset*this->data_width;
+	    pck_received->set_address(new_addr);
+
+        // note: comment this store to hide write latency, but simulation won't return a result file
+	    doStore(new_addr, pck_received);
 	    vnat_table[vn]++; 
-            this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
+            //this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
             current_output++;
 	    current_output_iteration++;
 	    if(current_output_iteration==output_size_iteration) {
                 current_output_iteration = 0;
 		sta_iter_completed=true;
 	    }
-            delete pck_received; //Deleting the current package
+            //delete pck_received; //Deleting the current package
             
         }
     }
 
     //Transitions
-    if(current_state==CONFIGURING) {
-        current_state=DIST_STA_MATRIX;
+    if((current_state==CONFIGURING) && ((mem.get_read_buffer_size() == 0))) {
+	if (this->configurationVNs.size() > 0) { // At least 1 VN has been configured
+	    current_state=DIST_STA_MATRIX;
+	} else {
+	    // If we could not find any VN (empty row case), then we move to the next row
+	    current_state = WAITING_FOR_NEXT_STA_ITER;
+	    this->sta_iter_completed = true;
+	    this->sta_current_j_metadata == this->K;
+	}
+	//std::cout << "Transitioning to DIS_STA_MATRIX" << std::endl;
     }
 
     else if(current_state==DIST_STA_MATRIX) {
         current_state=DIST_STR_MATRIX;
     }
-
     else if(current_state==DIST_STR_MATRIX  && str_current_index==dim_str) {
 	current_state = WAITING_FOR_NEXT_STA_ITER;
     }
 
     else if(current_state==WAITING_FOR_NEXT_STA_ITER && sta_iter_completed) {
-    
+
 	this->str_current_index = 0;
 	this->sta_iter_completed=false;
-        if(this->configurationVNs.size()==1) {//If there is only one VN, then maybe foliding has been needed
+        if(this->configurationVNs.size()<=1) {//If there is only one VN (or none, empty row case), then maybe foliding has been needed
             this->sta_current_j_metadata=this->sta_last_j_metadata;
 	   // if(this->configurationVNs[0].getFolding()) {
            //     this->sta_current_j_metadata-=1;
@@ -537,7 +588,7 @@ void SparseSDMemory::cycle() {
 	}
     }
 
-   
+    //} //End if there are pending requests
 
 
 
@@ -547,7 +598,7 @@ void SparseSDMemory::cycle() {
 }
 
 bool SparseSDMemory::isExecutionFinished() {
-    return this->execution_finished;
+	return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -557,7 +608,7 @@ void SparseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         //Send to all the ports with the flag broadcast enabled
         for(int i=0; i<this->n_read_ports; i++) {
             //Creating a replica of the package to be sent to each port
-            DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, BROADCAST); //Size, data, data_type, source (port in this case), BROADCAST
+            DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, BROADCAST,pck->getRow(),pck->getCol()); //Size, data, data_type, source (port in this case), BROADCAST
             //Sending the replica to the suitable fifo that correspond with the port
             if(pck->get_data_type() == PSUM) { //Actually a PSUM cannot be broadcast. But we put this for compatibility
                 psum_fifos[i]->push(pck_new);
@@ -578,7 +629,7 @@ void SparseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         unsigned int input_port = dest / this->ms_size_per_input_port;
         unsigned int local_dest = dest % this->ms_size_per_input_port;
         //Creating the package 
-        DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), input_port, UNICAST, local_dest); //size, data, type, source (port), UNICAST, dest_local
+        DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), input_port, UNICAST, local_dest,pck->getRow(),pck->getCol()); //size, data, type, source (port), UNICAST, dest_local
         //Sending to the fifo corresponding with port input_port
         if(pck->get_data_type() == PSUM) { //Actually a PSUM cannot be broadcast. But we put this for compatibility
             psum_fifos[input_port]->push(pck_new);
@@ -606,7 +657,7 @@ void SparseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
             }
 
             if(thereis_receiver) { //If this port have at least one ms to true then we send the data to this port i
-                DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port); 
+                DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port, pck->getRow(), pck->getCol()); 
                 if(pck->get_data_type() == PSUM) {
                     psum_fifos[i]->push(pck_new);
                 }
@@ -710,4 +761,18 @@ void SparseSDMemory::printEnergy(std::ofstream& out, unsigned int indent) {
    out << ind(indent) << " WRITE=" << writes << std::endl;
         
 }
+
+
+bool SparseSDMemory::doLoad(uint64_t addr, DataPackage* data_package)
+    {
+        mem.load(addr, data_package);
+        return 1;
+    }
+
+
+   bool SparseSDMemory::doStore(uint64_t addr, DataPackage* data_package)
+    {
+        mem.store(addr, data_package);
+        return 1;
+    }
 
