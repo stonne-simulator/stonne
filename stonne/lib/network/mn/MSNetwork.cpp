@@ -1,6 +1,6 @@
 #include "MSNetwork.hpp"
 #include <assert.h>
-#include "../../common/utility.hpp"
+#include "common/utility.hpp"
 
 /*
 Los MS tienen una conexion forfarding con sus vecinos de la izquierda para pasarle la informacion.  Asi la informacion fluye de derecha a izquierda. Por esa razon la fuente 

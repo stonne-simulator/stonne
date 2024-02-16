@@ -1,5 +1,5 @@
 #include "DNNLayer.hpp"
-#include "../utility.hpp"
+#include "common/utility.hpp"
 
 DNNLayer::DNNLayer(Layer_t layer_type, std::string layer_name, std::size_t R, std::size_t S, std::size_t C, std::size_t K, std::size_t G, std::size_t N,
                    std::size_t X, std::size_t Y, std::size_t strides) {

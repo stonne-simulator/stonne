@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include "../common/Config.hpp"
-#include "../common/Unit.hpp"
 #include "CollectionBusLine.hpp"
 #include "Connection.hpp"
+#include "common/Config.hpp"
+#include "common/Unit.hpp"
 
 class Bus : public Unit {
 

@@ -1,0 +1,8 @@
+{
+  "name": "stonne",
+  "version": "1.0.0",
+  "description": "Simulation Tool for Neural Network Engines",
+  "dependencies": [
+    "catch2"
+  ]
+}

@@ -2,7 +2,7 @@
 #define _CONFIG_H_
 
 #include <iostream>
-#include "types.hpp"
+#include "common/types.hpp"
 
 //--------------------------------------------------------------------
 // DSNetework Configuration Parameters
@@ -99,18 +99,16 @@ class LookUpTableConfig {
 //--------------------------------------------------------------------
 class SDMemoryConfig {
  public:
-  MemoryController_t mem_controller_type;       //Memory controller type (e.g., DENSE_WORKLOAD or SPARSE_GEMM)
-  std::size_t write_buffer_capacity;            //Capacity of the buffers expressed in terms of number of elements
-  std::size_t n_read_ports;                     //dn_bw
-  std::size_t n_write_ports;                    //rn_bw
-  std::size_t port_width;                       //Bit width
-  std::size_t n_multiplier_configurations;      //Number of multiplier configurations
-  std::size_t n_reduce_network_configurations;  //Number of reduce network configurations
-  uint64_t weight_address;                      //Address where the weights are first stored
-  uint64_t input_address;                       //Address ehere the inputs are first stored
-  uint64_t output_address;                      //Address where the output are first stored
-  uint32_t data_width;                          //Number of bytes allocated to each data element.
-  uint32_t n_write_mshr;                        // Number of parallel write requests that can be done in parallel
+  MemoryController_t mem_controller_type;  //Memory controller type (e.g., DENSE_WORKLOAD or SPARSE_GEMM)
+  std::size_t write_buffer_capacity;       //Capacity of the buffers expressed in terms of number of elements
+  std::size_t n_read_ports;                //dn_bw
+  std::size_t n_write_ports;               //rn_bw
+  std::size_t port_width;                  //Bit width
+  uint64_t weight_address;                 //Address where the weights are first stored
+  uint64_t input_address;                  //Address ehere the inputs are first stored
+  uint64_t output_address;                 //Address where the output are first stored
+  uint32_t data_width;                     //Number of bytes allocated to each data element.
+  uint32_t n_write_mshr;                   // Number of parallel write requests that can be done in parallel
 
   void printConfiguration(std::ofstream& out, std::size_t indent);
 };

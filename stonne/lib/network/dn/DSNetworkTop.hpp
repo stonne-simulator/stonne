@@ -8,9 +8,9 @@
 
 #include <iostream>
 #include <map>
-#include "../../comm/Connection.hpp"
 #include "DSNetwork.hpp"
 #include "DistributionNetwork.hpp"
+#include "comm/Connection.hpp"
 
 //This class represents the whole DSNetwork that is composed by several DSNetworks trees. Basically, a DSNetwork has as many trees as input ports has the architecture to fetch input data.
 

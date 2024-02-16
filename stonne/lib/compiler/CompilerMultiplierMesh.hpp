@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "../common/dnn/Tile.hpp"
+#include "common/dnn/Tile.hpp"
 #include "CompilerComponent.hpp"
 
 class CompilerMultiplierMesh : public CompilerComponent {

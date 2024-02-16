@@ -2,15 +2,15 @@
 #define __OSMeshMN__H__
 
 #include <iostream>
-#include "../comm/Connection.hpp"
-#include "../common/Unit.hpp"
-#include "../common/dnn/DNNLayer.hpp"
-#include "../common/dnn/Tile.hpp"
-#include "../compiler/CompilerMultiplierMesh.hpp"
-#include "../network/dn/DSNetwork.hpp"
-#include "../network/dn/switch/DSwitch.hpp"
-#include "../network/mn/MultiplierNetwork.hpp"
-#include "../network/mn/MultiplierOS.hpp"
+#include "comm/Connection.hpp"
+#include "common/Unit.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "compiler/CompilerMultiplierMesh.hpp"
+#include "network/dn/DSNetwork.hpp"
+#include "network/dn/switch/DSwitch.hpp"
+#include "network/mn/MultiplierNetwork.hpp"
+#include "network/mn/MultiplierOS.hpp"
 
 #include <map>
 

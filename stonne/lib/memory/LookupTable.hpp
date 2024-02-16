@@ -2,9 +2,9 @@
 #define __lookuptable__h
 
 #include <iostream>
-#include "../comm/Connection.hpp"
-#include "../common/Config.hpp"
-#include "../common/Unit.hpp"
+#include "comm/Connection.hpp"
+#include "common/Config.hpp"
+#include "common/Unit.hpp"
 
 class LookupTable : Unit {
  private:

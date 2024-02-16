@@ -2,7 +2,7 @@
 #include "SparseSDMemory.hpp"
 #include <assert.h>
 #include <iostream>
-#include "../common/utility.hpp"
+#include "common/utility.hpp"
 
 SparseSDMemory::SparseSDMemory(stonne_id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem)
     : MemoryController(id, name), mem(mem) {

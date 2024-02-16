@@ -3,7 +3,8 @@
 #include <cmath>
 #include <iostream>
 #include <string>
-#include "stonne/STONNEModel.hpp"
+#include "STONNEModel.hpp"
+#include "common/utility.hpp"
 
 using namespace std;
 

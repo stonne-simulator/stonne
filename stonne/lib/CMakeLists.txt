@@ -2,9 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 set(STONNE "stonne")
 
 #======================== SETUP LIBRARY ========================#
-add_library(${STONNE})
+add_library(${STONNE} STATIC)
 target_compile_features(${STONNE} PUBLIC cxx_std_20)
-target_compile_options(${STONNE} PRIVATE -fopenmp)
 # TODO: uncomment later
 #target_compile_options(${STONNE} PRIVATE -Wall -Wextra -Wpedantic)
 target_compile_options(${STONNE} PRIVATE -Wno-unused-parameter)
@@ -12,24 +11,25 @@ target_compile_options(${STONNE} PRIVATE -Wno-unused-parameter)
 if (CMAKE_BUILD_TYPE MATCHES Debug)
   target_compile_options(${STONNE} PRIVATE -g -fno-omit-frame-pointer)
 else (CMAKE_BUILD_TYPE MATCHES Release)
-  target_compile_options(${STONNE} PRIVATE -O3 -ffast-math -march=native -mtune=native)
+  target_compile_options(${STONNE} PRIVATE -O3 -march=native -mtune=native)
   add_definitions(-D NDEBUG) # Disable asserts
 endif ()
 
 #=================== COMPILER CONFIGURATION =====================#
 set_target_properties(${STONNE}
     PROPERTIES
-    CXX_STANDARD 20
     CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE
     CMAKE_CXX_EXTENSIONS OFF
 )
 
 #======================== INCLUDE DIRS ==========================#
 target_include_directories(${STONNE}
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../external
+
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 #======================== SOURCE FILES ==========================#
@@ -60,7 +60,7 @@ target_sources(${STONNE} PRIVATE
     network/mn/MSNetwork.cpp
     network/mn/switch/MSwitch.cpp
     network/mn/MultiplierOS.cpp
-    memctrl/OSMeshMN.cpp
+    network/mn/OSMeshMN.cpp
     memctrl/OSMeshSDMemory.cpp
     memctrl/OuterLoopSpGEMMSDMemory.cpp
     memctrl/SDMemory.cpp

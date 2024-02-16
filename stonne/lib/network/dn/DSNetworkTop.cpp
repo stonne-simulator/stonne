@@ -2,7 +2,7 @@
 
 #include "DSNetworkTop.hpp"
 #include <iostream>
-#include "../../common/utility.hpp"
+#include "common/utility.hpp"
 
 DSNetworkTop::DSNetworkTop(stonne_id_t id, std::string name, Config stonne_cfg) : DistributionNetwork(id, name) {
   this->n_input_ports = stonne_cfg.m_SDMemoryCfg.n_read_ports;

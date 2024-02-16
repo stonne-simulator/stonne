@@ -1,10 +1,11 @@
 //Created on 22/10/2019 by Francisco Munoz Martinez
 
-#include "Config.hpp"
+#include "common/Config.hpp"
 #include <iostream>
+#include <limits>
+#include "common/types.hpp"
+#include "common/utility.hpp"
 #include "cpptoml.h"
-#include "types.hpp"
-#include "utility.hpp"
 
 Config::Config() {
   this->reset();
@@ -19,44 +20,44 @@ void Config::loadFile(std::string config_file) {
   }
 
   //DSNetwork Configuration Parameters
-  auto n_switches_traversed_by_cycle_conf = config->get_qualified_as<std::size_t>("DSNetwork.n_switches_traversed_by_cycle");  //n_switches_traversed_by_cycle
+  auto n_switches_traversed_by_cycle_conf = config->get_qualified_as<unsigned int>("DSNetwork.n_switches_traversed_by_cycle");  //n_switches_traversed_by_cycle
   if (n_switches_traversed_by_cycle_conf) {
     this->m_DSNetworkCfg.n_switches_traversed_by_cycle = *n_switches_traversed_by_cycle_conf;
   }
 
   //DSwitch Configuration Parameters
-  auto dswitch_latency_conf = config->get_qualified_as<std::size_t>("DSwitch.latency");  //Latency
+  auto dswitch_latency_conf = config->get_qualified_as<unsigned int>("DSwitch.latency");  //Latency
   if (dswitch_latency_conf) {
     this->m_DSwitchCfg.latency = *dswitch_latency_conf;
   }
 
-  auto dswitch_input_ports_conf = config->get_qualified_as<std::size_t>("DSwitch.input_ports");  //input_ports
+  auto dswitch_input_ports_conf = config->get_qualified_as<unsigned int>("DSwitch.input_ports");  //input_ports
   if (dswitch_input_ports_conf) {
     this->m_DSwitchCfg.input_ports = *dswitch_input_ports_conf;
   }
 
-  auto dswitch_output_ports_conf = config->get_qualified_as<std::size_t>("DSwitch.output_ports");  //output_ports
+  auto dswitch_output_ports_conf = config->get_qualified_as<unsigned int>("DSwitch.output_ports");  //output_ports
   if (dswitch_output_ports_conf) {
     this->m_DSwitchCfg.output_ports = *dswitch_output_ports_conf;
   }
 
-  auto dswitch_port_width_conf = config->get_qualified_as<std::size_t>("DSwitch.port_width");  //port_width
+  auto dswitch_port_width_conf = config->get_qualified_as<unsigned int>("DSwitch.port_width");  //port_width
   if (dswitch_port_width_conf) {
     this->m_DSwitchCfg.port_width = *dswitch_port_width_conf;
   }
 
   //MSNetwork Configuration Parameters
-  auto ms_size_conf = config->get_qualified_as<std::size_t>("MSNetwork.ms_size");
+  auto ms_size_conf = config->get_qualified_as<unsigned int>("MSNetwork.ms_size");
   if (ms_size_conf) {
     this->m_MSNetworkCfg.ms_size = *ms_size_conf;
   }
 
-  auto ms_rows_conf = config->get_qualified_as<std::size_t>("MSNetwork.ms_rows");
+  auto ms_rows_conf = config->get_qualified_as<unsigned int>("MSNetwork.ms_rows");
   if (ms_rows_conf) {
     this->m_MSNetworkCfg.ms_rows = *ms_rows_conf;
   }
 
-  auto ms_cols_conf = config->get_qualified_as<std::size_t>("MSNetwork.ms_cols");
+  auto ms_cols_conf = config->get_qualified_as<unsigned int>("MSNetwork.ms_cols");
   if (ms_cols_conf) {
     this->m_MSNetworkCfg.ms_cols = *ms_cols_conf;
   }
@@ -67,32 +68,32 @@ void Config::loadFile(std::string config_file) {
   }
 
   //MSwitch Configuration parameters
-  auto mswitch_latency_conf = config->get_qualified_as<std::size_t>("MSwitch.latency");  //latency
+  auto mswitch_latency_conf = config->get_qualified_as<unsigned int>("MSwitch.latency");  //latency
   if (mswitch_latency_conf) {
     this->m_MSwitchCfg.latency = *mswitch_latency_conf;
   }
 
-  auto mswitch_input_ports_conf = config->get_qualified_as<std::size_t>("MSwitch.input_ports");  //input_ports
+  auto mswitch_input_ports_conf = config->get_qualified_as<unsigned int>("MSwitch.input_ports");  //input_ports
   if (mswitch_input_ports_conf) {
     this->m_MSwitchCfg.input_ports = *mswitch_input_ports_conf;
   }
 
-  auto mswitch_output_ports_conf = config->get_qualified_as<std::size_t>("MSwitch.output_ports");  //output_ports
+  auto mswitch_output_ports_conf = config->get_qualified_as<unsigned int>("MSwitch.output_ports");  //output_ports
   if (mswitch_output_ports_conf) {
     this->m_MSwitchCfg.output_ports = *mswitch_output_ports_conf;
   }
 
-  auto mswitch_forwarding_ports_conf = config->get_qualified_as<std::size_t>("MSwitch.forwarding_ports");  //forwarding_ports
+  auto mswitch_forwarding_ports_conf = config->get_qualified_as<unsigned int>("MSwitch.forwarding_ports");  //forwarding_ports
   if (mswitch_forwarding_ports_conf) {
     this->m_MSwitchCfg.forwarding_ports = *mswitch_forwarding_ports_conf;
   }
 
-  auto mswitch_port_width_conf = config->get_qualified_as<std::size_t>("MSwitch.port_width");  //port_width
+  auto mswitch_port_width_conf = config->get_qualified_as<unsigned int>("MSwitch.port_width");  //port_width
   if (mswitch_port_width_conf) {
     this->m_MSwitchCfg.port_width = *mswitch_port_width_conf;
   }
 
-  auto mswitch_buffers_capacity_conf = config->get_qualified_as<std::size_t>("MSwitch.buffers_capacity");  //buffers_capacity
+  auto mswitch_buffers_capacity_conf = config->get_qualified_as<unsigned int>("MSwitch.buffers_capacity");  //buffers_capacity
   if (mswitch_buffers_capacity_conf) {
     this->m_MSwitchCfg.buffers_capacity = *mswitch_buffers_capacity_conf;
   }
@@ -103,65 +104,65 @@ void Config::loadFile(std::string config_file) {
     this->m_ASNetworkCfg.reduce_network_type = get_type_reduce_network_type(*reduce_network_type_conf);
   }
 
-  auto accumulation_buffer_enabled_conf = config->get_qualified_as<std::size_t>("ReduceNetwork.accumulation_buffer_enabled");
+  auto accumulation_buffer_enabled_conf = config->get_qualified_as<unsigned int>("ReduceNetwork.accumulation_buffer_enabled");
   if (accumulation_buffer_enabled_conf) {
     this->m_ASNetworkCfg.accumulation_buffer_enabled = *accumulation_buffer_enabled_conf;
   }
 
   //ASwitch Configuration Parameters
-  auto aswitch_buffers_capacity_conf = config->get_qualified_as<std::size_t>("ASwitch.buffers_capacity");  //Buffers_capacity
+  auto aswitch_buffers_capacity_conf = config->get_qualified_as<unsigned int>("ASwitch.buffers_capacity");  //Buffers_capacity
   if (aswitch_buffers_capacity_conf) {
     this->m_ASwitchCfg.buffers_capacity = *aswitch_buffers_capacity_conf;
   }
 
-  auto aswitch_input_ports_conf = config->get_qualified_as<std::size_t>("ASwitch.input_ports");  //input ports
+  auto aswitch_input_ports_conf = config->get_qualified_as<unsigned int>("ASwitch.input_ports");  //input ports
   if (aswitch_input_ports_conf) {
     this->m_ASwitchCfg.input_ports = *aswitch_input_ports_conf;
   }
 
-  auto aswitch_output_ports_conf = config->get_qualified_as<std::size_t>("ASwitch.output_ports");  //output ports
+  auto aswitch_output_ports_conf = config->get_qualified_as<unsigned int>("ASwitch.output_ports");  //output ports
   if (aswitch_output_ports_conf) {
     this->m_ASwitchCfg.output_ports = *aswitch_output_ports_conf;
   }
 
-  auto aswitch_forwarding_ports_conf = config->get_qualified_as<std::size_t>("ASwitch.forwarding_ports");  //forwarding ports
+  auto aswitch_forwarding_ports_conf = config->get_qualified_as<unsigned int>("ASwitch.forwarding_ports");  //forwarding ports
   if (aswitch_forwarding_ports_conf) {
     this->m_ASwitchCfg.forwarding_ports = *aswitch_forwarding_ports_conf;
   }
 
-  auto aswitch_port_width_conf = config->get_qualified_as<std::size_t>("ASwitch.port_width");  //port width
+  auto aswitch_port_width_conf = config->get_qualified_as<unsigned int>("ASwitch.port_width");  //port width
   if (aswitch_port_width_conf) {
     this->m_ASwitchCfg.port_width = *aswitch_port_width_conf;
   }
 
-  auto aswitch_latency_conf = config->get_qualified_as<std::size_t>("ASwitch.latency");  //latency
+  auto aswitch_latency_conf = config->get_qualified_as<unsigned int>("ASwitch.latency");  //latency
   if (aswitch_latency_conf) {
     this->m_ASwitchCfg.latency = *aswitch_latency_conf;
   }
 
   //LookupTable Configuration Parameters
-  auto lookuptable_latency_conf = config->get_qualified_as<std::size_t>("LookUpTable.latency");  //latency
+  auto lookuptable_latency_conf = config->get_qualified_as<unsigned int>("LookUpTable.latency");  //latency
   if (lookuptable_latency_conf) {
     this->m_LookUpTableCfg.latency = *lookuptable_latency_conf;
   }
 
-  auto lookuptable_port_width_conf = config->get_qualified_as<std::size_t>("LookUpTable.port_width");  //port_width
+  auto lookuptable_port_width_conf = config->get_qualified_as<unsigned int>("LookUpTable.port_width");  //port_width
   if (lookuptable_port_width_conf) {
     this->m_LookUpTableCfg.port_width = *lookuptable_port_width_conf;
   }
 
   //SDMemory Configuration Parameters
-  auto sdmemory_dn_bw_conf = config->get_qualified_as<std::size_t>("SDMemory.dn_bw");  //DN_BW
+  auto sdmemory_dn_bw_conf = config->get_qualified_as<unsigned int>("SDMemory.dn_bw");  //DN_BW
   if (sdmemory_dn_bw_conf) {
     this->m_SDMemoryCfg.n_read_ports = *sdmemory_dn_bw_conf;
   }
 
-  auto sdmemory_rn_bw_conf = config->get_qualified_as<std::size_t>("SDMemory.rn_bw");  //RN_BW
+  auto sdmemory_rn_bw_conf = config->get_qualified_as<unsigned int>("SDMemory.rn_bw");  //RN_BW
   if (sdmemory_rn_bw_conf) {
     this->m_SDMemoryCfg.n_write_ports = *sdmemory_rn_bw_conf;
   }
 
-  auto sdmemory_port_width_conf = config->get_qualified_as<std::size_t>("SDMemory.port_width");
+  auto sdmemory_port_width_conf = config->get_qualified_as<unsigned int>("SDMemory.port_width");
   if (sdmemory_port_width_conf) {
     this->m_SDMemoryCfg.port_width = *sdmemory_port_width_conf;
   }

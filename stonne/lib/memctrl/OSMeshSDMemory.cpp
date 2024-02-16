@@ -2,7 +2,7 @@
 #include "OSMeshSDMemory.hpp"
 #include <assert.h>
 #include <iostream>
-#include "../common/utility.hpp"
+#include "common/utility.hpp"
 
 OSMeshSDMemory::OSMeshSDMemory(stonne_id_t id, std::string name, Config stonne_cfg, Connection* write_connection) : MemoryController(id, name) {
   this->write_connection = write_connection;

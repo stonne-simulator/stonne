@@ -4,9 +4,9 @@
 #define __Fifo_h__
 
 #include <queue>
-#include "../comm/DataPackage.hpp"
-#include "Stats.hpp"
-#include "types.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/Stats.hpp"
+#include "common/types.hpp"
 
 class Fifo {
  private:

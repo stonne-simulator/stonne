@@ -1,6 +1,6 @@
 #include "SparseFlex_MSwitch.hpp"
 #include <assert.h>
-#include "../../../common/utility.hpp"
+#include "common/utility.hpp"
 
 /*
 */

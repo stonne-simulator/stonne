@@ -4,8 +4,8 @@
 #include "DNNModel.hpp"
 #include "MAERIModel.hpp"
 #include "MappingStrategy.hpp"
-#include "define.hpp"
-#include "utility.hpp"
+#include "tile_generator/mRNA/define.hpp"
+#include "tile_generator/mRNA/utility.hpp"
 
 #include <algorithm>
 #include <cmath>

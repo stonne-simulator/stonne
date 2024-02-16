@@ -2,7 +2,7 @@
 #define DNNMODEL_H_
 
 #include <string>
-#include "../utility.hpp"
+#include "common/utility.hpp"
 
 class CNNInput {
  public:

@@ -4,11 +4,11 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include "../common/Config.hpp"
-#include "../common/dnn/DNNLayer.hpp"
-#include "../common/dnn/Tile.hpp"
-#include "../common/types.hpp"
 #include "Accumulator.hpp"
+#include "common/Config.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
 
 class AccumulationBuffer : public Unit {
  private:

@@ -38,6 +38,7 @@
 vcpkg-manifest-install.log
 
 ## Manifest Mode
+vcpkg/
 vcpkg_installed/
 
 ### CMake template
@@ -97,6 +98,7 @@ _deps
 # *.ipr
 
 # CMake
+build/
 cmake-build-*/
 
 # Mongo Explorer plugin

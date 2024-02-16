@@ -1,6 +1,6 @@
 //Created 13/06/2019
 
-#include "DataPackage.hpp"
+#include "comm/DataPackage.hpp"
 #include <assert.h>
 #include <string.h>
 

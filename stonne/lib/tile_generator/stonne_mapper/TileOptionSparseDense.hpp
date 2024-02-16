@@ -1,7 +1,7 @@
 #ifndef STONNE_STONNEMAPPER_TILEOPTIONSPARSEDENSE_H
 #define STONNE_STONNEMAPPER_TILEOPTIONSPARSEDENSE_H
 
-#include "../utils/Tiles.hpp"
+#include "tile_generator/tile.hpp"
 
 namespace StonneMapper {
 

@@ -1,6 +1,6 @@
 #include "LookupTable.hpp"
 #include <vector>
-#include "../comm/DataPackage.hpp"
+#include "comm/DataPackage.hpp"
 
 LookupTable::LookupTable(stonne_id_t id, std::string name, Config stonne_cfg, Connection* inputConnection, Connection* outputConnection) : Unit(id, name) {
   // Collecting parameters from the configuration file

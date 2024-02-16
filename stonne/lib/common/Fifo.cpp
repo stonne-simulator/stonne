@@ -1,7 +1,7 @@
 #include "Fifo.hpp"
 #include <assert.h>
 #include <iostream>
-#include "utility.hpp"
+#include "common/utility.hpp"
 
 Fifo::Fifo(std::size_t capacity) {
   this->capacity = capacity;

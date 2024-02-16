@@ -2,8 +2,8 @@
 
 #define __types__h__
 
-#define word_size 1
-#define IND_SIZE 4
+constexpr int word_size = 1;
+constexpr int IND_SIZE = 4;
 
 typedef float data_t;
 typedef std::size_t bandwidth_t;

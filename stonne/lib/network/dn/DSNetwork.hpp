@@ -4,9 +4,9 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include "../../common/Config.hpp"
-#include "../../common/Unit.hpp"
-#include "../mn/MSNetwork.hpp"
+#include "common/Config.hpp"
+#include "common/Unit.hpp"
+#include "network/mn/MSNetwork.hpp"
 #include "switch/DSwitch.hpp"
 
 #define CONNECTIONS_PER_SWITCH 2

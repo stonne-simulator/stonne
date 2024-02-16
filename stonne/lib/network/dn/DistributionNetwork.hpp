@@ -9,8 +9,8 @@
 #include <assert.h>
 #include <iostream>
 #include <map>
-#include "../../comm/Connection.hpp"
 #include "DSNetwork.hpp"
+#include "comm/Connection.hpp"
 
 //This class represents a general case of a distribution network and cannot be instantiated
 

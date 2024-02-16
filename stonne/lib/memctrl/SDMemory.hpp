@@ -2,17 +2,17 @@
 #define __SDMEMORY__H__
 
 #include <list>
-#include "../comm/Connection.hpp"
-#include "../comm/DataPackage.hpp"
-#include "../common/Config.hpp"
-#include "../common/Fifo.hpp"
-#include "../common/Stats.hpp"
-#include "../common/Unit.hpp"
-#include "../common/dnn/DNNLayer.hpp"
-#include "../common/dnn/Tile.hpp"
-#include "../common/types.hpp"
-#include "../memory/Memory.hpp"
 #include "MemoryController.hpp"
+#include "comm/Connection.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/Config.hpp"
+#include "common/Fifo.hpp"
+#include "common/Stats.hpp"
+#include "common/Unit.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
+#include "memory/Memory.hpp"
 
 //This class contains for each VN the next address to write
 class VNAT_Register {

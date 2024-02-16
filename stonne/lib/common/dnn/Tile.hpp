@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <map>
-#include "../types.hpp"
+#include "common/types.hpp"
 
 /*
  * This class represents a sparse cluster mapped onto the architecture. 

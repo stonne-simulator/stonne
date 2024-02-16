@@ -1,7 +1,7 @@
 #include "SDMemory.hpp"
 #include <assert.h>
 #include <iostream>
-#include "../common/utility.hpp"
+#include "common/utility.hpp"
 
 //The memory is ordered setting the channels in consecutive words in memory
 

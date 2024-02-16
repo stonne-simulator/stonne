@@ -2,19 +2,19 @@
 #define __GUSTAVSONSSPGEMMSDMEMORY__H__
 
 #include <list>
-#include "../comm/Connection.hpp"
-#include "../comm/DataPackage.hpp"
-#include "../common/Config.hpp"
-#include "../common/Fifo.hpp"
-#include "../common/Stats.hpp"
-#include "../common/Unit.hpp"
-#include "../common/dnn/DNNLayer.hpp"
-#include "../common/dnn/Tile.hpp"
-#include "../common/types.hpp"
-#include "../memory/Memory.hpp"
-#include "../network/mn/MultiplierNetwork.hpp"
-#include "../network/rn/ReduceNetwork.hpp"
 #include "MemoryController.hpp"
+#include "comm/Connection.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/Config.hpp"
+#include "common/Fifo.hpp"
+#include "common/Stats.hpp"
+#include "common/Unit.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
+#include "memory/Memory.hpp"
+#include "network/mn/MultiplierNetwork.hpp"
+#include "network/rn/ReduceNetwork.hpp"
 
 class GustavsonsSpGEMMSDMemory : public MemoryController {
  private:

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "Config.hpp"
+#include "common/Config.hpp"
 
 class Unit {
  private:

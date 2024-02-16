@@ -1,7 +1,7 @@
 #include "ASNetwork.hpp"
 #include <assert.h>
 #include <math.h>
-#include "../../common/utility.hpp"
+#include "common/utility.hpp"
 
 //TODO Conectar los enlaces intermedios de forwarding
 //This Constructor creates the reduction tree similar to the one shown in the paper

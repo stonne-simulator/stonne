@@ -3,8 +3,8 @@
 
 #include <queue>
 #include <vector>
-#include "../comm/DataPackage.hpp"
-#include "../common/types.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/types.hpp"
 
 template <typename T>
 class Memory {

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include "define.hpp"
+#include "tile_generator/mRNA/define.hpp"
 
 namespace mRNA {
 

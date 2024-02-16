@@ -1,7 +1,7 @@
 #include "DSNetwork.hpp"
 #include <assert.h>
 #include <math.h>
-#include "../../common/utility.hpp"
+#include "common/utility.hpp"
 
 //This Constructor creates the distribution tree similar to the one shown in the paper
 DSNetwork::DSNetwork(stonne_id_t id, std::string name, Config stonne_cfg, std::size_t ms_size, Connection* inputConnection) : Unit(id, name) {

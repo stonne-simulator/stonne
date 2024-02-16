@@ -11,7 +11,7 @@ We use a Stat empty class as the parent class of the rest ones. This is so to pu
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include "types.hpp"
+#include "common/types.hpp"
 
 class Stats {
 

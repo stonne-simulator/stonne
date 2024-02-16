@@ -1,9 +1,9 @@
 #ifndef STONNE_TILEGENERATOR_MRNAGENERATOR_H
 #define STONNE_TILEGENERATOR_MRNAGENERATOR_H
 
-#include "../utils/Target.hpp"
-#include "../utils/Tiles.hpp"
-#include "Analyzer.hpp"
+#include "tile_generator/mRNA/Analyzer.hpp"
+#include "tile_generator/tile.hpp"
+#include "tile_generator/types.hpp"
 
 using namespace TileGenerator;
 

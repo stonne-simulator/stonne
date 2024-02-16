@@ -1,8 +1,7 @@
 #include "Tile.hpp"
-#include <assert.h>
-#include <math.h>
-#include "../types.hpp"
-#include "../utility.hpp"
+#include <cmath>
+#include "common/types.hpp"
+#include "common/utility.hpp"
 #include "cpptoml.h"
 
 //Used to create a convolutional tile

@@ -1,5 +1,5 @@
-#include "Stats.hpp"
-#include "utility.hpp"
+#include "common/Stats.hpp"
+#include "common/utility.hpp"
 
 //--------------- ConnectionStats implementation ---------------
 //--------------------------------------------------------------

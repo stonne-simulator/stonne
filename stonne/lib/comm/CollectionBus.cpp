@@ -1,6 +1,6 @@
 #include "CollectionBus.hpp"
 #include <iostream>
-#include "../common/utility.hpp"
+#include "common/utility.hpp"
 
 Bus::Bus(stonne_id_t id, std::string name, Config stonne_cfg) : Unit(id, name) {
   this->n_bus_lines = stonne_cfg.m_SDMemoryCfg.n_write_ports;

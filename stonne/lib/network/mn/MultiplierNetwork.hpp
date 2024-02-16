@@ -4,12 +4,12 @@
 
 #include <assert.h>
 #include <iostream>
-#include "../../comm/Connection.hpp"
-#include "../../common/Unit.hpp"
-#include "../../common/dnn/DNNLayer.hpp"
-#include "../../common/dnn/Tile.hpp"
-#include "../../compiler/CompilerMSN.hpp"
-#include "../dn/switch/DSwitch.hpp"
+#include "comm/Connection.hpp"
+#include "common/Unit.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "compiler/CompilerMSN.hpp"
+#include "network/dn/switch/DSwitch.hpp"
 #include "switch/MSwitch.hpp"
 
 #include <map>

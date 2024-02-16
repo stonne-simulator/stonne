@@ -4,9 +4,9 @@
 #define __CollectionBusLine__h__
 
 #include <iostream>
-#include "../common/Fifo.hpp"
-#include "../common/Stats.hpp"
-#include "../common/Unit.hpp"
+#include "common/Fifo.hpp"
+#include "common/Stats.hpp"
+#include "common/Unit.hpp"
 #include "Connection.hpp"
 
 class CollectionBusLine : public Unit {

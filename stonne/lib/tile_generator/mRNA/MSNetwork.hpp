@@ -7,7 +7,7 @@
 
 #include "DSNetwork.hpp"
 #include "RSNetwork.hpp"
-#include "define.hpp"
+#include "tile_generator/mRNA/define.hpp"
 
 namespace mRNA {
 

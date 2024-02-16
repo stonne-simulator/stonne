@@ -4,13 +4,13 @@
 #define __ASwitch__h
 
 #include <vector>
-#include "../../../comm/Connection.hpp"
-#include "../../../comm/DataPackage.hpp"
-#include "../../../common/Config.hpp"
-#include "../../../common/Fifo.hpp"
-#include "../../../common/Stats.hpp"
-#include "../../../common/Unit.hpp"
-#include "../../../common/types.hpp"
+#include "comm/Connection.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/Config.hpp"
+#include "common/Fifo.hpp"
+#include "common/Stats.hpp"
+#include "common/Unit.hpp"
+#include "common/types.hpp"
 
 /*
 */

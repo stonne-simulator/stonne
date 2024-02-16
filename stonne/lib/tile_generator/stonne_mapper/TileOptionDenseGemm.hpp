@@ -1,7 +1,7 @@
 #ifndef STONNE_STONNEMAPPER_TILEOPTIONDENSEGEMM_H
 #define STONNE_STONNEMAPPER_TILEOPTIONDENSEGEMM_H
 
-#include "../utils/Tiles.hpp"
+#include "tile_generator/tile.hpp"
 
 namespace StonneMapper {
 

@@ -2,7 +2,7 @@
 #define __DNN_LAYER__H
 
 #include <iostream>
-#include "../types.hpp"
+#include "common/types.hpp"
 
 class DNNLayer {
  private:

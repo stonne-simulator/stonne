@@ -4,8 +4,8 @@
 #include <assert.h>
 #include <math.h>
 #include <iostream>
-#include "../comm/DataPackage.hpp"
-#include "../common/utility.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/utility.hpp"
 
 using namespace std;
 

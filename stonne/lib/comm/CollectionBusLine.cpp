@@ -1,5 +1,5 @@
 #include "CollectionBusLine.hpp"
-#include "../common/utility.hpp"
+#include "common/utility.hpp"
 
 CollectionBusLine::CollectionBusLine(stonne_id_t id, std::string name, std::size_t busID, std::size_t input_ports_bus_line, std::size_t connection_width,
                                      std::size_t fifo_size)

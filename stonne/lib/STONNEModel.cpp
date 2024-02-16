@@ -6,11 +6,29 @@
 #include <unistd.h>
 #include <chrono>
 #include <vector>
+#include "comm/CollectionBus.hpp"
 #include "common/Config.hpp"
 #include "common/dnn/Tile.hpp"
 #include "common/types.hpp"
 #include "common/utility.hpp"
 #include "cpptoml.h"
+#include "memctrl/GustavsonsSpGEMMSDMemory.hpp"
+#include "memctrl/OSMeshSDMemory.hpp"
+#include "memctrl/OuterLoopSpGEMMSDMemory.hpp"
+#include "memctrl/SDMemory.hpp"
+#include "memctrl/SparseDenseSDMemory.hpp"
+#include "memctrl/SparseSDMemory.hpp"
+#include "memory/LookupTable.hpp"
+#include "memory/Memory.hpp"
+#include "network/dn/DSNetworkTop.hpp"
+#include "network/mn/MSNetwork.hpp"
+#include "network/mn/OSMeshMN.hpp"
+#include "network/mn/SparseFlex_MSNetwork.hpp"
+#include "network/rn/ASNetwork.hpp"
+#include "network/rn/FENetwork.hpp"
+#include "network/rn/SparseFlex_ASNetwork.hpp"
+#include "network/rn/TemporalRN.hpp"
+#include "tile_generator/TileGenerator.hpp"
 
 Stonne::Stonne(Config stonne_cfg, Memory<float> mem) : memHierarchy(mem) {
   this->stonne_cfg = stonne_cfg;

@@ -8,7 +8,6 @@ project(STONNE
 )
 
 #===================== CMAKE CONFIGURATION ====================#
-
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
   set(CMAKE_CXX_EXTENSIONS OFF)
@@ -18,12 +17,10 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   endif ()
 endif ()
 
-#======================== DEPENDENCIES ========================#
-
-#====================== PROJECT FOLDERS =======================#
-# TODO: remove later
-include_directories(include/stonne)
-include_directories(lib)
+if (DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      CACHE STRING "")
+endif ()
 
 #=========================== BUILD ============================#
 add_subdirectory(lib)

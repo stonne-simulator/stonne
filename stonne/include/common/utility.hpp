@@ -6,8 +6,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "../tile_generator/TileGenerator.hpp"
-#include "types.hpp"
+#include "common/types.hpp"
+#include "tile_generator/types.hpp"
 
 // Parse functions
 bool isNum(std::string str);

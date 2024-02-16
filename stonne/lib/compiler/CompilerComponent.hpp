@@ -6,8 +6,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../common/dnn/DNNLayer.hpp"
-#include "../common/dnn/Tile.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
 
 class CompilerComponent {
 

@@ -3,17 +3,17 @@
 
 #include <assert.h>
 #include <list>
-#include "../comm/Connection.hpp"
-#include "../comm/DataPackage.hpp"
-#include "../common/Config.hpp"
-#include "../common/Fifo.hpp"
-#include "../common/Stats.hpp"
-#include "../common/Unit.hpp"
-#include "../common/dnn/DNNLayer.hpp"
-#include "../common/dnn/Tile.hpp"
-#include "../common/types.hpp"
-#include "../network/mn/MultiplierNetwork.hpp"
-#include "../network/rn/ReduceNetwork.hpp"
+#include "comm/Connection.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/Config.hpp"
+#include "common/Fifo.hpp"
+#include "common/Stats.hpp"
+#include "common/Unit.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
+#include "network/mn/MultiplierNetwork.hpp"
+#include "network/rn/ReduceNetwork.hpp"
 
 class MemoryController : Unit {
  public:

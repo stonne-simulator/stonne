@@ -1,4 +1,4 @@
-#include "TileGenerator.hpp"
+#include "tile_generator/TileGenerator.hpp"
 #include <cassert>
 #include <iostream>
 #include "mRNA/MrnaGenerator.hpp"

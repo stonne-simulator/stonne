@@ -1,8 +1,8 @@
 #ifndef STONNE_TILEGENERATOR_STONNEMAPPER_H
 #define STONNE_TILEGENERATOR_STONNEMAPPER_H
 
-#include "../utils/Target.hpp"
-#include "../utils/Tiles.hpp"
+#include "tile_generator/tile.hpp"
+#include "tile_generator/types.hpp"
 
 using namespace TileGenerator;
 

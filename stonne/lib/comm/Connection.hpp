@@ -4,9 +4,9 @@
 #define __Connection__h
 
 #include <vector>
-#include "../common/Stats.hpp"
-#include "../common/types.hpp"
-#include "DataPackage.hpp"
+#include "comm/DataPackage.hpp"
+#include "common/Stats.hpp"
+#include "common/types.hpp"
 
 /*
 This class Connection does not need ACK responses since in the accelerator the values are sent without a need of a request. Everything is controlled

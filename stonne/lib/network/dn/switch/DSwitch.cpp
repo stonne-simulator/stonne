@@ -5,7 +5,7 @@
 #include <math.h>
 #include <chrono>
 #include <iostream>
-#include "../../../common/utility.hpp"
+#include "common/utility.hpp"
 
 using namespace std;
 

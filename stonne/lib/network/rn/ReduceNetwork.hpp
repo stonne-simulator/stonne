@@ -4,13 +4,13 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include "../../comm/Connection.hpp"
-#include "../../common/Config.hpp"
-#include "../../common/Unit.hpp"
-#include "../../common/dnn/DNNLayer.hpp"
-#include "../../common/dnn/Tile.hpp"
-#include "../../common/types.hpp"
-#include "../../compiler/CompilerComponent.hpp"
+#include "comm/Connection.hpp"
+#include "common/Config.hpp"
+#include "common/Unit.hpp"
+#include "common/dnn/DNNLayer.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
+#include "compiler/CompilerComponent.hpp"
 
 class ReduceNetwork : public Unit {
 

@@ -1,15 +1,10 @@
 #ifndef STONNE_TILEGENERATOR_HPP
 #define STONNE_TILEGENERATOR_HPP
 
-#include "utils/Target.hpp"
-#include "utils/Tiles.hpp"
+#include "tile_generator/tile.hpp"
+#include "tile_generator/types.hpp"
 
 namespace TileGenerator {
-
-/**
-     * Currently supported generators (by default: CHOOSE_AUTOMATICALLY)
-     */
-enum Generator { CHOOSE_AUTOMATICALLY = 0, MRNA = 1, STONNE_MAPPER = 2 };
 
 /**
      * TileGenerator is the main class of the TileGenerator module.

@@ -2,33 +2,24 @@
 #define STONNEMODEL_H_
 
 #include <string>
-#include "comm/CollectionBus.hpp"
-#include "comm/Connection.hpp"
 #include "common/Config.hpp"
 #include "common/types.hpp"
 #include "common/utility.hpp"
-#include "compiler/CompilerART.hpp"
-#include "compiler/CompilerMSN.hpp"
-#include "memctrl/GustavsonsSpGEMMSDMemory.hpp"
-#include "memctrl/MemoryController.hpp"
-#include "memctrl/OSMeshMN.hpp"
-#include "memctrl/OSMeshSDMemory.hpp"
-#include "memctrl/OuterLoopSpGEMMSDMemory.hpp"
-#include "memctrl/SDMemory.hpp"
-#include "memctrl/SparseDenseSDMemory.hpp"
-#include "memctrl/SparseSDMemory.hpp"
-#include "memory/LookupTable.hpp"
 #include "memory/Memory.hpp"
-#include "network/dn/DSNetworkTop.hpp"
-#include "network/dn/DistributionNetwork.hpp"
-#include "network/mn/MSNetwork.hpp"
-#include "network/mn/SparseFlex_MSNetwork.hpp"
-#include "network/rn/ASNetwork.hpp"
-#include "network/rn/FENetwork.hpp"
-#include "network/rn/ReduceNetwork.hpp"
-#include "network/rn/SparseFlex_ASNetwork.hpp"
-#include "network/rn/TemporalRN.hpp"
-#include "tile_generator/TileGenerator.hpp"
+#include "tile_generator/tile.hpp"
+#include "tile_generator/types.hpp"
+
+// Forward declarations
+class Config;
+class DistributionNetwork;
+class MultiplierNetwork;
+class ReduceNetwork;
+class LookupTable;
+class MemoryController;
+class Bus;
+class Connection;
+class DNNLayer;
+class Tile;
 
 class Stonne {
  private:

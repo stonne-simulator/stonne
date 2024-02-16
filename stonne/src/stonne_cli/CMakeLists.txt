@@ -10,13 +10,12 @@ target_compile_features(${EXECUTABLE} PRIVATE cxx_std_20)
 if (CMAKE_BUILD_TYPE MATCHES Debug)
   target_compile_options(${EXECUTABLE} PRIVATE -g -fno-omit-frame-pointer)
 else (CMAKE_BUILD_TYPE MATCHES Release)
-  target_compile_options(${EXECUTABLE} PRIVATE -O3 -ffast-math -march=native -mtune=native)
+  target_compile_options(${EXECUTABLE} PRIVATE -O3 -march=native -mtune=native)
 endif ()
 
 #=================== COMPILER CONFIGURATION =====================#
 set_target_properties(${EXECUTABLE}
     PROPERTIES
-    CXX_STANDARD 20
     CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE
     CMAKE_CXX_EXTENSIONS OFF
 )

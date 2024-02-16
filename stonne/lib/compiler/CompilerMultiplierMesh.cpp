@@ -1,9 +1,9 @@
 #include "CompilerMultiplierMesh.hpp"
 #include <assert.h>
 #include <math.h>
-#include "../common/dnn/Tile.hpp"
-#include "../common/types.hpp"
-#include "../common/utility.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
+#include "common/utility.hpp"
 #include "cpptoml.h"
 
 void CompilerMultiplierMesh::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, std::size_t ms_rows, std::size_t ms_cols) {

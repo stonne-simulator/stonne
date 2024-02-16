@@ -4,11 +4,11 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include "../../common/Config.hpp"
-#include "../../common/types.hpp"
-#include "../../compiler/CompilerFEN.hpp"
-#include "../mn/MSNetwork.hpp"
 #include "ReduceNetwork.hpp"
+#include "common/Config.hpp"
+#include "common/types.hpp"
+#include "compiler/CompilerFEN.hpp"
+#include "network/mn/MSNetwork.hpp"
 #include "switch/FEASwitch.hpp"
 
 #define CONNECTIONS_PER_SWITCH 2

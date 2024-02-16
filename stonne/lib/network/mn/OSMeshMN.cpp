@@ -1,6 +1,6 @@
 #include "OSMeshMN.hpp"
 #include <assert.h>
-#include "../common/utility.hpp"
+#include "common/utility.hpp"
 
 //By the default the three ports values will be set as one single data size
 OSMeshMN::OSMeshMN(stonne_id_t id, std::string name, Config stonne_cfg) : MultiplierNetwork(id, name) {

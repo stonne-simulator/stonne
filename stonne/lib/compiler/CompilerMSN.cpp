@@ -1,9 +1,9 @@
 #include "CompilerMSN.hpp"
 #include <assert.h>
 #include <math.h>
-#include "../common/dnn/Tile.hpp"
-#include "../common/types.hpp"
-#include "../common/utility.hpp"
+#include "common/dnn/Tile.hpp"
+#include "common/types.hpp"
+#include "common/utility.hpp"
 #include "cpptoml.h"
 
 void CompilerMSN::configureSignals(Tile* current_tile, DNNLayer* dnn_layer, std::size_t num_ms, std::size_t n_folding) {
