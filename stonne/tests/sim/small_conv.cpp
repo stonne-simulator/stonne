@@ -4,33 +4,33 @@
 #include "utils.hpp"
 
 //Layer parameters
-std::string layer_name = "TestLayer";
-std::size_t R = 3;
-std::size_t S = 3;
-std::size_t C = 6;
-std::size_t G = 1;
-std::size_t K = 6;
-std::size_t N = 1;
-std::size_t X = 20;
-std::size_t Y = 20;
+const std::string layer_name = "TestLayer";
+constexpr std::size_t R = 3;
+constexpr std::size_t S = 3;
+constexpr std::size_t C = 6;
+constexpr std::size_t G = 1;
+constexpr std::size_t K = 6;
+constexpr std::size_t N = 1;
+constexpr std::size_t X = 20;
+constexpr std::size_t Y = 20;
 
-std::size_t T_R = 3;
-std::size_t T_S = 3;
-std::size_t T_C = 1;
-std::size_t T_G = 1;
-std::size_t T_K = 1;
-std::size_t T_N = 1;
-std::size_t T_X_ = 3;
-std::size_t T_Y_ = 1;
+constexpr std::size_t T_R = 3;
+constexpr std::size_t T_S = 3;
+constexpr std::size_t T_C = 1;
+constexpr std::size_t T_G = 1;
+constexpr std::size_t T_K = 1;
+constexpr std::size_t T_N = 1;
+constexpr std::size_t T_X_ = 3;
+constexpr std::size_t T_Y_ = 1;
 
-std::size_t strides = 1;
-std::size_t X_ = (X - R + strides) / strides;  // X_
-std::size_t Y_ = (Y - S + strides) / strides;  // Y_
+constexpr std::size_t strides = 1;
+constexpr std::size_t X_ = (X - R + strides) / strides;  // X_
+constexpr std::size_t Y_ = (Y - S + strides) / strides;  // Y_
 
 //Creating arrays to store the ifmap ofmap and weights
-std::size_t ifmap_size = N * X * Y * C;
-std::size_t filter_size = R * S * (C / G) * K;
-std::size_t ofmap_size = N * X_ * Y_ * K;
+constexpr std::size_t ifmap_size = N * X * Y * C;
+constexpr std::size_t filter_size = R * S * (C / G) * K;
+constexpr std::size_t ofmap_size = N * X_ * Y_ * K;
 
 // create vectors and initialize them with random values between -10 and 10
 std::vector<float> ifmap = genRandom<float>(ifmap_size, -1, 1);
@@ -74,7 +74,7 @@ TEST_CASE("SmallCONV_MAERI_Sim", "[sim][test]") {
 }
 
 TEST_CASE("SmallCONV_Profiling", "[sim][benchmark]") {
-  BENCHMARK_ADVANCED("STONNE Simulation Benchmark")(Catch::Benchmark::Chronometer meter) {
+  BENCHMARK_ADVANCED("STONNE CONV Small Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();
 
     meter.measure([&stonne] { stonne.run(); });

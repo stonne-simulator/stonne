@@ -10,7 +10,22 @@ target_compile_options(${STONNE} PRIVATE -Wno-unused-parameter)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
   target_compile_options(${STONNE} PRIVATE -g -fno-omit-frame-pointer)
-else (CMAKE_BUILD_TYPE MATCHES Release)
+endif ()
+if (CMAKE_BUILD_TYPE MATCHES Sanitize)
+  target_compile_options(${STONNE} PRIVATE
+      -g3
+      -fsanitize=address
+      -fsanitize=leak
+      -fsanitize=undefined
+      -fno-omit-frame-pointer
+  )
+  target_link_options(${STONNE} PUBLIC
+      -fsanitize=address
+      -fsanitize=leak
+      -fsanitize=undefined
+  )
+endif ()
+if (CMAKE_BUILD_TYPE MATCHES Release)
   target_compile_options(${STONNE} PRIVATE -O3 -march=native -mtune=native)
   add_definitions(-D NDEBUG) # Disable asserts
 endif ()

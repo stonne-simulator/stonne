@@ -17,6 +17,15 @@ std::vector<T> genRandom(std::size_t sz, T min, T max) {
 }
 
 template <typename T>
+void prune(std::vector<T>& vec, T epsilon = 0) {
+  for (std::size_t i = 0; i < vec.size(); i++) {
+    if (std::abs(vec[i]) < epsilon) {
+      vec[i] = 0;
+    }
+  }
+}
+
+template <typename T>
 bool equals(const std::vector<T>& a, const std::vector<T>& b, T epsilon = 0) {
   if (a.size() != b.size()) {
     return false;

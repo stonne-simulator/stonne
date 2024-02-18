@@ -7,10 +7,6 @@
 #include "common/utility.hpp"
 #include "cpptoml.h"
 
-Config::Config() {
-  this->reset();
-}
-
 void Config::loadFile(std::string config_file) {
   auto config = cpptoml::parse_file(config_file);
   //General parameters
@@ -171,81 +167,6 @@ void Config::loadFile(std::string config_file) {
   if (memory_controller_type_conf) {
     this->m_SDMemoryCfg.mem_controller_type = get_type_memory_controller_type(*memory_controller_type_conf);
   }
-}
-
-void Config::reset() {
-
-  //General parameters
-  print_stats_enabled = 1;
-
-  // ---------------------------------------------------------
-  // DSNetwork Configuration Parameters
-  // ---------------------------------------------------------
-  m_DSNetworkCfg.n_switches_traversed_by_cycle = 23;  //From paper. This is not implemented yet anyway.
-
-  // ---------------------------------------------------------
-  // DSwitch Configuration Parameters
-  // ---------------------------------------------------------
-
-  //There is nothing yet
-  m_DSwitchCfg.latency = 1;  //Actually is less than 1. We do not implement this either
-  m_DSwitchCfg.input_ports = 1;
-  m_DSwitchCfg.output_ports = 2;
-  m_DSwitchCfg.port_width = 16;  //Size in bits
-
-  // ---------------------------------------------------------
-  // MSNetwork Configuration Parameters
-  // ---------------------------------------------------------
-  m_MSNetworkCfg.multiplier_network_type = LINEAR;
-  m_MSNetworkCfg.ms_size = 64;
-  m_MSNetworkCfg.ms_rows = 0;  //Not initialized
-  m_MSNetworkCfg.ms_cols = 0;  //Not initalized
-
-  // ---------------------------------------------------------
-  // MSwitch Configuration Parameters
-  // ---------------------------------------------------------
-  m_MSwitchCfg.latency = 1;  //Latency in ns not implemented
-  m_MSwitchCfg.input_ports = 1;
-  m_MSwitchCfg.output_ports = 1;
-  m_MSwitchCfg.forwarding_ports = 1;
-  m_MSwitchCfg.port_width = 16;
-  m_MSwitchCfg.buffers_capacity = 2048;
-
-  // ---------------------------------------------------------
-  // ASNetwork Configuration Parameters
-  // ---------------------------------------------------------
-  m_ASNetworkCfg.reduce_network_type = ASNETWORK;
-  m_ASNetworkCfg.accumulation_buffer_enabled = 0;
-
-  // ---------------------------------------------------------
-  // ASwitch Configuration Parameters
-  // ---------------------------------------------------------
-  m_ASwitchCfg.buffers_capacity = 256;
-  m_ASwitchCfg.input_ports = 2;
-  m_ASwitchCfg.output_ports = 1;
-  m_ASwitchCfg.forwarding_ports = 1;
-  m_ASwitchCfg.port_width = 16;
-  m_ASwitchCfg.latency = 1;
-
-  // ---------------------------------------------------------
-  // LookUpTable Configuration Parameters
-  // ---------------------------------------------------------
-  m_LookUpTableCfg.latency = 1;  //Latency in ns not implemented yet
-  m_LookUpTableCfg.port_width = 1;
-
-  // ---------------------------------------------------------
-  // SDMemory Controller Configuration Parameters
-  // ---------------------------------------------------------
-  m_SDMemoryCfg.mem_controller_type = MAERI_DENSE_WORKLOAD;
-  m_SDMemoryCfg.write_buffer_capacity = 256;
-  m_SDMemoryCfg.n_read_ports = 4;
-  m_SDMemoryCfg.n_write_ports = 4;
-  m_SDMemoryCfg.port_width = 16;
-  m_SDMemoryCfg.weight_address = 0;
-  m_SDMemoryCfg.input_address = 10000;
-  m_SDMemoryCfg.output_address = 20000;
-  m_SDMemoryCfg.data_width = 4;
-  m_SDMemoryCfg.n_write_mshr = 16;
 }
 
 bool Config::sparsitySupportEnabled() {
