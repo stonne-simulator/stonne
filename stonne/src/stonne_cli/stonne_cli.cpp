@@ -42,9 +42,9 @@ bool runHelpCommand();
 float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
 //void generateSparseDense(std::size_t rows, std::size_t cols, std::size_t sparsity);
-int* generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, int& nnz, GENERATION_TYPE gen_type);
+metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type);
 
-int* generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
+metadata_address_t generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
 void printDenseMatrix(float* matrix, std::size_t rows, std::size_t cols);
 
@@ -368,9 +368,9 @@ bool runSparseDenseCommand(int argc, char* argv[]) {
   float* acc_output = new float[output_size];
 
   //Generating bitmaps
-  int nnz = 0;
-  int* MK_col_id = generateMinorIDFromDense(MK_dense_matrix, M, K, nnz, GEN_BY_ROWS);
-  int* MK_row_pointer = generateMajorPointerFromDense(MK_dense_matrix, M, K, GEN_BY_ROWS);
+  std::size_t nnz = 0;
+  metadata_address_t MK_col_id = generateMinorIDFromDense(MK_dense_matrix, M, K, nnz, GEN_BY_ROWS);
+  metadata_address_t MK_row_pointer = generateMajorPointerFromDense(MK_dense_matrix, M, K, GEN_BY_ROWS);
 
   //Generating sparse matrix
   float* MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(MK_dense_matrix, M, K, GEN_BY_ROWS, MK_size);
@@ -387,8 +387,7 @@ bool runSparseDenseCommand(int argc, char* argv[]) {
   std::copy(MK_sparse_matrix, MK_sparse_matrix + MK_size, main_memory.begin() + KN_size);
 
   Stonne* stonne_instance = new Stonne(stonne_cfg, std::move(main_memory));  //Creating instance of the simulator
-  stonne_instance->loadSparseDense(layer_name, N, K, M, MK_sparse_matrix, KN_dense_matrix, (std::size_t*)MK_col_id, (std::size_t*)MK_row_pointer, acc_output,
-                                   T_N, T_K);  //Loading Sparse Dense
+  stonne_instance->loadSparseDense(layer_name, N, K, M, MK_sparse_matrix, KN_dense_matrix, MK_col_id, MK_row_pointer, acc_output, T_N, T_K);
   //stonne_instance->loadClocking(clocked_op);
   if (tileGeneratorTarget != TileGenerator::Target::NONE)
     stonne_instance->generateTile(tileGenerator, tileGeneratorTarget, float(MK_sparsity) / 100.0f);

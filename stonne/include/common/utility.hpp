@@ -63,11 +63,11 @@ float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, std::size_t row
 float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
 
 /////
-int* generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, int& nnz, GENERATION_TYPE gen_type);
+metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type);
 /////
 //int* generateMajorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 /////
-int* generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
+metadata_address_t generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
 void printDenseMatrix(float* matrix, std::size_t rows, std::size_t cols);
 

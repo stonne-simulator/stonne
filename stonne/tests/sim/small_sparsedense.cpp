@@ -17,9 +17,10 @@ constexpr std::size_t T_K = 32;
 constexpr std::size_t MK_size = M * K;
 constexpr std::size_t KN_size = N * K;
 constexpr std::size_t outputSize = M * N;
+std::size_t MK_sparse_size;
 
-std::vector<float> MK_dense_matrix = genRandom<float>(MK_size, -1, 1);
-std::vector<float> KN_dense_matrix = genRandom<float>(KN_size, -1, 1);
+std::vector<float> MK_dense_matrix;
+std::vector<float> KN_dense_matrix;
 std::vector<float> output(outputSize, 0);
 std::vector<float> outputCpu(outputSize, 0);
 
@@ -27,13 +28,17 @@ std::vector<std::size_t> MK_col_id;
 std::vector<std::size_t> MK_row_pointer;
 std::vector<float> MK_sparse_matrix;
 
-Stonne init() {
+void init_matrices() {
+  MK_dense_matrix = genRandom<float>(MK_size, -1, 1);
+  KN_dense_matrix = genRandom<float>(KN_size, -1, 1);
+  output = std::vector<float>(outputSize, 0);
+  outputCpu = std::vector<float>(outputSize, 0);
+
   prune<float>(MK_dense_matrix, MK_sparsity / 100.0f);
 
-  int nnz = 0;
-  std::size_t* p_MK_col_id = reinterpret_cast<std::size_t*>(generateMinorIDFromDense(MK_dense_matrix.data(), M, K, nnz, GEN_BY_ROWS));
-  std::size_t* p_MK_row_pointer = reinterpret_cast<std::size_t*>(generateMajorPointerFromDense(MK_dense_matrix.data(), M, K, GEN_BY_ROWS));
-  std::size_t MK_sparse_size;
+  std::size_t nnz = 0;
+  std::size_t* p_MK_col_id = generateMinorIDFromDense(MK_dense_matrix.data(), M, K, nnz, GEN_BY_ROWS);
+  std::size_t* p_MK_row_pointer = generateMajorPointerFromDense(MK_dense_matrix.data(), M, K, GEN_BY_ROWS);
   float* p_MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(MK_dense_matrix.data(), M, K, GEN_BY_ROWS, MK_sparse_size);
 
   // convert arrays to vectors
@@ -43,7 +48,9 @@ Stonne init() {
   delete[] p_MK_col_id;
   delete[] p_MK_row_pointer;
   delete[] p_MK_sparse_matrix;
+}
 
+Stonne init() {
   Config stonne_cfg;  //Hardware parameters
   stonne_cfg.m_SDMemoryCfg.mem_controller_type = MAGMA_SPARSE_DENSE;
   stonne_cfg.m_MSNetworkCfg.ms_size = 128;
@@ -71,6 +78,7 @@ Stonne init() {
 }
 
 TEST_CASE("SmallSparseDense_MAGMA_Sim", "[sim][test]") {
+  init_matrices();
   Stonne stonne = init();
   stonne.run();
 
@@ -80,6 +88,7 @@ TEST_CASE("SmallSparseDense_MAGMA_Sim", "[sim][test]") {
 }
 
 TEST_CASE("SmallSparseDense_Profiling", "[sim][benchmark]") {
+  init_matrices();
   BENCHMARK_ADVANCED("STONNE SparseDense Small Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();
 

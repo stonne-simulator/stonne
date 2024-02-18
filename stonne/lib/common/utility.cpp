@@ -571,7 +571,7 @@ float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, st
 }
 
 /////
-int* generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, int& nnz, GENERATION_TYPE gen_type) {
+metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type) {
   std::vector<int> elements;
   if (gen_type == GEN_BY_ROWS) {  //we need col_id
     for (int i = 0; i < rows; i++) {
@@ -601,7 +601,7 @@ int* generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t 
     }
   }
 
-  int* minor_id = new int[elements.size()];
+  metadata_address_t minor_id = new std::size_t[elements.size()];
   nnz = elements.size();
   for (int i = 0; i < elements.size(); i++) {
     minor_id[i] = elements[i];
@@ -642,7 +642,7 @@ int* generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t 
 //}
 
 /////
-int* generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
+metadata_address_t generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
   std::vector<int> elements;
   if (gen_type == GEN_BY_ROWS) {  //we need row_ptr
     int nnzp = 0;
@@ -687,7 +687,7 @@ int* generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::si
     elements.push_back(nnzp);
   }
 
-  int* major_pointer = new int[elements.size()];
+  metadata_address_t major_pointer = new std::size_t[elements.size()];
   for (int i = 0; i < elements.size(); i++) {
     major_pointer[i] = elements[i];
   }
