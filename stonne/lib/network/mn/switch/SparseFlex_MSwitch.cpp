@@ -342,7 +342,8 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
     if (!activation_fifo->isEmpty()) {
       DataPackage* psum = activation_fifo->pop();
       //Creating the psum to forward using the psum received. We have to created a new package since the ART does not need a destination vector.
-      DataPackage* psum_fwd = new DataPackage(psum->get_size_package(), psum->get_data(), PSUM, psum->get_source(), this->VN, psum->get_operation_mode(), 0, 0);
+      DataPackage* psum_fwd = new DataPackage(psum->get_size_package(), psum->get_data(), PSUM, psum->get_source(), this->VN, psum->get_operation_mode(),
+                                              psum->getRow(), psum->getCol());
       delete psum;                //Deleting the package received after copying it
       psum_fifo->push(psum_fwd);  //Introduce in the fifo to be sent
       this->mswitchStats.n_psum_forwarding_send++;
@@ -357,7 +358,7 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
   }
 
   else if (forward_psum && (current_n_folding == 0)) {
-    DataPackage* zero_psum = new DataPackage(sizeof(data_t), 0, PSUM, 0, this->VN, ADDER);  //If it is the first iteration of the window we send a 0.
+    DataPackage* zero_psum = new DataPackage(sizeof(data_t), 0, PSUM, 0, this->VN, ADDER, 0, 0);  //If it is the first iteration of the window we send a 0.
     psum_fifo->push(zero_psum);
     this->send();
     current_n_folding += 1;

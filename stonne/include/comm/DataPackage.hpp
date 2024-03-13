@@ -42,25 +42,25 @@ class DataPackage {
 
  public:
   //General constructor to be reused in both types of packages
-  DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, std::size_t row, std::size_t col);
+  explicit DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, std::size_t row, std::size_t col);
 
   //DS Package constructors for creating unicasts, multicasts and broadcasts packages
   //General constructor for DS
-  DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, traffic_t traffic_type, std::size_t row, std::size_t col);
+  explicit DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, traffic_t traffic_type, std::size_t row, std::size_t col);
   // Unicast package constructor.
-  DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, traffic_t traffic_type, std::size_t unicast_dest, std::size_t row,
-              std::size_t col);
+  explicit DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, traffic_t traffic_type, std::size_t unicast_dest,
+                       std::size_t row, std::size_t col);
 
   //Multicast package. dests must be dynamic memory since the array is not copied.
-  DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, traffic_t traffic_type, bool* dests, std::size_t n_dests,
-              std::size_t row,
-              std::size_t col);  //Constructor
+  explicit DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, traffic_t traffic_type, bool* dests, std::size_t n_dests,
+                       std::size_t row,
+                       std::size_t col);  //Constructor
   //Broadcast package
   //Needs nothing. Just indicates is the type broadcast
 
   //ART Package constructor (only one package for this type)
-  DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, std::size_t VN, adderoperation_t operation_mode, std::size_t row,
-              std::size_t col);
+  explicit DataPackage(size_t size_package, data_t data, operand_t data_type, stonne_id_t source, std::size_t VN, adderoperation_t operation_mode,
+                       std::size_t row, std::size_t col);
   ~DataPackage();
   explicit DataPackage(DataPackage* pck);  //Constructor copy used to repeat a package
 

@@ -261,7 +261,7 @@ DataPackage* MSwitch::perform_operation_2_operands(DataPackage* pck_left, DataPa
 
   //Creating the result package with the output
   DataPackage* result_pck = new DataPackage(sizeof(data_t), result, PSUM, this->num, this->VN, MULTIPLIER, pck_left->getRow(),
-                                            pck_left->getCol());  //TODO the size of the package corresponds with the data size
+                                            pck_right->getCol());  //TODO the size of the package corresponds with the data size
   //Adding to the creation list to be deleted afterward
   //this->psums_created.push_back(result_pck);
   this->mswitchStats.n_multiplications++;  // Track a multiplication
