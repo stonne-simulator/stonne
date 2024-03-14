@@ -64,7 +64,7 @@ Stonne init() {
   return stonne;
 }
 
-TEST_CASE("SmallCONV_MAERI_Sim", "[sim][test]") {
+TEST_CASE("SmallCONV_MAERI_Sim", "[sim][maeri][test]") {
   Stonne stonne = init();
   stonne.run();
 
@@ -73,7 +73,7 @@ TEST_CASE("SmallCONV_MAERI_Sim", "[sim][test]") {
   REQUIRE(equals(ofmap, ofmap_cpu, eps));
 }
 
-TEST_CASE("SmallCONV_Profiling", "[sim][benchmark]") {
+TEST_CASE("SmallCONV_MAERI_Profiling", "[sim][maeri][benchmark]") {
   BENCHMARK_ADVANCED("STONNE CONV Small Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();
 

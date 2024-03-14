@@ -19,8 +19,8 @@ constexpr std::size_t KN_size = N * K;
 constexpr std::size_t outputSize = M * N;
 std::size_t MK_sparse_size;
 
-std::vector<float> MK_dense_matrix;
-std::vector<float> KN_dense_matrix;
+std::vector<float> A_dense_matrix;
+std::vector<float> B_dense_matrix;
 std::vector<float> output(outputSize, 0);
 std::vector<float> outputCpu(outputSize, 0);
 
@@ -29,17 +29,17 @@ std::vector<std::size_t> MK_row_pointer;
 std::vector<float> MK_sparse_matrix;
 
 void init_matrices() {
-  MK_dense_matrix = genRandom<float>(MK_size, -1, 1);
-  KN_dense_matrix = genRandom<float>(KN_size, -1, 1);
+  A_dense_matrix = genRandom<float>(MK_size, -1, 1);
+  B_dense_matrix = genRandom<float>(KN_size, -1, 1);
   output = std::vector<float>(outputSize, 0);
   outputCpu = std::vector<float>(outputSize, 0);
 
-  prune<float>(MK_dense_matrix, MK_sparsity / 100.0f);
+  prune<float>(A_dense_matrix, MK_sparsity / 100.0f);
 
   std::size_t nnz = 0;
-  std::size_t* p_MK_col_id = generateMinorIDFromDense(MK_dense_matrix.data(), M, K, nnz, GEN_BY_ROWS);
-  std::size_t* p_MK_row_pointer = generateMajorPointerFromDense(MK_dense_matrix.data(), M, K, GEN_BY_ROWS);
-  float* p_MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(MK_dense_matrix.data(), M, K, GEN_BY_ROWS, MK_sparse_size);
+  std::size_t* p_MK_col_id = generateMinorIDFromDense(A_dense_matrix.data(), M, K, nnz, GEN_BY_ROWS);
+  std::size_t* p_MK_row_pointer = generateMajorPointerFromDense(A_dense_matrix.data(), M, K, GEN_BY_ROWS);
+  float* p_MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(A_dense_matrix.data(), M, K, GEN_BY_ROWS, MK_sparse_size);
 
   // convert arrays to vectors
   MK_col_id = std::vector<std::size_t>(p_MK_col_id, p_MK_col_id + nnz);
@@ -67,12 +67,11 @@ Stonne init() {
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
-  std::copy(KN_dense_matrix.begin(), KN_dense_matrix.end(), main_memory.begin());
+  std::copy(B_dense_matrix.begin(), B_dense_matrix.end(), main_memory.begin());
   std::copy(MK_sparse_matrix.begin(), MK_sparse_matrix.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(KN_size));
 
   Stonne stonne(stonne_cfg, main_memory);
-  stonne.loadSparseDense(layer_name, N, K, M, MK_sparse_matrix.data(), KN_dense_matrix.data(), MK_col_id.data(), MK_row_pointer.data(), output.data(), T_N,
-                         T_K);
+  stonne.loadSparseDense(layer_name, N, K, M, MK_sparse_matrix.data(), B_dense_matrix.data(), MK_col_id.data(), MK_row_pointer.data(), output.data(), T_N, T_K);
 
   return stonne;
 }
@@ -82,12 +81,12 @@ TEST_CASE("SmallSparseDense_MAGMA_Sim", "[sim][test]") {
   Stonne stonne = init();
   stonne.run();
 
-  cpu_gemm(MK_dense_matrix.data(), KN_dense_matrix.data(), outputCpu.data(), M, N, K);
+  cpu_gemm(A_dense_matrix.data(), B_dense_matrix.data(), outputCpu.data(), M, N, K);
   constexpr float eps = 1e-3;
   REQUIRE(equals(output, outputCpu, eps));
 }
 
-TEST_CASE("SmallSparseDense_Profiling", "[sim][benchmark]") {
+TEST_CASE("SmallSparseDense_MAGMA_Profiling", "[sim][benchmark]") {
   init_matrices();
   BENCHMARK_ADVANCED("STONNE SparseDense Small Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();

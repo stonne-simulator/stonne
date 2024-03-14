@@ -17,8 +17,8 @@ constexpr std::size_t MK_size = M * K;
 constexpr std::size_t KN_size = N * K;
 constexpr std::size_t outputSize = M * N;
 
-std::vector<float> MK_dense_matrix = genRandom<float>(MK_size, -1, 1);
-std::vector<float> KN_dense_matrix = genRandom<float>(KN_size, -1, 1);
+std::vector<float> A_dense_matrix = genRandom<float>(MK_size, -1, 1);
+std::vector<float> B_dense_matrix = genRandom<float>(KN_size, -1, 1);
 std::vector<float> output(outputSize, 0);
 std::vector<float> outputCpu(outputSize, 0);
 
@@ -38,26 +38,26 @@ Stonne init() {
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
-  std::copy(KN_dense_matrix.begin(), KN_dense_matrix.end(), main_memory.begin());
-  std::copy(MK_dense_matrix.begin(), MK_dense_matrix.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(KN_size));
+  std::copy(B_dense_matrix.begin(), B_dense_matrix.end(), main_memory.begin());
+  std::copy(A_dense_matrix.begin(), A_dense_matrix.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(KN_size));
 
   Stonne stonne(stonne_cfg, main_memory);
-  stonne.loadDenseGEMM(layer_name, N, K, M, MK_dense_matrix.data(), KN_dense_matrix.data(), output.data(), CNN_DATAFLOW);  //Loading the layer
+  stonne.loadDenseGEMM(layer_name, N, K, M, A_dense_matrix.data(), B_dense_matrix.data(), output.data(), CNN_DATAFLOW);  //Loading the layer
   stonne.loadGEMMTile(T_N, T_K, T_M);
 
   return stonne;
 }
 
-TEST_CASE("SmallDenseGEMM_MAERI_Sim", "[sim][test]") {
+TEST_CASE("SmallDenseGEMM_MAERI_Sim", "[sim][maeri][test]") {
   Stonne stonne = init();
   stonne.run();
 
-  sequential_layer(1, K, 1, N, 1, M, 1, K, 1, MK_dense_matrix.data(), KN_dense_matrix.data(), outputCpu.data());
+  sequential_layer(1, K, 1, N, 1, M, 1, K, 1, A_dense_matrix.data(), B_dense_matrix.data(), outputCpu.data());
   constexpr float eps = 1e-3;
   REQUIRE(equals(output, outputCpu, eps));
 }
 
-TEST_CASE("SmallDenseGEMM_Profiling", "[sim][benchmark]") {
+TEST_CASE("SmallDenseGEMM_MAERI_Profiling", "[sim][maeri][benchmark]") {
   BENCHMARK_ADVANCED("STONNE DenseGEMM Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();
 

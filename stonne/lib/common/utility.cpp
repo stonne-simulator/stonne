@@ -570,6 +570,46 @@ float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, st
   return sparseMatrix;
 }
 
+void transpose(float* matrix, std::size_t rows, std::size_t cols) {
+  float* temp = new float[rows * cols];
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      temp[j * rows + i] = matrix[i * cols + j];
+    }
+  }
+
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      matrix[i * cols + j] = temp[i * cols + j];
+    }
+  }
+  delete[] temp;
+}
+
+void denseToSparse(float* denseMatrix, std::size_t rows, std::size_t cols, std::vector<std::size_t>& rowPointer, std::vector<std::size_t>& colIndex,
+                   std::vector<float>& values) {
+  rowPointer.clear();
+  colIndex.clear();
+  values.clear();
+
+  std::size_t nnz = 0;
+  for (int i = 0; i < rows; i++) {
+    rowPointer.push_back(nnz);
+    for (int j = 0; j < cols; j++) {
+      if (denseMatrix[i * cols + j] != 0.0) {
+        colIndex.push_back(j);
+        values.push_back(denseMatrix[i * cols + j]);
+        nnz++;
+      }
+    }
+  }
+  rowPointer.push_back(nnz);
+
+  assert(rowPointer.size() == rows + 1);
+  assert(colIndex.size() == nnz);
+  assert(values.size() == nnz);
+}
+
 /////
 metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type) {
   std::vector<int> elements;

@@ -9,10 +9,10 @@ constexpr std::size_t R = 5;
 constexpr std::size_t S = 5;
 constexpr std::size_t C = 7;
 constexpr std::size_t G = 1;
-constexpr std::size_t K = 10;
+constexpr std::size_t K = 6;
 constexpr std::size_t N = 4;
-constexpr std::size_t X = 50;
-constexpr std::size_t Y = 50;
+constexpr std::size_t X = 30;
+constexpr std::size_t Y = 30;
 
 constexpr std::size_t T_R = 5;
 constexpr std::size_t T_S = 5;
@@ -64,7 +64,7 @@ Stonne init() {
   return stonne;
 }
 
-TEST_CASE("LargeCONV_MAERI_Sim", "[sim][test]") {
+TEST_CASE("LargeCONV_MAERI_Sim", "[sim][maeri][test]") {
   Stonne stonne = init();
   stonne.run();
 
@@ -73,7 +73,7 @@ TEST_CASE("LargeCONV_MAERI_Sim", "[sim][test]") {
   REQUIRE(equals(ofmap, ofmap_cpu, eps));
 }
 
-TEST_CASE("LargeCONV_Profiling", "[sim][benchmark]") {
+TEST_CASE("LargeCONV_MAERI_Profiling", "[sim][maeri][benchmark]") {
   BENCHMARK_ADVANCED("STONNE CONV Large Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();
 

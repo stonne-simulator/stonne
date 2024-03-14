@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "common/types.hpp"
 #include "tile_generator/types.hpp"
 
@@ -61,6 +62,11 @@ std::size_t* generateBitMapFromDense(float* denseMatrix, std::size_t rows, std::
 float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
 
 float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
+
+void transpose(float* matrix, std::size_t rows, std::size_t cols);
+
+void denseToSparse(float* denseMatrix, std::size_t rows, std::size_t cols, std::vector<std::size_t>& rowPointer, std::vector<std::size_t>& colIndex,
+                   std::vector<float>& values);
 
 /////
 metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type);

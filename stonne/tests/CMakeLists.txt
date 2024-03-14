@@ -11,12 +11,17 @@ set(SMALL_TESTUNITS
     small_conv
     small_densegemm
     small_sparsedense
-    small_sparsegemm
+    small_innerproductgemm
+    small_outerproductgemm
+    small_gustavsongemm
 )
 
 set(LARGE_TESTUNITS
     large_conv
     large_densegemm
+    large_innerproductgemm
+    large_outerproductgemm
+    large_gustavsongemm
 )
 
 foreach (testunit ${SMALL_TESTUNITS})
