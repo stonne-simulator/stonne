@@ -78,11 +78,14 @@ TEST_CASE("SmallOuterProductGEMM_Flexagon_Sim", "[sim][flexagon][test]") {
 
   constexpr float eps = 1e-3;
   REQUIRE(equals(output, outputCpu, eps));
+
+  // Temporal check to ensure that I don't introduce errors during the refactor
+  REQUIRE(stonne.getNCycles() == 4541);
 }
 
 TEST_CASE("SmallOuterProductGEMM_Flexagon_Profiling", "[sim][flexagon][benchmark]") {
   init_matrices();
-  BENCHMARK_ADVANCED("STONNE SparseGEMM Small Benchmark")(Catch::Benchmark::Chronometer meter) {
+  BENCHMARK_ADVANCED("STONNE OuterProductGEMM Small Benchmark")(Catch::Benchmark::Chronometer meter) {
     Stonne stonne = init();
 
     meter.measure([&stonne] { stonne.run(); });

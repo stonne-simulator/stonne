@@ -71,6 +71,9 @@ TEST_CASE("LargeCONV_MAERI_Sim", "[sim][maeri][test]") {
   sequential_layer(R, S, C, K, G, N, X, Y, strides, ifmap.data(), filter.data(), ofmap_cpu.data());
   constexpr float eps = 1e-3;
   REQUIRE(equals(ofmap, ofmap_cpu, eps));
+
+  // Temporal check to ensure that I don't introduce errors during the refactor
+  REQUIRE(stonne.getNCycles() == 398441);
 }
 
 TEST_CASE("LargeCONV_MAERI_Profiling", "[sim][maeri][benchmark]") {

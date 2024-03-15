@@ -55,6 +55,9 @@ TEST_CASE("LargeDenseGEMM_MAERI_Sim", "[sim][maeri][test]") {
   sequential_layer(1, K, 1, N, 1, M, 1, K, 1, A_dense_matrix.data(), B_dense_matrix.data(), outputCpu.data());
   constexpr float eps = 1e-3;
   REQUIRE(equals(output, outputCpu, eps));
+
+  // Temporal check to ensure that I don't introduce errors during the refactor
+  REQUIRE(stonne.getNCycles() == 21001);
 }
 
 TEST_CASE("LargeDenseGEMM_MAERI_Profiling", "[sim][maeri][benchmark]") {

@@ -128,6 +128,7 @@ class Stonne {
   void printStats();
   void printEnergy();
   bool isExecutionFinished();
+  std::size_t getNCycles();
 };
 
 #endif

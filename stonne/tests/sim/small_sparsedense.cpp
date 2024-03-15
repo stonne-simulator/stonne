@@ -84,6 +84,9 @@ TEST_CASE("SmallSparseDense_MAGMA_Sim", "[sim][test]") {
   cpu_gemm(A_dense_matrix.data(), B_dense_matrix.data(), outputCpu.data(), M, N, K);
   constexpr float eps = 1e-3;
   REQUIRE(equals(output, outputCpu, eps));
+
+  // Temporal check to ensure that I don't introduce errors during the refactor
+  REQUIRE(stonne.getNCycles() == 741);
 }
 
 TEST_CASE("SmallSparseDense_MAGMA_Profiling", "[sim][benchmark]") {

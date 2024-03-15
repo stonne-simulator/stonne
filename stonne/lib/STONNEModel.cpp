@@ -575,6 +575,10 @@ bool Stonne::isExecutionFinished() {
   return this->mem->isExecutionFinished();
 }
 
+std::size_t Stonne::getNCycles() {
+  return this->n_cycles;
+}
+
 void Stonne::cycle() {
   this->mem->cycle();
   this->collectionBusRN->cycle();
