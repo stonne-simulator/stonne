@@ -48,10 +48,10 @@ class GustavsonsSpGEMMSDMemory : public MemoryController {
 
   std::size_t ms_size_per_input_port;
   //Fifos
-  Fifo* write_fifo;  //Fifo uses to store the writes before going to the memory
+  Fifo write_fifo;  //Fifo uses to store the writes before going to the memory
 
-  std::vector<Fifo*> input_fifos;  //Fifos used to store the inputs before being fetched
-  std::vector<Fifo*> psum_fifos;   //Fifos used to store partial psums before being fetched
+  std::vector<Fifo> input_fifos;  //Fifos used to store the inputs before being fetched
+  std::vector<Fifo> psum_fifos;   //Fifos used to store partial psums before being fetched
   //Fifo* read_fifo; //Fifo used to store the inputs before being fetched
   //Fifo* psums_fifo; //Fifo used to store partial psums before being fetched
 
@@ -152,7 +152,6 @@ class GustavsonsSpGEMMSDMemory : public MemoryController {
 
  public:
   GustavsonsSpGEMMSDMemory(stonne_id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem);
-  ~GustavsonsSpGEMMSDMemory();
   void setLayer(DNNLayer* dnn_layer, address_t KN_address, address_t MK_address, address_t output_address, Dataflow dataflow);
 
   void setReadConnections(std::vector<Connection*> read_connections);

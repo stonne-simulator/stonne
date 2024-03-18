@@ -26,10 +26,10 @@ class Accumulator : public Unit {
   std::size_t inputID;  //Number of input of the Collection Bus busID connected to this AS.
 
   //Inputs fifos
-  Fifo* input_fifo;  // Array of packages that are received from the adders
+  Fifo input_fifo;  // Array of packages that are received from the adders
 
   // Output Fifos
-  Fifo* output_fifo;  // Output fifo to the parent
+  Fifo output_fifo;  // Output fifo to the parent
 
   adderoperation_t operation_mode;  //Adder or comp
 
@@ -59,7 +59,6 @@ class Accumulator : public Unit {
  public:
   Accumulator(stonne_id_t id, std::string name, Config stonne_cfg, std::size_t n_accumulator);
   Accumulator(stonne_id_t id, std::string name, Config stonne_cfg, std::size_t n_accumulator, Connection* inputConnection, Connection* outputConnection);
-  ~Accumulator();
 
   //Connection setters
   void setInputConnection(Connection* inputLeftConnection);  // Set the input left connection of the Adder

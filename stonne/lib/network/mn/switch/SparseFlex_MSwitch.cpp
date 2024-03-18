@@ -5,7 +5,13 @@
 /*
 */
 
-SparseFlex_MSwitch::SparseFlex_MSwitch(stonne_id_t id, std::string name, int num, Config stonne_cfg) : Unit(id, name) {
+SparseFlex_MSwitch::SparseFlex_MSwitch(stonne_id_t id, std::string name, int num, Config stonne_cfg)
+    : Unit(id, name),
+      weight_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      psum_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      activation_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      forwarding_output_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      forwarding_input_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity) {
   this->num = num;
   //Extracting parameters from configuration file
   this->latency = stonne_cfg.m_MSwitchCfg.latency;
@@ -15,14 +21,6 @@ SparseFlex_MSwitch::SparseFlex_MSwitch(stonne_id_t id, std::string name, int num
   this->buffers_capacity = stonne_cfg.m_MSwitchCfg.buffers_capacity;
   this->port_width = stonne_cfg.m_MSwitchCfg.port_width;
   //End of extracting parameters from the configuration file
-
-  //Parameters initialization
-  this->activation_fifo = new Fifo(buffers_capacity);
-  this->forwarding_output_fifo = new Fifo(buffers_capacity);
-  this->forwarding_input_fifo = new Fifo(buffers_capacity);
-  this->weight_fifo = new Fifo(buffers_capacity);
-  this->psum_fifo = new Fifo(buffers_capacity);
-  //End parameters initialization
 
   //Signals
   this->inputForwardingEnabled = false;
@@ -46,16 +44,7 @@ SparseFlex_MSwitch::SparseFlex_MSwitch(stonne_id_t id, std::string name, int num
   this->setInputConnection(inputConnection);
 }
 
-SparseFlex_MSwitch::~SparseFlex_MSwitch() {
-  delete this->activation_fifo;
-  delete this->weight_fifo;
-  delete this->psum_fifo;
-  delete this->forwarding_output_fifo;
-  delete this->forwarding_input_fifo;
-}
-
 void SparseFlex_MSwitch::resetSignals() {
-
   //Signals
   this->inputForwardingEnabled = false;
   this->outputForwardingEnabled = false;
@@ -70,24 +59,24 @@ void SparseFlex_MSwitch::resetSignals() {
   this->compute_merge_enabled = 0;
 
   this->VN = -1;  //Not configured
-  while (!weight_fifo->isEmpty()) {
-    delete weight_fifo->pop();
+  while (!weight_fifo.isEmpty()) {
+    delete weight_fifo.pop();
   }
 
-  while (!activation_fifo->isEmpty()) {
-    delete activation_fifo->pop();
+  while (!activation_fifo.isEmpty()) {
+    delete activation_fifo.pop();
   }
 
-  while (!psum_fifo->isEmpty()) {
-    delete psum_fifo->pop();
+  while (!psum_fifo.isEmpty()) {
+    delete psum_fifo.pop();
   }
 
-  while (!forwarding_output_fifo->isEmpty()) {
-    delete forwarding_output_fifo->pop();
+  while (!forwarding_output_fifo.isEmpty()) {
+    delete forwarding_output_fifo.pop();
   }
 
-  while (!forwarding_input_fifo->isEmpty()) {
-    delete forwarding_input_fifo->pop();
+  while (!forwarding_input_fifo.isEmpty()) {
+    delete forwarding_input_fifo.pop();
   }
 }
 
@@ -141,9 +130,9 @@ void SparseFlex_MSwitch::setDirectForwardPsum(bool direct_forward_psum) {
 
 void SparseFlex_MSwitch::send() {  //Send the result through the outputConnection
   std::vector<DataPackage*> vector_to_send;
-  while (!psum_fifo->isEmpty()) {  //There must exist data in the switch //TODO use the ports number too
+  while (!psum_fifo.isEmpty()) {  //There must exist data in the switch //TODO use the ports number too
     //std::cout << "SparseFlex_MSwitch " << this->num << " Computed at cycle " << this->local_cycle << std::endl;
-    DataPackage* data_to_send = psum_fifo->pop();
+    DataPackage* data_to_send = psum_fifo.pop();
 #ifdef DEBUG_MSWITCH_FUNC
     std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num << " has sent a psum to the parent" << std::endl;
 #endif
@@ -152,10 +141,10 @@ void SparseFlex_MSwitch::send() {  //Send the result through the outputConnectio
     vector_to_send.push_back(data_to_send);
   }
   if (this->memory_connection_enabled) {
-    this->memoryConnection->send(vector_to_send);
+    this->memoryConnection->send(std::move(vector_to_send));
 
   } else {
-    this->outputConnection->send(vector_to_send);  //Send the result to the output towards the RN
+    this->outputConnection->send(std::move(vector_to_send));  //Send the result to the output towards the RN
   }
 }
 
@@ -168,7 +157,7 @@ void SparseFlex_MSwitch::forward(DataPackage* activation_to_forward) {
   std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num << " has sent an IACTIVATION to the forwarding link"
             << std::endl;
 #endif
-  this->outputForwardingConnection->send(vector_to_send);  //Sending the activation to the left
+  this->outputForwardingConnection->send(std::move(vector_to_send));  //Sending the activation to the left
   this->mswitchStats.n_input_forwardings_send++;
 }
 
@@ -200,7 +189,6 @@ void SparseFlex_MSwitch::setOutputForwardingEnabled(bool outputForwardingEnabled
 }
 
 void SparseFlex_MSwitch::receive(Connection* connection) {  //Receive a package from the inputConnection or forwardingConnection
-
   if (connection == inputForwardingConnection) {
     if (connection->existPendingData()) {
       std::vector<DataPackage*> data_received = connection->receive();  //Copying the data to receive //TODO check the number of elements with ports
@@ -215,7 +203,7 @@ void SparseFlex_MSwitch::receive(Connection* connection) {  //Receive a package 
 #endif
         //    std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num << " has received an IACTIVATION from the forwarding link" << std::endl;
 
-        forwarding_input_fifo->push(pck);
+        forwarding_input_fifo.push(pck);
       }
     }
   }
@@ -227,7 +215,7 @@ void SparseFlex_MSwitch::receive(Connection* connection) {  //Receive a package 
       //Check if is an activation or weight
       DataPackage* pck = data_received[i];
       if (pck->get_data_type() == IACTIVATION) {
-        activation_fifo->push(pck);
+        activation_fifo.push(pck);
         this->mswitchStats.n_inputs_receive++;  //Tracking the information
 #ifdef DEBUG_MSWITCH_FUNC
         std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num
@@ -244,19 +232,19 @@ void SparseFlex_MSwitch::receive(Connection* connection) {  //Receive a package 
                   << " has received a WEIGHT from the distribution network" << std::endl;
 #endif
         //	std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num << " has received a WEIGHT from the distribution network. Data: " << pck->get_data() << std::endl;
-        //if(weight_fifo->size() == n_folding) { //If the fifo already has n_folding weights means that this weight is a new distirbution weight phase and therefore we clear the fifo
+        //if(weight_fifo.size() == n_folding) { //If the fifo already has n_folding weights means that this weight is a new distirbution weight phase and therefore we clear the fifo
         //Removing all the elements
 #ifdef DEBUG_MSWITCH_FUNC
         std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num << " clears the weight fifo" << std::endl;
 #endif
-        while (!weight_fifo->isEmpty()) {
-          DataPackage* pck_in_fifo = weight_fifo->pop();  //this operation is done i times
-          delete pck_in_fifo;                             //Deleting pck
+        while (!weight_fifo.isEmpty()) {
+          DataPackage* pck_in_fifo = weight_fifo.pop();  //this operation is done i times
+          delete pck_in_fifo;                            //Deleting pck
         }
         this->mswitchStats.n_weight_fifo_flush++;
         // }
         this->mswitchStats.n_weights_receive++;  //Tracking the information
-        weight_fifo->push(pck);                  //Inserting new element
+        weight_fifo.push(pck);                   //Inserting new element
                                                  //std::cout << "Weight received by MS " << this->num << ":" << pck->get_data() << std::endl;
       }
 
@@ -266,7 +254,7 @@ void SparseFlex_MSwitch::receive(Connection* connection) {  //Receive a package 
                   << " has received a PSUM from the distribution network" << std::endl;
 #endif
         //	std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", SparseFlex_MSwitch " << this->num << " has received a PSUM from the distribution network" << std::endl;
-        activation_fifo->push(pck);            //The psum is push into the activation_fifo
+        activation_fifo.push(pck);             //The psum is push into the activation_fifo
         this->mswitchStats.n_psums_receive++;  //Tracking the information
       }
     }
@@ -296,7 +284,7 @@ DataPackage* SparseFlex_MSwitch::perform_operation_2_operands(DataPackage* pck_l
 //Si es la primera iteracion no recibas del fw link
 //Si es la ultima iteracion no envies al fw link
 void SparseFlex_MSwitch::cycle() {  //Computing a cycle
-  //    std::cout << "MS: " << this->num << ". weight fifo size: " << weight_fifo->size() << " N_Folding: " << n_folding << std::endl;
+  //    std::cout << "MS: " << this->num << ". weight fifo size: " << weight_fifo.size() << " N_Folding: " << n_folding << std::endl;
   local_cycle += 1;
   this->mswitchStats.total_cycles++;
   //   this->receive(inputConnection);
@@ -306,14 +294,14 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
 
   if ((this->memory_connection_enabled) || (this->compute_merge_enabled)) {
     this->receive(inputConnection);
-    if (!activation_fifo->isEmpty() && !weight_fifo->isEmpty()) {
-      DataPackage* activation = activation_fifo->pop();  //Get the activation and remove from fifo
+    if (!activation_fifo.isEmpty() && !weight_fifo.isEmpty()) {
+      DataPackage* activation = activation_fifo.pop();  //Get the activation and remove from fifo
 
-      DataPackage* weight = weight_fifo->pop();  //get the weight and then pushing again at the end of the fifo
-      weight_fifo->push(weight);
+      DataPackage* weight = weight_fifo.pop();  //get the weight and then pushing again at the end of the fifo
+      weight_fifo.push(weight);
       data_t data_read = activation->get_data();
       DataPackage* pck_result = perform_operation_2_operands(activation, weight);  //Creating the psum package
-      psum_fifo->push(pck_result);                                                 //Sending to the output fifo to be read in next cycle
+      psum_fifo.push(pck_result);                                                  //Sending to the output fifo to be read in next cycle
                                                                                    //data_t data_read = activation->get_data();
       //std::cout << "Data Received by MS " << this->num << ": " << data_read << std::endl;
 
@@ -326,26 +314,26 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
   //Forward psum without managing control
   else if (this->direct_forward_psum) {
     this->receive(inputConnection);  //Trying to get the psum from the PB
-    if (!activation_fifo->isEmpty()) {
-      DataPackage* psum = activation_fifo->pop();
+    if (!activation_fifo.isEmpty()) {
+      DataPackage* psum = activation_fifo.pop();
       //Creating the psum to forward using the psum received. We have to created a new package since the ART does not need a destination vector.
       DataPackage* psum_fwd = new DataPackage(psum->get_size_package(), psum->get_data(), PSUM, psum->get_source(), this->VN, psum->get_operation_mode(),
                                               psum->getRow(), psum->getCol());
-      delete psum;                //Deleting the package received after copying it
-      psum_fifo->push(psum_fwd);  //Introduce in the fifo to be sent
+      delete psum;               //Deleting the package received after copying it
+      psum_fifo.push(psum_fwd);  //Introduce in the fifo to be sent
       this->mswitchStats.n_psum_forwarding_send++;
       this->send();  //Sending to the adder networkQ
     }
 
   } else if (forward_psum && (current_n_folding > 0)) {  //The multiplication function is disabled. This MS has to get psums and send them to the parent.
     this->receive(inputConnection);                      //Trying to get the psum from the PB
-    if (!activation_fifo->isEmpty()) {
-      DataPackage* psum = activation_fifo->pop();
+    if (!activation_fifo.isEmpty()) {
+      DataPackage* psum = activation_fifo.pop();
       //Creating the psum to forward using the psum received. We have to created a new package since the ART does not need a destination vector.
       DataPackage* psum_fwd = new DataPackage(psum->get_size_package(), psum->get_data(), PSUM, psum->get_source(), this->VN, psum->get_operation_mode(),
                                               psum->getRow(), psum->getCol());
-      delete psum;                //Deleting the package received after copying it
-      psum_fifo->push(psum_fwd);  //Introduce in the fifo to be sent
+      delete psum;               //Deleting the package received after copying it
+      psum_fifo.push(psum_fwd);  //Introduce in the fifo to be sent
       this->mswitchStats.n_psum_forwarding_send++;
       this->send();  //Sending to the adder network
 
@@ -359,7 +347,7 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
 
   else if (forward_psum && (current_n_folding == 0)) {
     DataPackage* zero_psum = new DataPackage(sizeof(data_t), 0, PSUM, 0, this->VN, ADDER, 0, 0);  //If it is the first iteration of the window we send a 0.
-    psum_fifo->push(zero_psum);
+    psum_fifo.push(zero_psum);
     this->send();
     current_n_folding += 1;
     if (current_n_folding == n_folding) {
@@ -370,26 +358,23 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
 
   else {  //It is a normal MS with folding implementation
     //If the fw link is enabled in this ms and it is not the first window of the row (in whose case all the inputs are fetched from mem)
-    Fifo* fifo_to_read;  //aux fifo which points to either input_forwarding_fifo or activation_fifo (from mem)
     this->receive(inputConnection);
     if (this->inputForwardingEnabled) {
       this->receive(inputForwardingConnection);  //Trying to receive from neighbour an input data
     }
-    fifo_to_read = activation_fifo;
-    if (this->inputForwardingEnabled && (current_n_windows > 0)) {
-      //If inputforwarding is enabled and this is an iteration in which we have to use the forwarding inputs then we take them as inputs
-      //assert(!forwarding_input_fifo->isEmpty());
-      fifo_to_read = forwarding_input_fifo;
-    }
+    //If inputforwarding is enabled and this is an iteration in which we have to use the forwarding inputs then we take them as inputs
+    Fifo& fifo_to_read = (this->inputForwardingEnabled && (current_n_windows > 0))
+                             ? forwarding_input_fifo
+                             : activation_fifo;  //aux fifo which points to either input_forwarding_fifo or activation_fifo (from mem)
     //Prefetching could be implemented jut changing the condition activation->fifo->isEmpty for a condition that check that the fifo is greater than a certain value to prefetch.
-    if ((!fifo_to_read->isEmpty()) && (weight_fifo->size() >= n_folding)) {  //If both queues are not empty
-      DataPackage* activation = fifo_to_read->pop();                         //Get the activation and remove from fifo
+    if ((!fifo_to_read.isEmpty()) && (weight_fifo.size() >= n_folding)) {  //If both queues are not empty
+      DataPackage* activation = fifo_to_read.pop();                        //Get the activation and remove from fifo
 
-      DataPackage* weight = weight_fifo->pop();  //get the weight and then pushing again at the end of the fifo
-      weight_fifo->push(weight);
+      DataPackage* weight = weight_fifo.pop();  //get the weight and then pushing again at the end of the fifo
+      weight_fifo.push(weight);
       data_t data_read = activation->get_data();
       DataPackage* pck_result = perform_operation_2_operands(activation, weight);  //Creating the psum package
-      psum_fifo->push(pck_result);                                                 //Sending to the output fifo to be read in next cycle
+      psum_fifo.push(pck_result);                                                  //Sending to the output fifo to be read in next cycle
                                                                                    //data_t data_read = activation->get_data();
       //std::cout << "Data Received by MS " << this->num << ": " << data_read << std::endl;
 
@@ -404,9 +389,9 @@ void SparseFlex_MSwitch::cycle() {  //Computing a cycle
       //TODO el problema esta aqui con current_n_windows
       if ((current_n_windows < (n_windows - 1)) && this->outputForwardingEnabled) {  //Last window is n_windows-1
         DataPackage* activation_forwarded = new DataPackage(activation);             //copy to be sent later to the fw link
-        forwarding_output_fifo->push(
+        forwarding_output_fifo.push(
             activation_forwarded);  //introducing the activation into the fifo to send the data later to the fw link. TODO this shit makes no sense at all.
-        activation_forwarded = forwarding_output_fifo->pop();
+        activation_forwarded = forwarding_output_fifo.pop();
         this->forward(activation_forwarded);  //Sending to the fw link
       }
 
@@ -442,25 +427,25 @@ void SparseFlex_MSwitch::printStats(std::ofstream& out, std::size_t indent) {
   //Printing Fifos
 
   out << ind(indent + IND_SIZE) << ",\"ActivationFifo\" : {" << std::endl;
-  this->activation_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->activation_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"WeightFifo\" : {" << std::endl;
-  this->weight_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->weight_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"PsumFifo\" : {" << std::endl;
-  this->psum_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->psum_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"ForwardingInputFifo\" : {" << std::endl;
-  this->forwarding_input_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->forwarding_input_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"ForwardingOutputFifo\" : {" << std::endl;
-  this->forwarding_output_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->forwarding_output_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}" << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent) << "}";  //TODO put ID
@@ -485,9 +470,9 @@ void SparseFlex_MSwitch::printEnergy(std::ofstream& out, std::size_t indent) {
   out << ind(indent) << " CONFIGURATION=" << this->mswitchStats.n_configurations << std::endl;
 
   //Fifo counters
-  activation_fifo->printEnergy(out, indent);
-  forwarding_input_fifo->printEnergy(out, indent);
-  forwarding_output_fifo->printEnergy(out, indent);
-  weight_fifo->printEnergy(out, indent);
-  psum_fifo->printEnergy(out, indent);
+  activation_fifo.printEnergy(out, indent);
+  forwarding_input_fifo.printEnergy(out, indent);
+  forwarding_output_fifo.printEnergy(out, indent);
+  weight_fifo.printEnergy(out, indent);
+  psum_fifo.printEnergy(out, indent);
 }

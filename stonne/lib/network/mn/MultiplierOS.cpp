@@ -5,7 +5,13 @@
 /*
 */
 
-MultiplierOS::MultiplierOS(stonne_id_t id, std::string name, int row_num, int col_num, Config stonne_cfg) : Unit(id, name) {
+MultiplierOS::MultiplierOS(stonne_id_t id, std::string name, int row_num, int col_num, Config stonne_cfg)
+    : Unit(id, name),
+      top_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      bottom_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      right_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      left_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity),
+      accbuffer_fifo(stonne_cfg.m_MSwitchCfg.buffers_capacity) {
   this->row_num = row_num;
   this->col_num = col_num;
   //Extracting parameters from configuration file
@@ -18,14 +24,6 @@ MultiplierOS::MultiplierOS(stonne_id_t id, std::string name, int row_num, int co
   this->ms_rows = stonne_cfg.m_MSNetworkCfg.ms_rows;
   this->ms_cols = stonne_cfg.m_MSNetworkCfg.ms_cols;
   //End of extracting parameters from the configuration file
-
-  //Parameters initialization
-  this->top_fifo = new Fifo(buffers_capacity);
-  this->bottom_fifo = new Fifo(buffers_capacity);
-  this->right_fifo = new Fifo(buffers_capacity);
-  this->left_fifo = new Fifo(buffers_capacity);
-  this->accbuffer_fifo = new Fifo(buffers_capacity);
-  //End parameters initialization
 
   this->local_cycle = 0;
   this->forward_right = false;   //Based on rows (windows) left and dimensions
@@ -43,32 +41,25 @@ MultiplierOS::MultiplierOS(stonne_id_t id, std::string name, int row_num, int co
   this->setBottomConnection(bottom_connection);
 }
 
-MultiplierOS::~MultiplierOS() {
-  delete this->left_fifo;
-  delete this->right_fifo;
-  delete this->top_fifo;
-  delete this->bottom_fifo;
-}
-
 void MultiplierOS::resetSignals() {
 
   this->forward_right = false;
   this->forward_bottom = false;
   this->VN = 0;
-  while (!left_fifo->isEmpty()) {
-    delete left_fifo->pop();
+  while (!left_fifo.isEmpty()) {
+    delete left_fifo.pop();
   }
 
-  while (!right_fifo->isEmpty()) {
-    delete right_fifo->pop();
+  while (!right_fifo.isEmpty()) {
+    delete right_fifo.pop();
   }
 
-  while (!top_fifo->isEmpty()) {
-    delete top_fifo->pop();
+  while (!top_fifo.isEmpty()) {
+    delete top_fifo.pop();
   }
 
-  while (!bottom_fifo->isEmpty()) {
-    delete bottom_fifo->pop();
+  while (!bottom_fifo.isEmpty()) {
+    delete bottom_fifo.pop();
   }
 }
 
@@ -112,8 +103,8 @@ void MultiplierOS::setVirtualNeuron(std::size_t VN) {
 void MultiplierOS::send() {  //Send the result through the outputConnection
                              //Sending weights
   std::vector<DataPackage*> vector_to_send_weights;
-  while (!bottom_fifo->isEmpty()) {
-    DataPackage* data_to_send = bottom_fifo->pop();
+  while (!bottom_fifo.isEmpty()) {
+    DataPackage* data_to_send = bottom_fifo.pop();
 #ifdef DEBUG_MSWITCH_FUNC
     std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", MultiplierOS " << this->num << " has forward a data to the bottom connection" << std::endl;
 #endif
@@ -121,13 +112,13 @@ void MultiplierOS::send() {  //Send the result through the outputConnection
   }
   if (vector_to_send_weights.size() > 0) {
     this->mswitchStats.n_bottom_forwardings_send++;
-    this->bottom_connection->send(vector_to_send_weights);
+    this->bottom_connection->send(std::move(vector_to_send_weights));
   }
 
   //Sending activations
   std::vector<DataPackage*> vector_to_send_activations;
-  while (!right_fifo->isEmpty()) {
-    DataPackage* data_to_send = right_fifo->pop();
+  while (!right_fifo.isEmpty()) {
+    DataPackage* data_to_send = right_fifo.pop();
 #ifdef DEBUG_MSWITCH_FUNC
     std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", MultiplierOS " << this->num << " has forward a data to the right connection" << std::endl;
 #endif
@@ -135,7 +126,7 @@ void MultiplierOS::send() {  //Send the result through the outputConnection
   }
   if (vector_to_send_activations.size() > 0) {
     this->mswitchStats.n_right_forwardings_send++;
-    this->right_connection->send(vector_to_send_activations);
+    this->right_connection->send(std::move(vector_to_send_activations));
   }
 
   //Sending to the accumulation buffer. Note that this might be done inside the PE,
@@ -144,8 +135,8 @@ void MultiplierOS::send() {  //Send the result through the outputConnection
 
   //Sending psums to the accumulation buffer
   std::vector<DataPackage*> vector_to_send_psums;
-  while (!accbuffer_fifo->isEmpty()) {
-    DataPackage* data_to_send = accbuffer_fifo->pop();
+  while (!accbuffer_fifo.isEmpty()) {
+    DataPackage* data_to_send = accbuffer_fifo.pop();
 #ifdef DEBUG_MSWITCH_FUNC
     std::cout << "[MSWITCH_FUNC] Cycle " << this->local_cycle << ", MultiplierOS " << this->num << " has forward a data to the accumulation buffer"
               << std::endl;
@@ -153,7 +144,7 @@ void MultiplierOS::send() {  //Send the result through the outputConnection
     vector_to_send_psums.push_back(data_to_send);
   }
   if (vector_to_send_psums.size() > 0) {
-    this->accbuffer_connection->send(vector_to_send_psums);
+    this->accbuffer_connection->send(std::move(vector_to_send_psums));
   }
 }
 
@@ -171,7 +162,7 @@ void MultiplierOS::receive() {  //Receive a package either from the left or the 
 #endif
       this->mswitchStats.n_left_forwardings_receive++;
 
-      left_fifo->push(pck);
+      left_fifo.push(pck);
     }
   }
 
@@ -187,7 +178,7 @@ void MultiplierOS::receive() {  //Receive a package either from the left or the 
 #endif
       this->mswitchStats.n_top_forwardings_receive++;
 
-      top_fifo->push(pck);
+      top_fifo.push(pck);
     }
   }
   return;
@@ -217,22 +208,22 @@ void MultiplierOS::cycle() {  //Computing a cycle
   //    std::cout << "MS: " << this->num << ". weight fifo size: " << weight_fifo->size() << " N_Folding: " << n_folding << std::endl;
   local_cycle += 1;
   this->mswitchStats.total_cycles++;
-  this->receive();                                          //From top and left
-  if ((!left_fifo->isEmpty()) && (!top_fifo->isEmpty())) {  //If both queues are not empty
-    DataPackage* activation = left_fifo->pop();             //Get the activation and remove from fifo
+  this->receive();                                        //From top and left
+  if ((!left_fifo.isEmpty()) && (!top_fifo.isEmpty())) {  //If both queues are not empty
+    DataPackage* activation = left_fifo.pop();            //Get the activation and remove from fifo
 
-    DataPackage* weight = top_fifo->pop();                                       //get the weight and remove from fifo
+    DataPackage* weight = top_fifo.pop();                                        //get the weight and remove from fifo
     DataPackage* pck_result = perform_operation_2_operands(activation, weight);  //Creating the psum package
-    accbuffer_fifo->push(pck_result);                                            //Sending to the accbuffer to be accumulated in OS manner
+    accbuffer_fifo.push(pck_result);                                             //Sending to the accbuffer to be accumulated in OS manner
 
     //Forwarding the weight and the activation
     if (forward_right) {  //If this ms is not in the last column (i.e., filter in conv)
-      right_fifo->push(activation);
+      right_fifo.push(activation);
     } else {
       delete activation;
     }
     if (forward_bottom) {  //if this ms is not in the last row (i.e., last conv window in conv))
-      bottom_fifo->push(weight);
+      bottom_fifo.push(weight);
     }
 
     else {
@@ -256,25 +247,25 @@ void MultiplierOS::printStats(std::ofstream& out, std::size_t indent) {
   //Printing Fifos
 
   out << ind(indent + IND_SIZE) << ",\"TopFifo\" : {" << std::endl;
-  this->top_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->top_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"LeftFifo\" : {" << std::endl;
-  this->left_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->left_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"RightFifo\" : {" << std::endl;
-  this->right_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->right_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"BottomFifo\" : {" << std::endl;
-  this->bottom_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->bottom_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"OutputFifo\" : {" << std::endl;
-  this->accbuffer_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->accbuffer_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}" << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent) << "}";
@@ -299,9 +290,9 @@ void MultiplierOS::printEnergy(std::ofstream& out, std::size_t indent) {
   out << ind(indent) << " CONFIGURATION=" << this->mswitchStats.n_configurations << std::endl;
 
   //Fifo counters
-  top_fifo->printEnergy(out, indent);
-  left_fifo->printEnergy(out, indent);
-  right_fifo->printEnergy(out, indent);
-  bottom_fifo->printEnergy(out, indent);
-  accbuffer_fifo->printEnergy(out, indent);
+  top_fifo.printEnergy(out, indent);
+  left_fifo.printEnergy(out, indent);
+  right_fifo.printEnergy(out, indent);
+  bottom_fifo.printEnergy(out, indent);
+  accbuffer_fifo.printEnergy(out, indent);
 }

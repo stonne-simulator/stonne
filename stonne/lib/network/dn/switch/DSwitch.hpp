@@ -55,8 +55,8 @@ class DSwitch : public Unit {
 
   std::size_t getOutputPorts() const { return this->output_ports; }  //get the output ports
 
-  void send(std::vector<DataPackage*> data, Connection* connection);  //Packages of data to be send depending on routing.
-  void receive();                                                     //Receive a list of  packages from the Inputconnection and save it in this->data
+  void send(std::vector<DataPackage*>&& data, Connection* connection);  //Packages of data to be send depending on routing.
+  void receive();                                                       //Receive a list of  packages from the Inputconnection and save it in this->data
   void cycle();
   void printStats(std::ofstream& out, std::size_t indent);
   void printEnergy(std::ofstream& out, std::size_t indent);

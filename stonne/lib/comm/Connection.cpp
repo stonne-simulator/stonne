@@ -17,7 +17,7 @@ bool Connection::existPendingData() {
 }
 
 //Send a package to the interconnection. If there is no remaining bandiwth an exception is raised
-void Connection::send(vector<DataPackage*> data_p) {
+void Connection::send(vector<DataPackage*>&& data_p) {
 #ifdef DEBUG
   //Check the connection is not busy
   assert(pending_data == false);

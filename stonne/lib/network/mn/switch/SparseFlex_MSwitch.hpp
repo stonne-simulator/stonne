@@ -19,11 +19,11 @@ class SparseFlex_MSwitch : public Unit {
  private:
   bool pending_to_compute;  // Indicates there is data pending to compute
   bool pending_output;
-  Fifo* activation_fifo;         // Package received by the DN
-  Fifo* forwarding_input_fifo;   //Package received from the neighbour
-  Fifo* forwarding_output_fifo;  //Packages accumulated to be sent to the fw links when required
-  Fifo* weight_fifo;             //Weights stored in the MS
-  Fifo* psum_fifo;               //Psum ready to be sent to the parent
+  Fifo activation_fifo;         // Package received by the DN
+  Fifo forwarding_input_fifo;   //Package received from the neighbour
+  Fifo forwarding_output_fifo;  //Packages accumulated to be sent to the fw links when required
+  Fifo weight_fifo;             //Weights stored in the MS
+  Fifo psum_fifo;               //Psum ready to be sent to the parent
 
   std::vector<DataPackage*> psums_created;  // All the psums created by this multiplier used to delete the package after the execution is finished.
   Connection* outputConnection;             // Towards the Reduce Network
@@ -66,7 +66,6 @@ class SparseFlex_MSwitch : public Unit {
  public:
   SparseFlex_MSwitch(stonne_id_t id, std::string name, int num, Config stonne_cfg);
   SparseFlex_MSwitch(stonne_id_t id, std::string name, int num, Config stonne_cfg, Connection* outputConnection, Connection* inputConnection);
-  ~SparseFlex_MSwitch();
   void setOutputConnection(Connection* outputConnection);                    //Set the output connection of the switch (TO THE ADDER)
   void setInputForwardingConnection(Connection* inputForwardingConnection);  //Set the right connection of the switch
   void setOutputForwardingConnection(Connection* outputForwardingConnection);
@@ -84,12 +83,6 @@ class SparseFlex_MSwitch : public Unit {
   void setDirectForwardPsum(
       bool direct_forward_psum);  //Disable multiplier function and enable the psum forwarding. In this case, the psum is always forwarded (SIGMA).
   void setPartialSumGenerationMode(bool merge_psums);
-
-  Fifo* getActivationFifo() { return this->activation_fifo; }
-
-  Fifo* getWeightFifo() { return this->weight_fifo; }
-
-  Fifo* getPsumFifo() { return this->psum_fifo; }
 
   DataPackage* perform_operation_2_operands(DataPackage* pck_left, DataPackage* pck_right);  //Perform multiplication and returns result.
 

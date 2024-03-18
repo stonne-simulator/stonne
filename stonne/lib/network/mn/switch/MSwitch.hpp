@@ -19,11 +19,11 @@ class MSwitch : public Unit {
  private:
   bool pending_to_compute{};  // Indicates there is data pending to compute
   bool pending_output{};
-  Fifo* activation_fifo{};         // Package received by the DN
-  Fifo* forwarding_input_fifo{};   //Package received from the neighbour
-  Fifo* forwarding_output_fifo{};  //Packages accumulated to be sent to the fw links when required
-  Fifo* weight_fifo{};             //Weights stored in the MS
-  Fifo* psum_fifo{};               //Psum ready to be sent to the parent
+  Fifo activation_fifo;         // Package received by the DN
+  Fifo forwarding_input_fifo;   //Package received from the neighbour
+  Fifo forwarding_output_fifo;  //Packages accumulated to be sent to the fw links when required
+  Fifo weight_fifo;             //Weights stored in the MS
+  Fifo psum_fifo;               //Psum ready to be sent to the parent
 
   std::vector<DataPackage*> psums_created{};  // All the psums created by this multiplier used to delete the package after the execution is finished.
   Connection* outputConnection{};             // Towards the Reduce Network
@@ -63,7 +63,6 @@ class MSwitch : public Unit {
  public:
   MSwitch(stonne_id_t id, std::string name, int num, Config stonne_cfg);
   MSwitch(stonne_id_t id, std::string name, int num, Config stonne_cfg, Connection* outputConnection, Connection* inputConnection);
-  ~MSwitch();
   void setOutputConnection(Connection* outputConnection);                    //Set the output connection of the switch (TO THE ADDER)
   void setInputForwardingConnection(Connection* inputForwardingConnection);  //Set the right connection of the switch
   void setOutputForwardingConnection(Connection* outputForwardingConnection);

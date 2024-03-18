@@ -11,7 +11,8 @@ using namespace std;
 
 /* This class represents an accumulator module. */
 
-Accumulator::Accumulator(stonne_id_t id, std::string name, Config stonne_cfg, std::size_t n_accumulator) : Unit(id, name) {
+Accumulator::Accumulator(stonne_id_t id, std::string name, Config stonne_cfg, std::size_t n_accumulator)
+    : Unit(id, name), input_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity), output_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity) {
   this->n_accumulator = n_accumulator;
   this->input_ports = stonne_cfg.m_ASwitchCfg.input_ports;
   this->output_ports = stonne_cfg.m_ASwitchCfg.output_ports;
@@ -23,17 +24,10 @@ Accumulator::Accumulator(stonne_id_t id, std::string name, Config stonne_cfg, st
   this->current_capacity = 0;
   this->inputConnection = NULL;
   this->outputConnection = NULL;
-  this->input_fifo = new Fifo(this->buffers_capacity);
-  this->output_fifo = new Fifo(this->buffers_capacity);
   this->local_cycle = 0;
   this->current_psum = 0;
   this->n_psums = 0;
   this->operation_mode = ADDER;
-}
-
-Accumulator::~Accumulator() {
-  delete this->input_fifo;
-  delete this->output_fifo;
 }
 
 void Accumulator::setNPSums(std::size_t n_psums) {
@@ -60,10 +54,10 @@ void Accumulator::setOutputConnection(Connection* outputConnection) {
 //Configuration settings (control signals)
 
 void Accumulator::send() {
-  if (!output_fifo->isEmpty()) {
+  if (!output_fifo.isEmpty()) {
     std::vector<DataPackage*> vector_to_send_parent;
-    while (!output_fifo->isEmpty()) {
-      DataPackage* pck = output_fifo->pop();
+    while (!output_fifo.isEmpty()) {
+      DataPackage* pck = output_fifo.pop();
       vector_to_send_parent.push_back(pck);
     }
 
@@ -74,7 +68,7 @@ void Accumulator::send() {
 #endif
 
     this->accumulatorStats.n_memory_send++;
-    this->outputConnection->send(vector_to_send_parent);  //Send the data to the corresponding output
+    this->outputConnection->send(std::move(vector_to_send_parent));  //Send the data to the corresponding output
   }
 }
 
@@ -86,7 +80,7 @@ void Accumulator::receive() {
 #ifdef DEBUG_ASWITCH_FUNC
       std::cout << "[ACCUMULATOR_FUNC] Cycle " << local_cycle << ", Accumulator " << this->n_accumulator << " has received a psum" << std::endl;
 #endif
-      input_fifo->push(data_received[i]);  //Inserting to the local queuqe from connection
+      input_fifo.push(data_received[i]);  //Inserting to the local queuqe from connection
     }
   }
 
@@ -122,8 +116,8 @@ DataPackage* Accumulator::perform_operation_2_operands(DataPackage* pck_left, Da
 
 void Accumulator::route() {
   DataPackage* pck_received;
-  if (!input_fifo->isEmpty()) {
-    pck_received = input_fifo->pop();
+  if (!input_fifo.isEmpty()) {
+    pck_received = input_fifo.pop();
     DataPackage* result;
     if (current_psum == 0) {  //There is no package yet to sum in this iteration
       //Creating package 0
@@ -140,7 +134,7 @@ void Accumulator::route() {
     }
 
     if (this->current_psum == (this->n_psums - 1)) {
-      this->output_fifo->push(this->temporal_register);
+      this->output_fifo.push(this->temporal_register);
       this->current_psum = 0;
 
     } else {
@@ -182,11 +176,11 @@ void Accumulator::printStats(std::ofstream& out, std::size_t indent) {
   //Printing Fifos
 
   out << ind(indent + IND_SIZE) << ",\"InputFifo\" : {" << std::endl;
-  this->input_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->input_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"OutputFifo\" : {" << std::endl;
-  this->output_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->output_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}" << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent) << "}";  //TODO put ID
@@ -208,6 +202,6 @@ void Accumulator::printEnergy(std::ofstream& out, std::size_t indent) {
   out << ind(indent) << " ADD=" << this->accumulatorStats.n_adds << std::endl;
 
   //Fifos
-  this->input_fifo->printEnergy(out, indent);
-  this->output_fifo->printEnergy(out, indent);
+  this->input_fifo.printEnergy(out, indent);
+  this->output_fifo.printEnergy(out, indent);
 }

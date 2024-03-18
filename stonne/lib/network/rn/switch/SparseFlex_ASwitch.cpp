@@ -11,7 +11,13 @@ using namespace std;
 
 /* This class represents the SparseFlex_ASwitch of the MAERI architecture. Basically, the class contains to connections, which   */
 
-SparseFlex_ASwitch::SparseFlex_ASwitch(stonne_id_t id, std::string name, std::size_t level, std::size_t num_in_level, Config stonne_cfg) : Unit(id, name) {
+SparseFlex_ASwitch::SparseFlex_ASwitch(stonne_id_t id, std::string name, std::size_t level, std::size_t num_in_level, Config stonne_cfg)
+    : Unit(id, name),
+      input_psum_left_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      input_psum_right_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      input_fw_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      output_psum_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      output_fw_fifo(stonne_cfg.m_ASwitchCfg.buffers_capacity) {
   this->level = level;
   this->num_in_level = num_in_level;
   this->input_ports = stonne_cfg.m_ASwitchCfg.input_ports;
@@ -34,12 +40,6 @@ SparseFlex_ASwitch::SparseFlex_ASwitch(stonne_id_t id, std::string name, std::si
   this->left_child_enabled = false;
   this->right_child_enabled = false;
   this->fw_enabled = false;
-  this->input_psum_left_fifo = new Fifo(this->buffers_capacity);
-  this->input_psum_right_fifo = new Fifo(this->buffers_capacity);
-  this->input_fw_fifo = new Fifo(this->buffers_capacity);
-  //  std::cout << "Direccion de memoria antes fw fifo: " << this->input_fw_fifo << std::endl;
-  this->output_psum_fifo = new Fifo(this->buffers_capacity);
-  this->output_fw_fifo = new Fifo(this->buffers_capacity);
   this->local_cycle = 0;
   this->forward_to_memory = false;
 
@@ -85,17 +85,6 @@ SparseFlex_ASwitch::SparseFlex_ASwitch(stonne_id_t id, std::string name, std::si
   this->setOutputConnection(outputConnection);
 }
 
-SparseFlex_ASwitch::~SparseFlex_ASwitch() {
-  delete this->input_psum_left_fifo;
-  delete this->input_psum_right_fifo;
-  delete this->input_fw_fifo;
-  delete this->output_psum_fifo;
-  delete this->output_fw_fifo;
-  //for(int i=0; i<psums_created.size(); i++) {
-  //delete psums_created[i]; //deleting the psums that have been created by this AS.
-  // }
-}
-
 void SparseFlex_ASwitch::resetSignals() {
   //End collecting parameters from the configuration file
   this->current_capacity = 0;
@@ -106,24 +95,24 @@ void SparseFlex_ASwitch::resetSignals() {
   this->right_child_enabled = false;
   this->fw_enabled = false;
   this->forward_to_memory = false;
-  while (!input_psum_left_fifo->isEmpty()) {
-    delete input_psum_left_fifo->pop();
+  while (!input_psum_left_fifo.isEmpty()) {
+    delete input_psum_left_fifo.pop();
   }
 
-  while (!input_psum_right_fifo->isEmpty()) {
-    delete input_psum_right_fifo->pop();
+  while (!input_psum_right_fifo.isEmpty()) {
+    delete input_psum_right_fifo.pop();
   }
 
-  while (!output_psum_fifo->isEmpty()) {
-    delete output_psum_fifo->pop();
+  while (!output_psum_fifo.isEmpty()) {
+    delete output_psum_fifo.pop();
   }
 
-  while (!input_fw_fifo->isEmpty()) {
-    delete input_fw_fifo->pop();
+  while (!input_fw_fifo.isEmpty()) {
+    delete input_fw_fifo.pop();
   }
 
-  while (!output_fw_fifo->isEmpty()) {
-    delete output_fw_fifo->pop();
+  while (!output_fw_fifo.isEmpty()) {
+    delete output_fw_fifo.pop();
   }
 }
 
@@ -197,14 +186,14 @@ void SparseFlex_ASwitch::setForwardingToMemoryEnabled(bool forwarding_to_memory)
 void SparseFlex_ASwitch::send() {
   //Sending output_fw_fifo to the fw link. fw_link
   //if((level == 5) && (num_in_level==22)) {
-  //   std::cout  << "OUTPUT SIZE EACH CYCLE: " << output_fw_fifo->size() << std::endl;
+  //   std::cout  << "OUTPUT SIZE EACH CYCLE: " << output_fw_fifo.size() << std::endl;
   // }
 
-  if (!output_fw_fifo->isEmpty()) {
+  if (!output_fw_fifo.isEmpty()) {
     assert(this->fw_enabled && (this->fl_direction == SEND));
     std::vector<DataPackage*> vector_to_send_fw_link;
-    while (!output_fw_fifo->isEmpty()) {  //TODO control bw
-      DataPackage* pck = output_fw_fifo->pop();
+    while (!output_fw_fifo.isEmpty()) {  //TODO control bw
+      DataPackage* pck = output_fw_fifo.pop();
 
 #ifdef DEBUG_ASWITCH_FUNC
       std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", SparseFlex_ASwitch " << this->level << ":" << this->num_in_level
@@ -214,13 +203,13 @@ void SparseFlex_ASwitch::send() {
       vector_to_send_fw_link.push_back(pck);
     }
     this->aswitchStats.n_augmented_link_send++;  //Track the information
-    this->forwardingConnection->send(vector_to_send_fw_link);
+    this->forwardingConnection->send(std::move(vector_to_send_fw_link));
   }
-  if (!output_psum_fifo->isEmpty()) {
+  if (!output_psum_fifo.isEmpty()) {
     //     std::cout << "DEBUG GENERAL " << this->level << ":" << this->num_in_level << " at cycle " << this->local_cycle << std::endl;
     std::vector<DataPackage*> vector_to_send_parent;
-    while (!output_psum_fifo->isEmpty()) {
-      DataPackage* pck = output_psum_fifo->pop();
+    while (!output_psum_fifo.isEmpty()) {
+      DataPackage* pck = output_psum_fifo.pop();
       vector_to_send_parent.push_back(pck);
     }
 
@@ -231,15 +220,15 @@ void SparseFlex_ASwitch::send() {
                 << " has sent a psum to memory (FORWARDING DATA)" << std::endl;
 #endif
       this->aswitchStats.n_memory_send++;  //Track the information
-      this->memoryConnection->send(vector_to_send_parent);
+      this->memoryConnection->send(std::move(vector_to_send_parent));
     } else {
 #ifdef DEBUG_ASWITCH_FUNC
       std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", SparseFlex_ASwitch " << this->level << ":" << this->num_in_level
                 << " has sent a psum to the parent" << std::endl;
 #endif
 
-      this->aswitchStats.n_parent_send++;                   //Track the information
-      this->outputConnection->send(vector_to_send_parent);  //Send the data to the corresponding output
+      this->aswitchStats.n_parent_send++;                              //Track the information
+      this->outputConnection->send(std::move(vector_to_send_parent));  //Send the data to the corresponding output
     }
   }
 }
@@ -253,7 +242,7 @@ void SparseFlex_ASwitch::receive_childs() {
       std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", SparseFlex_ASwitch " << this->level << ":" << this->num_in_level
                 << " has received a psum from input port 0" << std::endl;
 #endif
-      input_psum_left_fifo->push(data_received_left[i]);  //Inserting to the local queuqe from connection
+      input_psum_left_fifo.push(data_received_left[i]);  //Inserting to the local queuqe from connection
     }
   }
   if (this->inputRightConnection->existPendingData()) {
@@ -264,20 +253,20 @@ void SparseFlex_ASwitch::receive_childs() {
                 << " has received a psum from input port 1" << std::endl;
 #endif
 
-      input_psum_right_fifo->push(data_received_right[i]);
+      input_psum_right_fifo.push(data_received_right[i]);
     }
   }
   /*
     if((level == 8) && (num_in_level == 181)) {  // 5 y 22 es el 2:1 que va al vecino 21
-        std::cout << "input_psum_right size in receive childs is " << input_psum_right_fifo->size() << std::endl;
-        std::cout << "input_psum_left_size in receive childs is " << input_psum_left_fifo->size() << std::endl;
+        std::cout << "input_psum_right size in receive childs is " << input_psum_right_fifo.size() << std::endl;
+        std::cout << "input_psum_left_size in receive childs is " << input_psum_left_fifo.size() << std::endl;
         std::cout << "Left son ENABLEED: " << this->left_child_enabled << std::endl;
         std::cout << "Right son ENABLED: " << this->right_child_enabled << std::endl;
         std::cout << "SparseFlex_ASwitch type is: " << get_string_adder_configuration(config_mode) << std::endl;
     }
         if((level == 6) && (num_in_level == 44)) {
-        std::cout << "input_psum_right size 44 SWITCHHHHH " << input_psum_right_fifo->size() << std::endl;
-        std::cout << "input_psum_left size 44 SWITCHHHHH " << input_psum_left_fifo->size() << std::endl;
+        std::cout << "input_psum_right size 44 SWITCHHHHH " << input_psum_right_fifo.size() << std::endl;
+        std::cout << "input_psum_left size 44 SWITCHHHHH " << input_psum_left_fifo.size() << std::endl;
         //std::cout << "SparseFlex_ASwitch type is: " << get_string_adder_configuration(config_mode) << std::endl;
         }
 */
@@ -302,11 +291,11 @@ void SparseFlex_ASwitch::receive_fwlink() {
                   << " has received a psum from the forwarding link" << std::endl;
 #endif
 
-        input_fw_fifo->push(data_received_fw[i]);
+        input_fw_fifo.push(data_received_fw[i]);
       }
     }
     /*if((level == 5) && (num_in_level == 21)) {
-        	std::cout << "fw_link_input_fifo size is " << input_fw_fifo->size() << std::endl;
+        	std::cout << "fw_link_input_fifo size is " << input_fw_fifo.size() << std::endl;
         } */
   }
 }
@@ -389,49 +378,49 @@ DataPackage* SparseFlex_ASwitch::perform_operation_3_operands(DataPackage* pck_l
 //The output of this configuration could be either the output link or the forwarding. It depends on wether the fw link is enabled or not.
 //TODO MODELAR LATENCIA !!
 void SparseFlex_ASwitch::route_2_1_config() {
-  if ((!input_psum_left_fifo->isEmpty()) && (input_psum_right_fifo->isEmpty())) {  //If there is no element on the left just forward right
-    if (!this->right_child_enabled) {                                              //If the right child is disabled then forward the left
-      DataPackage* pck_received = input_psum_left_fifo->pop();                     //Get the data
-      DataPackage* pck_to_send = new DataPackage(pck_received);                    //Duplicate the data to delete the memory
+  if ((!input_psum_left_fifo.isEmpty()) && (input_psum_right_fifo.isEmpty())) {  //If there is no element on the left just forward right
+    if (!this->right_child_enabled) {                                            //If the right child is disabled then forward the left
+      DataPackage* pck_received = input_psum_left_fifo.pop();                    //Get the data
+      DataPackage* pck_to_send = new DataPackage(pck_received);                  //Duplicate the data to delete the memory
       delete pck_received;
       if (this->fw_enabled) {  //IF tjhe input is send though the fw link..  //TODO these loops can be better implemented
-        output_fw_fifo->push(pck_to_send);
+        output_fw_fifo.push(pck_to_send);
       } else {
-        output_psum_fifo->push(pck_to_send);
+        output_psum_fifo.push(pck_to_send);
       }
     }
   }
 
-  if ((!input_psum_right_fifo->isEmpty()) && (input_psum_left_fifo->isEmpty())) {  //Forward left
-    if (!this->left_child_enabled) {                                               //if left is not enabled then forward right
-      DataPackage* pck_received = input_psum_right_fifo->pop();
+  if ((!input_psum_right_fifo.isEmpty()) && (input_psum_left_fifo.isEmpty())) {  //Forward left
+    if (!this->left_child_enabled) {                                             //if left is not enabled then forward right
+      DataPackage* pck_received = input_psum_right_fifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_received);
       delete pck_received;
 
       if (this->fw_enabled) {
-        output_fw_fifo->push(pck_to_send);
+        output_fw_fifo.push(pck_to_send);
       }
 
       else {
-        output_psum_fifo->push(pck_to_send);
+        output_psum_fifo.push(pck_to_send);
       }
     }
   }
 
   // Sum the values and send
-  if ((!input_psum_left_fifo->isEmpty()) &&
-      (!input_psum_right_fifo->isEmpty())) {  //If this happens, it is because it is neccesary to sum. The number of operands in both branches must be identical
+  if ((!input_psum_left_fifo.isEmpty()) &&
+      (!input_psum_right_fifo.isEmpty())) {  //If this happens, it is because it is neccesary to sum. The number of operands in both branches must be identical
     assert(this->left_child_enabled);
     assert(this->right_child_enabled);
     //assert(psum_right.size() == psum_left.size());
-    DataPackage* pck_left = input_psum_left_fifo->pop();
-    DataPackage* pck_right = input_psum_right_fifo->pop();
+    DataPackage* pck_left = input_psum_left_fifo.pop();
+    DataPackage* pck_right = input_psum_right_fifo.pop();
     // Perform the operation
     DataPackage* pck_result = perform_operation_2_operands(pck_left, pck_right);  //pck_result added to the psums_created list in order to be removed afterwards
     if (this->fw_enabled) {
-      output_fw_fifo->push(pck_result);  //Sending the result to be read in next cycle //TODO send to forwarding link if required
+      output_fw_fifo.push(pck_result);  //Sending the result to be read in next cycle //TODO send to forwarding link if required
     } else {
-      output_psum_fifo->push(pck_result);
+      output_psum_fifo.push(pck_result);
     }
     delete pck_left;   //delete the space in memory
     delete pck_right;  //delete the space in memory
@@ -445,16 +434,15 @@ void SparseFlex_ASwitch::route_3_1_config() {
   //First we check there is data in all receiving directions (inputleft, inputRight, forwarding link)
   assert(fw_enabled && (fl_direction == RECEIVE));  //The fw link of the AS must be configured correctly
 
-  if (!input_psum_left_fifo->isEmpty() && !input_psum_right_fifo->isEmpty() &&
-      !input_fw_fifo->isEmpty()) {  //If there is data (i.e., they all are greater than 0)
+  if (!input_psum_left_fifo.isEmpty() && !input_psum_right_fifo.isEmpty() && !input_fw_fifo.isEmpty()) {  //If there is data (i.e., they all are greater than 0)
     //Compute
-    DataPackage* pck_left = input_psum_left_fifo->pop();
-    DataPackage* pck_right = input_psum_right_fifo->pop();
-    DataPackage* pck_forward = input_fw_fifo->pop();
+    DataPackage* pck_left = input_psum_left_fifo.pop();
+    DataPackage* pck_right = input_psum_right_fifo.pop();
+    DataPackage* pck_forward = input_fw_fifo.pop();
     //Perform the operation with the 3 operands in each package
     DataPackage* pck_result = perform_operation_3_operands(pck_left, pck_right, pck_forward);
     //std::cout << "Operacion suma " << pck_result->get_data() << std::endl;
-    output_psum_fifo->push(pck_result);
+    output_psum_fifo.push(pck_result);
     //Delete space of memory
     delete pck_left;
     delete pck_right;
@@ -464,38 +452,38 @@ void SparseFlex_ASwitch::route_3_1_config() {
 
 void SparseFlex_ASwitch::route_sort_tree_config() {
   //Left flows
-  if (!input_psum_left_fifo->isEmpty() && input_psum_right_fifo->isEmpty()) {
-    DataPackage* pck_left = input_psum_left_fifo->pop();
-    output_psum_fifo->push(pck_left);
+  if (!input_psum_left_fifo.isEmpty() && input_psum_right_fifo.isEmpty()) {
+    DataPackage* pck_left = input_psum_left_fifo.pop();
+    output_psum_fifo.push(pck_left);
   }
 
   //Right flows
-  else if (input_psum_left_fifo->isEmpty() && !input_psum_right_fifo->isEmpty()) {
-    DataPackage* pck_right = input_psum_right_fifo->pop();
-    output_psum_fifo->push(pck_right);
+  else if (input_psum_left_fifo.isEmpty() && !input_psum_right_fifo.isEmpty()) {
+    DataPackage* pck_right = input_psum_right_fifo.pop();
+    output_psum_fifo.push(pck_right);
   }
 
   //Compare and flow
-  else if (!input_psum_left_fifo->isEmpty() && !input_psum_right_fifo->isEmpty()) {
-    DataPackage* pck_left = input_psum_left_fifo->front();
-    DataPackage* pck_right = input_psum_right_fifo->front();
+  else if (!input_psum_left_fifo.isEmpty() && !input_psum_right_fifo.isEmpty()) {
+    DataPackage* pck_left = input_psum_left_fifo.front();
+    DataPackage* pck_right = input_psum_right_fifo.front();
     //Left flows
     if (pck_left->getCol() < pck_right->getCol()) {
-      input_psum_left_fifo->pop();
-      output_psum_fifo->push(pck_left);
+      input_psum_left_fifo.pop();
+      output_psum_fifo.push(pck_left);
     }
 
     //Right flows
     else if (pck_left->getCol() > pck_right->getCol()) {
-      input_psum_right_fifo->pop();
-      output_psum_fifo->push(pck_right);
+      input_psum_right_fifo.pop();
+      output_psum_fifo.push(pck_right);
     }
 
     else {  //Both indexes are the same
       DataPackage* pck_result = perform_operation_2_operands(pck_left, pck_right);
-      output_psum_fifo->push(pck_result);
-      input_psum_left_fifo->pop();
-      input_psum_right_fifo->pop();
+      output_psum_fifo.push(pck_result);
+      input_psum_left_fifo.pop();
+      input_psum_right_fifo.pop();
       delete pck_left;
       delete pck_right;
     }
@@ -508,34 +496,34 @@ void SparseFlex_ASwitch::route_1_1_plus_fw_1_1_config() {
   assert(this->right_child_enabled);
   //    assert(fw_enabled && (fl_direction == SEND)); //The fw link of the AS must be configured correctly
   //Si num_in_level es  par el forwarding link esta a la izquierda (if num_in_level is even, then the fw link is on the left)
-  if ((this->num_in_level % 2) == 0) {       //If it's even (LEFT)
-    if (!input_psum_left_fifo->isEmpty()) {  //If there is left data
-      DataPackage* pck_left = input_psum_left_fifo->pop();
+  if ((this->num_in_level % 2) == 0) {      //If it's even (LEFT)
+    if (!input_psum_left_fifo.isEmpty()) {  //If there is left data
+      DataPackage* pck_left = input_psum_left_fifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_left);
-      this->output_fw_fifo->push(pck_to_send);  //Package from left goes to the fw link
+      this->output_fw_fifo.push(pck_to_send);  //Package from left goes to the fw link
       delete pck_left;
     }
-    if (!input_psum_right_fifo->isEmpty()) {
-      DataPackage* pck_right = input_psum_right_fifo->pop();
+    if (!input_psum_right_fifo.isEmpty()) {
+      DataPackage* pck_right = input_psum_right_fifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_right);
       if (pck_right->get_vn() == 0) {
         assert(false);
       }
-      this->output_psum_fifo->push(pck_to_send);
+      this->output_psum_fifo.push(pck_to_send);
       delete pck_right;
     }
 
-  } else {                                   //If it's odd FW link receives the right input and parent the left input
-    if (!input_psum_left_fifo->isEmpty()) {  //If there is left data
-      DataPackage* pck_left = input_psum_left_fifo->pop();
+  } else {                                  //If it's odd FW link receives the right input and parent the left input
+    if (!input_psum_left_fifo.isEmpty()) {  //If there is left data
+      DataPackage* pck_left = input_psum_left_fifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_left);
-      this->output_psum_fifo->push(pck_to_send);  // The left input goes to the parent
+      this->output_psum_fifo.push(pck_to_send);  // The left input goes to the parent
       delete pck_left;
     }
-    if (!input_psum_right_fifo->isEmpty()) {
-      DataPackage* pck_right = input_psum_right_fifo->pop();
+    if (!input_psum_right_fifo.isEmpty()) {
+      DataPackage* pck_right = input_psum_right_fifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_right);
-      this->output_fw_fifo->push(pck_to_send);  //The right input goes to the fw link
+      this->output_fw_fifo.push(pck_to_send);  //The right input goes to the fw link
       delete pck_right;
     }
   }
@@ -548,18 +536,18 @@ void SparseFlex_ASwitch::route_fw_2_2_config() {
   //Forwarding to the outputs which are  used in next cycle. Note we use different loops to insert left and right since could there be different number of psums in each child.
   // If there is nothing psum_left and psum_right will be empty and nothing happens
   //Inserting left inputs
-  while (!input_psum_left_fifo->isEmpty()) {
-    DataPackage* pck_received = input_psum_left_fifo->pop();
+  while (!input_psum_left_fifo.isEmpty()) {
+    DataPackage* pck_received = input_psum_left_fifo.pop();
     DataPackage* pck_to_send = new DataPackage(pck_received);
-    output_psum_fifo->push(pck_to_send);
+    output_psum_fifo.push(pck_to_send);
     delete pck_received;
   }
 
   //Inserting right inputs
-  while (!input_psum_right_fifo->isEmpty()) {
-    DataPackage* pck_received = input_psum_right_fifo->pop();
+  while (!input_psum_right_fifo.isEmpty()) {
+    DataPackage* pck_received = input_psum_right_fifo.pop();
     DataPackage* pck_to_send = new DataPackage(pck_received);
-    output_psum_fifo->push(pck_to_send);
+    output_psum_fifo.push(pck_to_send);
     delete pck_received;
   }
 }
@@ -622,25 +610,25 @@ void SparseFlex_ASwitch::printStats(std::ofstream& out, std::size_t indent) {
 
   //Printing Fifos
   out << ind(indent + IND_SIZE) << ",\"InputPsumLeftFifo\" : {" << std::endl;
-  this->input_psum_left_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->input_psum_left_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"InputPsumRightFifo\" : {" << std::endl;
-  this->input_psum_right_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->input_psum_right_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"OutputPsumFifo\" : {" << std::endl;
-  this->output_psum_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->output_psum_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"OutputForwardingFifo\" : {" << std::endl;
-  this->output_fw_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->output_fw_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"InputForwardingFifo\" : {" << std::endl;
-  this->input_fw_fifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->input_fw_fifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}" << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent) << "}";  //Take care. Do not print endl here. This is parent responsability
@@ -662,9 +650,9 @@ void SparseFlex_ASwitch::printEnergy(std::ofstream& out, std::size_t indent) {
   out << ind(indent) << " ADD_3_1=" << this->aswitchStats.n_3_1_sums;
   out << ind(indent) << " CONFIGURATION=" << this->aswitchStats.n_configurations << std::endl;
 
-  this->input_psum_left_fifo->printEnergy(out, indent);
-  this->input_psum_right_fifo->printEnergy(out, indent);
-  this->input_fw_fifo->printEnergy(out, indent);
-  this->output_fw_fifo->printEnergy(out, indent);
-  this->output_psum_fifo->printEnergy(out, indent);
+  this->input_psum_left_fifo.printEnergy(out, indent);
+  this->input_psum_right_fifo.printEnergy(out, indent);
+  this->input_fw_fifo.printEnergy(out, indent);
+  this->output_fw_fifo.printEnergy(out, indent);
+  this->output_psum_fifo.printEnergy(out, indent);
 }

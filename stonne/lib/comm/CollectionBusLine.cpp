@@ -3,7 +3,7 @@
 
 CollectionBusLine::CollectionBusLine(stonne_id_t id, std::string name, std::size_t busID, std::size_t input_ports_bus_line, std::size_t connection_width,
                                      std::size_t fifo_size)
-    : Unit(id, name) {
+    : Unit(id, name), input_fifos(input_ports_bus_line, Fifo(fifo_size)) {
   this->input_ports = input_ports_bus_line;
   this->busID = busID;
   //Creating the connections for this bus line
@@ -11,10 +11,6 @@ CollectionBusLine::CollectionBusLine(stonne_id_t id, std::string name, std::size
     //Adding the input connection
     Connection* input_connection = new Connection(connection_width);
     input_connections.push_back(input_connection);
-
-    //Adding the input fifo
-    Fifo* fifo = new Fifo(fifo_size);
-    input_fifos.push_back(fifo);
 
     //Creating the output connection
     output_port = new Connection(connection_width);
@@ -27,11 +23,6 @@ CollectionBusLine::~CollectionBusLine() {
   //First removing the input_connections
   for (int i = 0; i < input_connections.size(); i++) {
     delete input_connections[i];
-  }
-
-  //Deleting the input_fifos
-  for (int i = 0; i < input_fifos.size(); i++) {
-    delete input_fifos[i];
   }
 
   //Deleting output connection
@@ -48,7 +39,7 @@ void CollectionBusLine::receive() {
       std::vector<DataPackage*> pck = input_connections[i]->receive();
       for (int j = 0; j < pck.size(); j++) {                    //Actually this is 1
         this->collectionbuslineStats.n_inputs_receive[i] += 1;  //To track information. Number of packages received by each input line for this output port
-        input_fifos[i]->push(pck[j]);                           //Inserting the package into the fifo
+        input_fifos[i].push(pck[j]);                            //Inserting the package into the fifo
       }
     }
   }
@@ -62,7 +53,7 @@ void CollectionBusLine::cycle() {
   //To track Information
   std::size_t n_inputs_trying = 0;
   for (int i = 0; i < input_fifos.size(); i++) {
-    if (!input_fifos[i]->isEmpty()) {
+    if (!input_fifos[i].isEmpty()) {
       n_inputs_trying += 1;
     }
   }
@@ -76,12 +67,12 @@ void CollectionBusLine::cycle() {
 
   std::vector<DataPackage*> data_to_send;
   while (!selected && (n_iters < input_fifos.size())) {  //if input not found or there is still data to look up
-    if (!input_fifos[next_input_selected]->isEmpty()) {  //If there is data in this input then
+    if (!input_fifos[next_input_selected].isEmpty()) {   //If there is data in this input then
       selected = true;
-      DataPackage* pck = input_fifos[next_input_selected]->pop();  //Poping from the fifo
-      pck->setOutputPort(this->busID);                             //Setting tracking information to the package
-      data_to_send.push_back(pck);                                 //Sending the package to memory
-      this->collectionbuslineStats.n_sends++;                      //To track information
+      DataPackage* pck = input_fifos[next_input_selected].pop();  //Poping from the fifo
+      pck->setOutputPort(this->busID);                            //Setting tracking information to the package
+      data_to_send.push_back(pck);                                //Sending the package to memory
+      this->collectionbuslineStats.n_sends++;                     //To track information
     }
     next_input_selected = (next_input_selected + 1) % input_fifos.size();
     n_iters++;
@@ -89,7 +80,7 @@ void CollectionBusLine::cycle() {
 
   //Sending the data to the output connection
   if (selected) {
-    this->output_port->send(data_to_send);
+    this->output_port->send(std::move(data_to_send));
   }
 }
 
@@ -99,7 +90,7 @@ void CollectionBusLine::printStats(std::ofstream& out, std::size_t indent) {
   out << ind(indent + IND_SIZE) << ",\"input_fifos_stats\" : [" << std::endl;
   for (int i = 0; i < input_fifos.size(); i++) {
     out << ind(indent + IND_SIZE + IND_SIZE) << "{" << std::endl;
-    input_fifos[i]->printStats(out, indent + IND_SIZE + IND_SIZE + IND_SIZE);
+    input_fifos[i].printStats(out, indent + IND_SIZE + IND_SIZE + IND_SIZE);
     out << ind(indent + IND_SIZE + IND_SIZE) << "}";
     if (i < (input_fifos.size() - 1)) {
       out << ",";
@@ -127,8 +118,7 @@ void CollectionBusLine::printEnergy(std::ofstream& out, std::size_t indent) {
 
   //Printing input fifos
   for (int i = 0; i < input_fifos.size(); i++) {
-    Fifo* fifo = input_fifos[i];
-    fifo->printEnergy(out, indent);
+    input_fifos[i].printEnergy(out, indent);
   }
 
   //Printing output wire

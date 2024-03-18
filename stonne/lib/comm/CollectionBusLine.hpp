@@ -4,17 +4,17 @@
 #define __CollectionBusLine__h__
 
 #include <iostream>
+#include "Connection.hpp"
 #include "common/Fifo.hpp"
 #include "common/Stats.hpp"
 #include "common/Unit.hpp"
-#include "Connection.hpp"
 
 class CollectionBusLine : public Unit {
 
  private:
   std::size_t input_ports;                     //Number of input connections that correspond with input_connections.size() and input_fifos.size()
   std::vector<Connection*> input_connections;  //Every input connection for this bus line
-  std::vector<Fifo*> input_fifos;              //Every fifo corresponds with an inputConnection for this busLine
+  std::vector<Fifo> input_fifos;               //Every fifo corresponds with an inputConnection for this busLine
   Connection* output_port;                     //Output connection with memory
   std::size_t next_input_selected;             //Using RR policy
   std::size_t busID;                           //Output port ID of this line

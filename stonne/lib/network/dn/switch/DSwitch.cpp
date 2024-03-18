@@ -49,9 +49,9 @@ void DSwitch::setInputConnection(Connection* inputConnection) {
 }
 
 //Send a package to left or right connection. If there is no remaining bandiwth in the connection an exception is raised
-void DSwitch::send(vector<DataPackage*> data_p, Connection* connection) {
-  assert(this->pending_data);  //There must exist data in the switch
-  connection->send(data_p);    //Send the data to the corresponding output
+void DSwitch::send(vector<DataPackage*>&& data_p, Connection* connection) {
+  assert(this->pending_data);           //There must exist data in the switch
+  connection->send(std::move(data_p));  //Send the data to the corresponding output
 }
 
 //Differently from connection, the receive in the switch means get the data from the connection and save it.
@@ -171,11 +171,11 @@ void DSwitch::route_packages() {  //TODO It is supposing you have enouth bandwid
 
   //Sending data to the branches
   if (output_left.size() > 0) {  //If in the left branch there is something to send
-    this->send(output_left, this->leftConnection);
+    this->send(std::move(output_left), this->leftConnection);
     this->dswitchStats.n_left_sends++;
   }
   if (output_right.size() > 0) {  //If in the right branch there is something to send
-    this->send(output_right, this->rightConnection);
+    this->send(std::move(output_right), this->rightConnection);
     this->dswitchStats.n_right_sends++;
   }
 

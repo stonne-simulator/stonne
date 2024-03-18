@@ -17,11 +17,11 @@
 
 class MultiplierOS : public Unit {
  private:
-  Fifo* top_fifo;        // Packages received from top (i.e., weights)
-  Fifo* left_fifo;       //Packages recieved from legt (i.e., activations)
-  Fifo* right_fifo;      //Packages to be sent to the right (i.e., activations)
-  Fifo* bottom_fifo;     //Packages to be sent to the bottom (i.e., weights)
-  Fifo* accbuffer_fifo;  //Psum ready to be sent to the parent
+  Fifo top_fifo;        // Packages received from top (i.e., weights)
+  Fifo left_fifo;       //Packages recieved from legt (i.e., activations)
+  Fifo right_fifo;      //Packages to be sent to the right (i.e., activations)
+  Fifo bottom_fifo;     //Packages to be sent to the bottom (i.e., weights)
+  Fifo accbuffer_fifo;  //Psum ready to be sent to the parent
 
   Connection* left_connection;       // To the left neighbour or memory port
   Connection* right_connection;      //To the right neighbour
@@ -53,7 +53,6 @@ class MultiplierOS : public Unit {
   MultiplierOS(stonne_id_t id, std::string name, int row_num, int col_num, Config stonne_cfg);
   MultiplierOS(stonne_id_t id, std::string name, int row_num, int col_num, Config stonne_cfg, Connection* left_connection, Connection* right_connection,
                Connection* top_connection, Connection* bottom_connection);
-  ~MultiplierOS();
   void setTopConnection(Connection* top_connection);      //Set the top connection
   void setLeftConnection(Connection* left_connection);    //Set the left connection
   void setRightConnection(Connection* right_connection);  //Set the right connection

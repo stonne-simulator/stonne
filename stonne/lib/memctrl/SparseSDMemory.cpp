@@ -5,7 +5,11 @@
 #include "common/utility.hpp"
 
 SparseSDMemory::SparseSDMemory(stonne_id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem)
-    : MemoryController(id, name), mem(mem) {
+    : MemoryController(id, name),
+      mem(mem),
+      write_fifo(stonne_cfg.m_SDMemoryCfg.write_buffer_capacity),
+      input_fifos(stonne_cfg.m_SDMemoryCfg.n_read_ports, Fifo(stonne_cfg.m_SDMemoryCfg.write_buffer_capacity)),
+      psum_fifos(stonne_cfg.m_SDMemoryCfg.n_read_ports, Fifo(stonne_cfg.m_SDMemoryCfg.write_buffer_capacity)) {
   this->write_connection = write_connection;
   //Collecting parameters from the configuration file
   this->num_ms = stonne_cfg.m_MSNetworkCfg.ms_size;  //Used to send data
@@ -22,12 +26,7 @@ SparseSDMemory::SparseSDMemory(stonne_id_t id, std::string name, Config stonne_c
   //End collecting parameters from the configuration file
   //Initializing parameters
   this->ms_size_per_input_port = this->num_ms / this->n_read_ports;
-  this->write_fifo = new Fifo(write_buffer_capacity);
   for (int i = 0; i < this->n_read_ports; i++) {
-    Fifo* read_fi = new Fifo(this->write_buffer_capacity);
-    Fifo* psum_fi = new Fifo(this->write_buffer_capacity);
-    input_fifos.push_back(read_fi);
-    psum_fifos.push_back(psum_fi);
     this->sdmemoryStats.n_SRAM_read_ports_weights_use.push_back(0);  //To track information
     this->sdmemoryStats.n_SRAM_read_ports_inputs_use.push_back(0);   //To track information
     this->sdmemoryStats.n_SRAM_read_ports_psums_use.push_back(0);    //To track information
@@ -61,13 +60,6 @@ SparseSDMemory::SparseSDMemory(stonne_id_t id, std::string name, Config stonne_c
 }
 
 SparseSDMemory::~SparseSDMemory() {
-  delete write_fifo;
-  //Deleting the input ports
-  for (int i = 0; i < this->n_read_ports; i++) {
-    delete input_fifos[i];
-    delete psum_fifos[i];
-  }
-
   if (this->layer_loaded) {
     delete[] sta_counters_table;
     delete[] str_counters_table;
@@ -442,10 +434,10 @@ void SparseSDMemory::cycle() {
 
   //Receiving output data from write_connection
   this->receive();
-  if (!write_fifo->isEmpty()) {
+  if (!write_fifo.isEmpty()) {
     //Index the data by using the VN Address Table and the VN id of the packages
-    for (int i = 0; i < write_fifo->size(); i++) {
-      DataPackage* pck_received = write_fifo->pop();
+    for (int i = 0; i < write_fifo.size(); i++) {
+      DataPackage* pck_received = write_fifo.pop();
       std::size_t vn = pck_received->get_vn();
       data_t data = pck_received->get_data();
       this->sdmemoryStats.n_SRAM_psum_writes++;  //To track information
@@ -547,11 +539,11 @@ void SparseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
                                              pck->getCol());  //Size, data, data_type, source (port in this case), BROADCAST
       //Sending the replica to the suitable fifo that correspond with the port
       if (pck->get_data_type() == PSUM) {  //Actually a PSUM cannot be broadcast. But we put this for compatibility
-        psum_fifos[i]->push(pck_new);
+        psum_fifos[i].push(pck_new);
       } else {  //INPUT OR WEIGHT
         //Seting iteration of the package
         pck_new->setIterationK(pck->getIterationK());  //Used to avoid sending packages from a certain iteration without performing the previous.
-        input_fifos[i]->push(pck_new);
+        input_fifos[i].push(pck_new);
       }
     }
   }
@@ -567,9 +559,9 @@ void SparseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
                                            pck->getCol());  //size, data, type, source (port), UNICAST, dest_local
     //Sending to the fifo corresponding with port input_port
     if (pck->get_data_type() == PSUM) {  //Actually a PSUM cannot be broadcast. But we put this for compatibility
-      psum_fifos[input_port]->push(pck_new);
+      psum_fifos[input_port].push(pck_new);
     } else {  //INPUT OR WEIGHT
-      input_fifos[input_port]->push(pck_new);
+      input_fifos[input_port].push(pck_new);
       pck_new->setIterationK(pck->getIterationK());
     }
 
@@ -594,10 +586,10 @@ void SparseSDMemory::sendPackageToInputFifos(DataPackage* pck) {
         DataPackage* pck_new = new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest,
                                                this->ms_size_per_input_port, pck->getRow(), pck->getCol());
         if (pck->get_data_type() == PSUM) {
-          psum_fifos[i]->push(pck_new);
+          psum_fifos[i].push(pck_new);
         } else {
           pck_new->setIterationK(pck->getIterationK());
-          input_fifos[i]->push(pck_new);
+          input_fifos[i].push(pck_new);
         }
       } else {
         delete[] local_dest;  //If this vector is not sent we remove it.
@@ -613,20 +605,20 @@ void SparseSDMemory::send() {
 
   for (int i = 0; i < this->n_read_ports; i++) {
     std::vector<DataPackage*> pck_to_send;
-    if (!this->psum_fifos[i]->isEmpty()) {  //If there is something we may send data though the connection
-      DataPackage* pck = psum_fifos[i]->pop();
+    if (!this->psum_fifos[i].isEmpty()) {  //If there is something we may send data though the connection
+      DataPackage* pck = psum_fifos[i].pop();
 #ifdef DEBUG_MEM_INPUT
       std::cout << "[MEM_INPUT] Cycle " << local_cycle << ", Sending a psum through input port " << i << std::endl;
 #endif
       pck_to_send.push_back(pck);
       this->sdmemoryStats.n_SRAM_read_ports_psums_use[i]++;  //To track information
       //Sending to the connection
-      this->read_connections[i]->send(pck_to_send);
+      this->read_connections[i]->send(std::move(pck_to_send));
     }
     //If psums fifo is empty then input fifo is checked. If psum is not empty then else do not compute. Important this ELSE to give priority to the psums and do not send more than 1 pck
-    else if (!this->input_fifos[i]->isEmpty()) {
+    else if (!this->input_fifos[i].isEmpty()) {
       //If the package belongs to a certain k iteration but the previous k-1 iteration has not finished the package is not sent
-      DataPackage* pck = input_fifos[i]->front();  //Front because we are not sure if we have to send it.
+      DataPackage* pck = input_fifos[i].front();  //Front because we are not sure if we have to send it.
 
       if (pck->get_data_type() == WEIGHT) {
         this->sdmemoryStats.n_SRAM_read_ports_weights_use[i]++;  //To track information
@@ -639,9 +631,9 @@ void SparseSDMemory::send() {
         std::cout << "[MEM_INPUT] Cycle " << local_cycle << ", Sending an INPUT ACTIVATION through input port " << i << std::endl;
 #endif
       }
-      pck_to_send.push_back(pck);                    //storing into the vector data type structure used in class Connection
-      this->read_connections[i]->send(pck_to_send);  //Sending the input or weight through the connection
-      input_fifos[i]->pop();                         //pulling from fifo
+      pck_to_send.push_back(pck);                               //storing into the vector data type structure used in class Connection
+      this->read_connections[i]->send(std::move(pck_to_send));  //Sending the input or weight through the connection
+      input_fifos[i].pop();                                     //pulling from fifo
     }
   }
 }
@@ -651,14 +643,14 @@ void SparseSDMemory::receive() {  //TODO control if there is no space in queue
   if (this->write_connection->existPendingData()) {
     std::vector<DataPackage*> data_received = write_connection->receive();
     for (int i = 0; i < data_received.size(); i++) {
-      write_fifo->push(data_received[i]);
+      write_fifo.push(data_received[i]);
     }
   }
   for (int i = 0; i < write_port_connections.size(); i++) {  //For every write port
     if (write_port_connections[i]->existPendingData()) {
       std::vector<DataPackage*> data_received = write_port_connections[i]->receive();
       for (int i = 0; i < data_received.size(); i++) {
-        write_fifo->push(data_received[i]);
+        write_fifo.push(data_received[i]);
       }
     }
   }

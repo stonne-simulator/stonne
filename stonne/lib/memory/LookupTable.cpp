@@ -16,7 +16,7 @@ void LookupTable::cycle() {
     //std::cout << "LookupTABLE is executing" << std::endl;
     std::vector<DataPackage*> pck_to_receive = this->inputConnection->receive();
     //TODO apply activation function
-    this->outputConnection->send(pck_to_receive);
+    this->outputConnection->send(std::move(pck_to_receive));
     //for(int i=0; i<pck_to_receive.size(); i++) {
     //    std::cout << "Data received: " << pck_to_receive[i]->get_data() << std::endl;
     //}

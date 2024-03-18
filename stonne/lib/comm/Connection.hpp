@@ -24,8 +24,8 @@ class Connection {
  public:
   Connection(int bw);
   ~Connection() = default;
-  void send(std::vector<DataPackage*> data);  //Package of data to be send. The sum of all the size_package of each package must not be greater than bw.
-  std::vector<DataPackage*> receive();        //Receive a  packages from the connection
+  void send(std::vector<DataPackage*>&& data);  //Package of data to be send. The sum of all the size_package of each package must not be greater than bw.
+  std::vector<DataPackage*> receive();          //Receive a  packages from the connection
   bool existPendingData();
 
   void printEnergy(std::ofstream& out, std::size_t indent, std::string wire_type);

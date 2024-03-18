@@ -53,10 +53,10 @@ class SparseDenseSDMemory : public MemoryController {
 
   std::size_t ms_size_per_input_port;
   //Fifos
-  Fifo* write_fifo;  //Fifo uses to store the writes before going to the memory
+  Fifo write_fifo;  //Fifo uses to store the writes before going to the memory
 
-  std::vector<Fifo*> input_fifos;  //Fifos used to store the inputs before being fetched
-  std::vector<Fifo*> psum_fifos;   //Fifos used to store partial psums before being fetched
+  std::vector<Fifo> input_fifos;  //Fifos used to store the inputs before being fetched
+  std::vector<Fifo> psum_fifos;   //Fifos used to store partial psums before being fetched
   //Fifo* read_fifo; //Fifo used to store the inputs before being fetched
   //Fifo* psums_fifo; //Fifo used to store partial psums before being fetched
 

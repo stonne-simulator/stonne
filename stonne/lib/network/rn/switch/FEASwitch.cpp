@@ -11,7 +11,14 @@ using namespace std;
 
 /* This class represents the FEASwitch of the MAERI architecture. Basically, the class contains to connections, which   */
 
-FEASwitch::FEASwitch(stonne_id_t id, std::string name, std::size_t level, std::size_t num_in_level, Config stonne_cfg) : Unit(id, name) {
+FEASwitch::FEASwitch(stonne_id_t id, std::string name, std::size_t level, std::size_t num_in_level, Config stonne_cfg)
+    : Unit(id, name),
+      m_inputPsumLeftFifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      m_inputPsumRightFifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      m_inputFwFifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      m_inputFwBelowNodesFifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      m_outputPsumFifo(stonne_cfg.m_ASwitchCfg.buffers_capacity),
+      m_outputFwFifo(stonne_cfg.m_ASwitchCfg.buffers_capacity) {
   this->m_level = level;
   this->m_numInLevel = num_in_level;
   this->m_inputPorts = stonne_cfg.m_ASwitchCfg.input_ports;
@@ -34,47 +41,10 @@ FEASwitch::FEASwitch(stonne_id_t id, std::string name, std::size_t level, std::s
   this->m_leftChildEnabled = false;
   this->m_rightChildEnabled = false;
   this->m_fwEnabled = false;
-  this->p_inputPsumLeftFifo = new Fifo(this->m_buffersCapacity);
-  this->p_inputPsumRightFifo = new Fifo(this->m_buffersCapacity);
-  this->p_inputFwFifo = new Fifo(this->m_buffersCapacity);
-  this->p_inputFwBelowNodesFifo = new Fifo(m_buffersCapacity);
-  //  std::cout << "Direccion de memoria antes fw fifo: " << this->input_fw_fifo << std::endl;
-  this->p_outputPsumFifo = new Fifo(this->m_buffersCapacity);
-  this->p_outputFwFifo = new Fifo(this->m_buffersCapacity);
   this->local_cycle = 0;
   this->m_forwardToMemory = false;
   this->m_currentPsum = 0;
   this->m_forwardToFoldNode = false;
-
-  /*
-    //Forwarding to memory flags enabled by hand 
-    if((level==2) && (num_in_level==0)) {
-        this->forward_to_memory=true;
-    }
-
-    if((level==3) && (num_in_level==3)) {
-        this->forward_to_memory=true;
-    }
-   // if((level==2) && (num_in_level==2)) {
-   //     this->forward_to_memory=true;
-   // }
-   // if((level==1) && (num_in_level==1)) {
-   //     this->forward_to_memory=true;
-   // }
-
-
-   // if((level==2) && (num_in_level==3)) {
-   //     this->forward_to_memory=true;
-   // }
-  
-//    if((level==3) && (num_in_level==3)) {
-  //      this->forward_to_memory=true;
-  //  }
-   //  if((level==3) && (num_in_level==5)) {
-    //    this->forward_to_memory=true;
-   // } 
-
-*/
 }
 
 FEASwitch::FEASwitch(stonne_id_t id, std::string name, std::size_t level, std::size_t num_in_level, Config stonne_cfg, Connection* inputLeftConnection,
@@ -85,18 +55,6 @@ FEASwitch::FEASwitch(stonne_id_t id, std::string name, std::size_t level, std::s
   this->setInputRightConnection(inputRightConnection);
   this->setForwardingConnection(forwardingConnection);
   this->setOutputConnection(outputConnection);
-}
-
-FEASwitch::~FEASwitch() {
-  delete this->p_inputPsumLeftFifo;
-  delete this->p_inputPsumRightFifo;
-  delete this->p_inputFwFifo;
-  delete this->p_inputFwBelowNodesFifo;
-  delete this->p_outputPsumFifo;
-  delete this->p_outputFwFifo;
-  //for(int i=0; i<psums_created.size(); i++) {
-  //delete psums_created[i]; //deleting the psums that have been created by this AS.
-  // }
 }
 
 //Connection setters
@@ -183,11 +141,11 @@ void FEASwitch::send() {
   //   std::cout  << "OUTPUT SIZE EACH CYCLE: " << output_fw_fifo->size() << std::endl;
   // }
 
-  if (!p_outputFwFifo->isEmpty()) {
+  if (!m_outputFwFifo.isEmpty()) {
     assert(this->m_fwEnabled && (this->m_flDirection == SEND));
     std::vector<DataPackage*> vector_to_send_fw_link;
-    while (!p_outputFwFifo->isEmpty()) {  //TODO control bw
-      DataPackage* pck = p_outputFwFifo->pop();
+    while (!m_outputFwFifo.isEmpty()) {  //TODO control bw
+      DataPackage* pck = m_outputFwFifo.pop();
 #ifdef DEBUG_ASWITCH_FUNC
       std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", FEASwitch " << this->level << ":" << this->num_in_level
                 << " has sent a psum to the forwarding link" << std::endl;
@@ -196,13 +154,13 @@ void FEASwitch::send() {
       vector_to_send_fw_link.push_back(pck);
     }
     this->aswitchStats.n_augmented_link_send++;  //Track the information
-    this->p_forwardingConnection->send(vector_to_send_fw_link);
+    this->p_forwardingConnection->send(std::move(vector_to_send_fw_link));
   }
-  if (!p_outputPsumFifo->isEmpty()) {
+  if (!m_outputPsumFifo.isEmpty()) {
     //     std::cout << "DEBUG GENERAL " << this->level << ":" << this->num_in_level << " at cycle " << this->local_cycle << std::endl;
     std::vector<DataPackage*> vector_to_send_parent;
-    while (!p_outputPsumFifo->isEmpty()) {
-      DataPackage* pck = p_outputPsumFifo->pop();
+    while (!m_outputPsumFifo.isEmpty()) {
+      DataPackage* pck = m_outputPsumFifo.pop();
       vector_to_send_parent.push_back(pck);
     }
 
@@ -214,19 +172,19 @@ void FEASwitch::send() {
                 << " has sent a psum to memory (FORWARDING DATA)" << std::endl;
 #endif
       this->aswitchStats.n_memory_send++;  //Track the information
-      this->p_memoryConnection->send(vector_to_send_parent);
+      this->p_memoryConnection->send(std::move(vector_to_send_parent));
     }
 
     else if (this->m_forwardToFoldNode) {
-      this->p_upNodeForwardingConnection->send(vector_to_send_parent);
+      this->p_upNodeForwardingConnection->send(std::move(vector_to_send_parent));
     } else {
 #ifdef DEBUG_ASWITCH_FUNC
       std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", FEASwitch " << this->level << ":" << this->num_in_level << " has sent a psum to the parent"
                 << std::endl;
 #endif
 
-      this->aswitchStats.n_parent_send++;                     //Track the information
-      this->p_outputConnection->send(vector_to_send_parent);  //Send the data to the corresponding output
+      this->aswitchStats.n_parent_send++;                                //Track the information
+      this->p_outputConnection->send(std::move(vector_to_send_parent));  //Send the data to the corresponding output
     }
   }
 }
@@ -240,7 +198,7 @@ void FEASwitch::receive_childs() {
       std::cout << "[ASWITCH_FUNC] Cycle " << local_cycle << ", FEASwitch " << this->level << ":" << this->num_in_level
                 << " has received a psum from input port 0" << std::endl;
 #endif
-      p_inputPsumLeftFifo->push(data_received_left[i]);  //Inserting to the local queuqe from connection
+      m_inputPsumLeftFifo.push(data_received_left[i]);  //Inserting to the local queuqe from connection
     }
   }
   if (this->p_inputRightConnection->existPendingData()) {
@@ -251,7 +209,7 @@ void FEASwitch::receive_childs() {
                 << " has received a psum from input port 1" << std::endl;
 #endif
 
-      p_inputPsumRightFifo->push(data_received_right[i]);
+      m_inputPsumRightFifo.push(data_received_right[i]);
     }
   }
   /*
@@ -289,7 +247,7 @@ void FEASwitch::receive_fwlink() {
                   << " has received a psum from the forwarding link" << std::endl;
 #endif
 
-        p_inputFwFifo->push(data_received_fw[i]);
+        m_inputFwFifo.push(data_received_fw[i]);
       }
     }
     /*if((level == 5) && (num_in_level == 21)) {
@@ -311,7 +269,7 @@ void FEASwitch::receive_below_nodes_fwlinks() {
                   << " has received a psum from the forwarding link of the nodes below" << std::endl;
 #endif
 
-        p_inputFwBelowNodesFifo->push(data_received_fw[i]);
+        m_inputFwBelowNodesFifo.push(data_received_fw[i]);
       }
     }
   }
@@ -391,49 +349,49 @@ DataPackage* FEASwitch::perform_operation_3_operands(DataPackage* pck_left, Data
 //The output of this configuration could be either the output link or the forwarding. It depends on wether the fw link is enabled or not.
 //TODO MODELAR LATENCIA !!
 void FEASwitch::route_2_1_config() {
-  if ((!p_inputPsumLeftFifo->isEmpty()) && (p_inputPsumRightFifo->isEmpty())) {  //If there is no element on the left just forward right
-    if (!this->m_rightChildEnabled) {                                            //If the right child is disabled then forward the left
-      DataPackage* pck_received = p_inputPsumLeftFifo->pop();                    //Get the data
-      DataPackage* pck_to_send = new DataPackage(pck_received);                  //Duplicate the data to delete the memory
+  if ((!m_inputPsumLeftFifo.isEmpty()) && (m_inputPsumRightFifo.isEmpty())) {  //If there is no element on the left just forward right
+    if (!this->m_rightChildEnabled) {                                          //If the right child is disabled then forward the left
+      DataPackage* pck_received = m_inputPsumLeftFifo.pop();                   //Get the data
+      DataPackage* pck_to_send = new DataPackage(pck_received);                //Duplicate the data to delete the memory
       delete pck_received;
       if (this->m_fwEnabled) {  //IF tjhe input is send though the fw link..  //TODO these loops can be better implemented
-        p_outputFwFifo->push(pck_to_send);
+        m_outputFwFifo.push(pck_to_send);
       } else {
-        p_outputPsumFifo->push(pck_to_send);
+        m_outputPsumFifo.push(pck_to_send);
       }
     }
   }
 
-  if ((!p_inputPsumRightFifo->isEmpty()) && (p_inputPsumLeftFifo->isEmpty())) {  //Forward left
-    if (!this->m_leftChildEnabled) {                                             //if left is not enabled then forward right
-      DataPackage* pck_received = p_inputPsumRightFifo->pop();
+  if ((!m_inputPsumRightFifo.isEmpty()) && (m_inputPsumLeftFifo.isEmpty())) {  //Forward left
+    if (!this->m_leftChildEnabled) {                                           //if left is not enabled then forward right
+      DataPackage* pck_received = m_inputPsumRightFifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_received);
       delete pck_received;
 
       if (this->m_fwEnabled) {
-        p_outputFwFifo->push(pck_to_send);
+        m_outputFwFifo.push(pck_to_send);
       }
 
       else {
-        p_outputPsumFifo->push(pck_to_send);
+        m_outputPsumFifo.push(pck_to_send);
       }
     }
   }
 
   // Sum the values and send
-  if ((!p_inputPsumLeftFifo->isEmpty()) &&
-      (!p_inputPsumRightFifo->isEmpty())) {  //If this happens, it is because it is neccesary to sum. The number of operands in both branches must be identical
+  if ((!m_inputPsumLeftFifo.isEmpty()) &&
+      (!m_inputPsumRightFifo.isEmpty())) {  //If this happens, it is because it is neccesary to sum. The number of operands in both branches must be identical
     assert(this->m_leftChildEnabled);
     assert(this->m_rightChildEnabled);
     //assert(psum_right.size() == psum_left.size());
-    DataPackage* pck_left = p_inputPsumLeftFifo->pop();
-    DataPackage* pck_right = p_inputPsumRightFifo->pop();
+    DataPackage* pck_left = m_inputPsumLeftFifo.pop();
+    DataPackage* pck_right = m_inputPsumRightFifo.pop();
     // Perform the operation
     DataPackage* pck_result = perform_operation_2_operands(pck_left, pck_right);  //pck_result added to the psums_created list in order to be removed afterwards
     if (this->m_fwEnabled) {
-      p_outputFwFifo->push(pck_result);  //Sending the result to be read in next cycle //TODO send to forwarding link if required
+      m_outputFwFifo.push(pck_result);  //Sending the result to be read in next cycle //TODO send to forwarding link if required
     } else {
-      p_outputPsumFifo->push(pck_result);
+      m_outputPsumFifo.push(pck_result);
     }
     delete pck_left;   //delete the space in memory
     delete pck_right;  //delete the space in memory
@@ -447,16 +405,15 @@ void FEASwitch::route_3_1_config() {
   //First we check there is data in all receiving directions (inputleft, inputRight, forwarding link)
   assert(m_fwEnabled && (m_flDirection == RECEIVE));  //The fw link of the AS must be configured correctly
 
-  if (!p_inputPsumLeftFifo->isEmpty() && !p_inputPsumRightFifo->isEmpty() &&
-      !p_inputFwFifo->isEmpty()) {  //If there is data (i.e., they all are greater than 0)
+  if (!m_inputPsumLeftFifo.isEmpty() && !m_inputPsumRightFifo.isEmpty() && !m_inputFwFifo.isEmpty()) {  //If there is data (i.e., they all are greater than 0)
     //Compute
-    DataPackage* pck_left = p_inputPsumLeftFifo->pop();
-    DataPackage* pck_right = p_inputPsumRightFifo->pop();
-    DataPackage* pck_forward = p_inputFwFifo->pop();
+    DataPackage* pck_left = m_inputPsumLeftFifo.pop();
+    DataPackage* pck_right = m_inputPsumRightFifo.pop();
+    DataPackage* pck_forward = m_inputFwFifo.pop();
     //Perform the operation with the 3 operands in each package
     DataPackage* pck_result = perform_operation_3_operands(pck_left, pck_right, pck_forward);
     //std::cout << "Operacion suma " << pck_result->get_data() << std::endl;
-    p_outputPsumFifo->push(pck_result);
+    m_outputPsumFifo.push(pck_result);
     //Delete space of memory
     delete pck_left;
     delete pck_right;
@@ -470,34 +427,34 @@ void FEASwitch::route_1_1_plus_fw_1_1_config() {
   assert(this->m_rightChildEnabled);
   //    assert(fw_enabled && (fl_direction == SEND)); //The fw link of the AS must be configured correctly
   //Si num_in_level es  par el forwarding link esta a la izquierda (if num_in_level is even, then the fw link is on the left)
-  if ((this->m_numInLevel % 2) == 0) {      //If it's even (LEFT)
-    if (!p_inputPsumLeftFifo->isEmpty()) {  //If there is left data
-      DataPackage* pck_left = p_inputPsumLeftFifo->pop();
+  if ((this->m_numInLevel % 2) == 0) {     //If it's even (LEFT)
+    if (!m_inputPsumLeftFifo.isEmpty()) {  //If there is left data
+      DataPackage* pck_left = m_inputPsumLeftFifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_left);
-      this->p_outputFwFifo->push(pck_to_send);  //Package from left goes to the fw link
+      this->m_outputFwFifo.push(pck_to_send);  //Package from left goes to the fw link
       delete pck_left;
     }
-    if (!p_inputPsumRightFifo->isEmpty()) {
-      DataPackage* pck_right = p_inputPsumRightFifo->pop();
+    if (!m_inputPsumRightFifo.isEmpty()) {
+      DataPackage* pck_right = m_inputPsumRightFifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_right);
       if (pck_right->get_vn() == 0) {
         assert(false);
       }
-      this->p_outputPsumFifo->push(pck_to_send);
+      this->m_outputPsumFifo.push(pck_to_send);
       delete pck_right;
     }
 
-  } else {                                  //If it's odd FW link receives the right input and parent the left input
-    if (!p_inputPsumLeftFifo->isEmpty()) {  //If there is left data
-      DataPackage* pck_left = p_inputPsumLeftFifo->pop();
+  } else {                                 //If it's odd FW link receives the right input and parent the left input
+    if (!m_inputPsumLeftFifo.isEmpty()) {  //If there is left data
+      DataPackage* pck_left = m_inputPsumLeftFifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_left);
-      this->p_outputPsumFifo->push(pck_to_send);  // The left input goes to the parent
+      this->m_outputPsumFifo.push(pck_to_send);  // The left input goes to the parent
       delete pck_left;
     }
-    if (!p_inputPsumRightFifo->isEmpty()) {
-      DataPackage* pck_right = p_inputPsumRightFifo->pop();
+    if (!m_inputPsumRightFifo.isEmpty()) {
+      DataPackage* pck_right = m_inputPsumRightFifo.pop();
       DataPackage* pck_to_send = new DataPackage(pck_right);
-      this->p_outputFwFifo->push(pck_to_send);  //The right input goes to the fw link
+      this->m_outputFwFifo.push(pck_to_send);  //The right input goes to the fw link
       delete pck_right;
     }
   }
@@ -510,18 +467,18 @@ void FEASwitch::route_fw_2_2_config() {
   //Forwarding to the outputs which are  used in next cycle. Note we use different loops to insert left and right since could there be different number of psums in each child.
   // If there is nothing psum_left and psum_right will be empty and nothing happens
   //Inserting left inputs
-  while (!p_inputPsumLeftFifo->isEmpty()) {
-    DataPackage* pck_received = p_inputPsumLeftFifo->pop();
+  while (!m_inputPsumLeftFifo.isEmpty()) {
+    DataPackage* pck_received = m_inputPsumLeftFifo.pop();
     DataPackage* pck_to_send = new DataPackage(pck_received);
-    p_outputPsumFifo->push(pck_to_send);
+    m_outputPsumFifo.push(pck_to_send);
     delete pck_received;
   }
 
   //Inserting right inputs
-  while (!p_inputPsumRightFifo->isEmpty()) {
-    DataPackage* pck_received = p_inputPsumRightFifo->pop();
+  while (!m_inputPsumRightFifo.isEmpty()) {
+    DataPackage* pck_received = m_inputPsumRightFifo.pop();
     DataPackage* pck_to_send = new DataPackage(pck_received);
-    p_outputPsumFifo->push(pck_to_send);
+    m_outputPsumFifo.push(pck_to_send);
     delete pck_received;
   }
 }
@@ -530,8 +487,8 @@ void FEASwitch::route_fold_config() {
   assert(this->m_forwardToMemory);
   //Receiving psum package from fw links
   DataPackage* pck_received;
-  if (!p_inputFwBelowNodesFifo->isEmpty()) {
-    pck_received = p_inputFwBelowNodesFifo->pop();
+  if (!m_inputFwBelowNodesFifo.isEmpty()) {
+    pck_received = m_inputFwBelowNodesFifo.pop();
     DataPackage* result;
     if (m_currentPsum == 0) {  //There is no package yet to sum in this iteration
       //Creating package 0
@@ -545,7 +502,7 @@ void FEASwitch::route_fold_config() {
     }
 
     if (this->m_currentPsum == (this->m_nPsums - 1)) {
-      this->p_outputPsumFifo->push(this->p_temporalRegister);
+      this->m_outputPsumFifo.push(this->p_temporalRegister);
       this->m_currentPsum = 0;
 
     } else {
@@ -613,25 +570,25 @@ void FEASwitch::printStats(std::ofstream& out, std::size_t indent) {
 
   //Printing Fifos
   out << ind(indent + IND_SIZE) << ",\"InputPsumLeftFifo\" : {" << std::endl;
-  this->p_inputPsumLeftFifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->m_inputPsumLeftFifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"InputPsumRightFifo\" : {" << std::endl;
-  this->p_inputPsumRightFifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->m_inputPsumRightFifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"OutputPsumFifo\" : {" << std::endl;
-  this->p_outputPsumFifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->m_outputPsumFifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"OutputForwardingFifo\" : {" << std::endl;
-  this->p_outputFwFifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->m_outputFwFifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}," << std::endl;
   ;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent + IND_SIZE) << "\"InputForwardingFifo\" : {" << std::endl;
-  this->p_inputFwFifo->printStats(out, indent + IND_SIZE + IND_SIZE);
+  this->m_inputFwFifo.printStats(out, indent + IND_SIZE + IND_SIZE);
   out << ind(indent + IND_SIZE) << "}" << std::endl;  //Take care. Do not print endl here. This is parent responsability
 
   out << ind(indent) << "}";  //Take care. Do not print endl here. This is parent responsability
@@ -653,9 +610,9 @@ void FEASwitch::printEnergy(std::ofstream& out, std::size_t indent) {
   out << ind(indent) << " ADD_3_1=" << this->aswitchStats.n_3_1_sums;
   out << ind(indent) << " CONFIGURATION=" << this->aswitchStats.n_configurations << std::endl;
 
-  this->p_inputPsumLeftFifo->printEnergy(out, indent);
-  this->p_inputPsumRightFifo->printEnergy(out, indent);
-  this->p_inputFwFifo->printEnergy(out, indent);
-  this->p_outputFwFifo->printEnergy(out, indent);
-  this->p_outputPsumFifo->printEnergy(out, indent);
+  this->m_inputPsumLeftFifo.printEnergy(out, indent);
+  this->m_inputPsumRightFifo.printEnergy(out, indent);
+  this->m_inputFwFifo.printEnergy(out, indent);
+  this->m_outputFwFifo.printEnergy(out, indent);
+  this->m_outputPsumFifo.printEnergy(out, indent);
 }
