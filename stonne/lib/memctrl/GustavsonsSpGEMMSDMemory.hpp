@@ -90,8 +90,6 @@ class GustavsonsSpGEMMSDMemory : public MemoryController {
   std::size_t current_KN_row_pointer;
   std::size_t current_KN_col_id;
 
-  //Aux parameters
-  std::size_t MK_number_nnz;
   std::size_t multipliers_used;
   std::size_t n_str_data_sent;
   std::size_t n_str_data_received;
@@ -134,7 +132,7 @@ class GustavsonsSpGEMMSDMemory : public MemoryController {
   cycles_t local_cycle;
   SDMemoryStats sdmemoryStats;  //To track information
 
-  Tile* tile;  //Not really used in sparseflex
+  Tile* tile{};  //Not really used in sparseflex
 
   //Variable to manage the number of sorting iterations
   int sorting_iterations;
@@ -152,6 +150,7 @@ class GustavsonsSpGEMMSDMemory : public MemoryController {
 
  public:
   GustavsonsSpGEMMSDMemory(stonne_id_t id, std::string name, Config stonne_cfg, Connection* write_connection, Memory<float>& mem);
+  ~GustavsonsSpGEMMSDMemory();
   void setLayer(DNNLayer* dnn_layer, address_t KN_address, address_t MK_address, address_t output_address, Dataflow dataflow);
 
   void setReadConnections(std::vector<Connection*> read_connections);

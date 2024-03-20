@@ -130,7 +130,7 @@ class OuterLoopSpGEMMSDMemory : public MemoryController {
   cycles_t local_cycle;
   SDMemoryStats sdmemoryStats;  //To track information
 
-  Tile* tile;  //Not really used in sparseflex
+  Tile* tile{};  //Not really used in sparseflex
 
   //Variable to manage the number of sorting iterations
   int sorting_iterations;

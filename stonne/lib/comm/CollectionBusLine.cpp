@@ -6,6 +6,7 @@ CollectionBusLine::CollectionBusLine(stonne_id_t id, std::string name, std::size
     : Unit(id, name), input_fifos(input_ports_bus_line, Fifo(fifo_size)) {
   this->input_ports = input_ports_bus_line;
   this->busID = busID;
+  output_port = new Connection(connection_width);
   //Creating the connections for this bus line
   for (int i = 0; i < this->input_ports; i++) {
     //Adding the input connection
@@ -13,7 +14,6 @@ CollectionBusLine::CollectionBusLine(stonne_id_t id, std::string name, std::size
     input_connections.push_back(input_connection);
 
     //Creating the output connection
-    output_port = new Connection(connection_width);
     this->collectionbuslineStats.n_inputs_receive.push_back(0);  //To track information
   }
   next_input_selected = 0;

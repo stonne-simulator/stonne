@@ -61,7 +61,6 @@ GustavsonsSpGEMMSDMemory::GustavsonsSpGEMMSDMemory(stonne_id_t id, std::string n
   this->current_KN = 0;
   this->current_KN_row_pointer = 0;
   this->current_KN_col_id = 0;
-  this->MK_number_nnz = 0;
   this->multipliers_used = 0;
   this->STR_complete = false;
   this->last_sta_iteration_completed = false;
@@ -87,6 +86,10 @@ GustavsonsSpGEMMSDMemory::GustavsonsSpGEMMSDMemory(stonne_id_t id, std::string n
   this->current_sorting_iteration = 0;
   this->n_str_req_recv = 0;
   this->n_str_req_sent = 0;
+}
+
+GustavsonsSpGEMMSDMemory::~GustavsonsSpGEMMSDMemory() {
+  delete this->tile;
 }
 
 void GustavsonsSpGEMMSDMemory::setWriteConnections(std::vector<Connection*> write_port_connections) {
@@ -134,7 +137,6 @@ void GustavsonsSpGEMMSDMemory::setSparseMatrixMetadata(metadata_address_t MK_met
   this->KN_col_id = KN_metadata_id;
   this->KN_row_pointer = KN_metadata_pointer;
   //Calculating number of nonzeros
-  this->MK_number_nnz = MK_row_pointer[K];
   this->metadata_loaded = true;
 
   // Initialize index variables according to the first non-empty row
@@ -193,6 +195,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
       this->current_KN = 0;
 
       Tile* tile1 = new Tile(1, 1, 1, this->num_ms, 1, 1, 1, 1, false);
+      delete this->tile;
       this->tile = tile1;
       this->multiplier_network->resetSignals();
       //this->reduce_network->resetSignals();

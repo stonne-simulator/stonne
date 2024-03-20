@@ -259,7 +259,7 @@ void SparseSDMemory::cycle() {
           }
         }
 
-        if ((this->configurationVNs.size() > 0) && (j < K)) {
+        if ((this->configurationVNs.size() > 0) && (j < K) && i < dim_sta) {
           //Find if there is a last cluster
           int remaining_values = 0;
           for (int r = j; r < K; r++) {

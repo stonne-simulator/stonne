@@ -171,11 +171,11 @@ void SparseDenseSDMemory::cycle() {
       this->STA_base = MK_row_pointer[current_M];
       this->iter_K = K_nnz / T_K + (K_nnz % T_K != 0);
 
-      Tile* tile1 = new Tile(1, 1, T_K, T_N, 1, 1, 1, 1, false);
+      Tile tile1(1, 1, T_K, T_N, 1, 1, 1, 1, false);
       this->multiplier_network->resetSignals();
       this->reduce_network->resetSignals();
-      this->multiplier_network->configureSignals(tile1, this->dnn_layer, this->num_ms, this->iter_K);
-      this->reduce_network->configureSignals(tile1, this->dnn_layer, this->num_ms, this->iter_K);
+      this->multiplier_network->configureSignals(&tile1, this->dnn_layer, this->num_ms, this->iter_K);
+      this->reduce_network->configureSignals(&tile1, this->dnn_layer, this->num_ms, this->iter_K);
       this->current_K_nnz = 0;
       STA_complete = false;
     }

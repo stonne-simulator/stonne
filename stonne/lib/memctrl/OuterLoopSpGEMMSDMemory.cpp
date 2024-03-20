@@ -87,6 +87,7 @@ OuterLoopSpGEMMSDMemory::OuterLoopSpGEMMSDMemory(stonne_id_t id, std::string nam
 
 OuterLoopSpGEMMSDMemory::~OuterLoopSpGEMMSDMemory() {
   delete[] intermediate_memory;
+  delete this->tile;
 }
 
 void OuterLoopSpGEMMSDMemory::setWriteConnections(std::vector<Connection*> write_port_connections) {
@@ -187,6 +188,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
       this->current_KN = 0;
 
       Tile* tile1 = new Tile(1, 1, 1, this->num_ms, 1, 1, 1, 1, false);
+      delete this->tile;
       this->tile = tile1;
       this->multiplier_network->resetSignals();
       //this->reduce_network->resetSignals();

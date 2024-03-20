@@ -25,13 +25,13 @@ class SparseFlex_MSwitch : public Unit {
   Fifo weight_fifo;             //Weights stored in the MS
   Fifo psum_fifo;               //Psum ready to be sent to the parent
 
-  std::vector<DataPackage*> psums_created;  // All the psums created by this multiplier used to delete the package after the execution is finished.
-  Connection* outputConnection;             // Towards the Reduce Network
-  Connection* inputConnection;              //From the DistributionNetwork
-  Connection* outputForwardingConnection;   //To the neighbour MS
-  Connection* inputForwardingConnection;    //Input from the neighbour
-  Connection* memoryConnection;             //Connection to the memory
-  cycles_t latency;                         //latency in number of cycles
+  std::vector<DataPackage*> psums_created;   // All the psums created by this multiplier used to delete the package after the execution is finished.
+  Connection* outputConnection{};            // Towards the Reduce Network
+  Connection* inputConnection{};             //From the DistributionNetwork
+  Connection* outputForwardingConnection{};  //To the neighbour MS
+  Connection* inputForwardingConnection{};   //Input from the neighbour
+  Connection* memoryConnection{};            //Connection to the memory
+  cycles_t latency;                          //latency in number of cycles
   int num;
 
   //This values are in esence the size of a single element in the architecture (by default)
