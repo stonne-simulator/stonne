@@ -47,17 +47,17 @@ Stonne init() {
   stonne_cfg.print_stats_enabled = false;
 
   // Preparing the main memory
-  Memory<float> main_memory(ifmap_size + filter_size + ofmap_size);
+  auto main_memory = std::make_unique<SimpleMem<float>>(ifmap_size + filter_size + ofmap_size);
   stonne_cfg.m_SDMemoryCfg.weight_address = 0;
   stonne_cfg.m_SDMemoryCfg.input_address = filter_size;
   stonne_cfg.m_SDMemoryCfg.output_address = filter_size + ifmap_size;
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
-  std::copy(filter.begin(), filter.end(), main_memory.begin());
-  std::copy(ifmap.begin(), ifmap.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(filter_size));
+  main_memory->fill(0, filter.begin(), filter.end());
+  main_memory->fill(filter_size, ifmap.begin(), ifmap.end());
 
-  Stonne stonne(stonne_cfg, main_memory);
+  Stonne stonne(stonne_cfg, std::move(main_memory));
   stonne.loadDNNLayer(CONV, layer_name, R, S, C, K, G, N, X, Y, strides, ifmap.data(), filter.data(), ofmap.data(), CNN_DATAFLOW);
   stonne.loadTile(T_R, T_S, T_C, T_K, T_G, T_N, T_X_, T_Y_);
 

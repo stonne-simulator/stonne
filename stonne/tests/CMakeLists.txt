@@ -34,7 +34,7 @@ foreach (testunit ${SMALL_TESTUNITS})
   catch_discover_tests(${testunit}
       TEST_SPEC [benchmark]
       TEST_SUFFIX .benchmark.small
-      EXTRA_ARGS --benchmark-samples 5
+      EXTRA_ARGS --benchmark-samples 10
   )
 endforeach ()
 
@@ -48,6 +48,6 @@ foreach (testunit ${LARGE_TESTUNITS})
   catch_discover_tests(${testunit}
       TEST_SPEC [benchmark]
       TEST_SUFFIX .benchmark.large
-      EXTRA_ARGS --benchmark-samples 3
+      EXTRA_ARGS --benchmark-samples 10
   )
 endforeach ()

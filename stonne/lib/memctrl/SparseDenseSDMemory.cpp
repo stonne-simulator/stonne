@@ -144,16 +144,14 @@ void SparseDenseSDMemory::cycle() {
   this->sdmemoryStats.total_cycles++;  //To track information
 
   //Processing the memory requests
-  while (mem.get_read_buffer_size() > 0) {
-    DataPackage* pck = mem.get_read_buffer_front();
-    mem.pop_read_buffer();
+  while (mem.pendingLoads()) {
+    DataPackage* pck = mem.nextLoad();
     this->sendPackageToInputFifos(pck);  //This is for STA data
   }
 
   //Processing write memory requests
-  while (mem.get_write_buffer_size() > 0) {
-    DataPackage* pck = mem.get_write_buffer_front();
-    mem.pop_write_buffer();
+  while (mem.pendingStores()) {
+    DataPackage* pck = mem.nextStore();
 
     data_t data = pck->get_data();
     uint64_t addr = pck->get_address();
@@ -164,7 +162,7 @@ void SparseDenseSDMemory::cycle() {
     delete pck;
   }
 
-  if ((mem.get_read_buffer_size() == 0) && (mem.get_write_buffer_size() < this->n_write_mshr)) {
+  if (!mem.pendingLoads() && mem.pendingStores() < this->n_write_mshr) {
 
     if (current_state == CONFIGURING) {  //Initialize these for the first time
       this->K_nnz = MK_row_pointer[current_M + 1] - MK_row_pointer[current_M];
@@ -207,7 +205,7 @@ void SparseDenseSDMemory::cycle() {
           sdmemoryStats.n_SRAM_weight_reads++;
           this->n_ones_sta_matrix++;
           DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, destinations, this->num_ms, 0, 0);
-          doLoad(new_addr, pck_to_send);
+          mem.load(new_addr, pck_to_send);
         } else {
           data = 0.0;
           DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, destinations, this->num_ms, 0, 0);
@@ -240,8 +238,7 @@ void SparseDenseSDMemory::cycle() {
               data = 0.0;  //Row of the dense matrix is indexed by the col id of sparse matrix
               sdmemoryStats.n_SRAM_input_reads++;
               DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, dest, 0, 0);
-              doLoad(new_addr, pck_to_send);
-
+              mem.load(new_addr, pck_to_send);
             } else {
               data = 0.0;
               DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, UNICAST, dest, 0, 0);
@@ -288,7 +285,7 @@ void SparseDenseSDMemory::cycle() {
       if ((vnat_table_itern[vn] * T_N + vn) < N) {  //Zero-remainder constraint
         uint64_t new_addr = this->output_dram_location + addr_offset * this->data_width;
         pck_received->set_address(new_addr);
-        doStore(new_addr, pck_received);
+        mem.store(new_addr, pck_received);
         //this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
         this->sdmemoryStats.n_SRAM_psum_writes++;  //To track information
       }
@@ -365,7 +362,7 @@ void SparseDenseSDMemory::cycle() {
 }
 
 bool SparseDenseSDMemory::isExecutionFinished() {
-  return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
+  return ((this->execution_finished) && !mem.pendingStores());
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -518,14 +515,4 @@ void SparseDenseSDMemory::printEnergy(std::ofstream& out, std::size_t indent) {
   counter_t writes = this->sdmemoryStats.n_SRAM_psum_writes;
   out << ind(indent) << "GLOBALBUFFER READ=" << reads;  //Same line
   out << ind(indent) << " WRITE=" << writes << std::endl;
-}
-
-bool SparseDenseSDMemory::doLoad(uint64_t addr, DataPackage* data_package) {
-  mem.load(addr, data_package);
-  return 1;
-}
-
-bool SparseDenseSDMemory::doStore(uint64_t addr, DataPackage* data_package) {
-  mem.store(addr, data_package);
-  return 1;
 }

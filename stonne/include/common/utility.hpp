@@ -55,25 +55,27 @@ Dataflow get_type_dataflow_type(std::string dataflow_type);
 
 std::string get_string_dataflow_type(Dataflow dataflow);
 
-float* generateMatrixDense(std::size_t rows, std::size_t cols, std::size_t sparsity);
+std::vector<float> generateMatrixDense(std::size_t rows, std::size_t cols, std::size_t sparsity);
 
-std::size_t* generateBitMapFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
+std::vector<std::size_t> generateBitMapFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
-float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
+std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type,
+                                                         std::size_t& size);
 
-float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
+std::vector<float> generateMatrixSparseFromDense(const std::vector<float>& denseMatrix, const std::vector<std::size_t>& bitmap, std::size_t rows,
+                                                 std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
 
 void transpose(float* matrix, std::size_t rows, std::size_t cols);
 
 void denseToSparse(float* denseMatrix, std::size_t rows, std::size_t cols, std::vector<std::size_t>& rowPointer, std::vector<std::size_t>& colIndex,
                    std::vector<float>& values);
 
-/////
-metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type);
+std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz,
+                                                  GENERATION_TYPE gen_type);
 /////
 //int* generateMajorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 /////
-metadata_address_t generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
+std::vector<std::size_t> generateMajorPointerFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
 void printDenseMatrix(float* matrix, std::size_t rows, std::size_t cols);
 
@@ -84,11 +86,12 @@ void printSparseMatrix(float* sparseMatrix, std::size_t* bitmap, std::size_t row
 float* generatePrunnedMatrix(const float* src_matrix, std::size_t size, float pr_ratio);
 
 //Opt functions
-void organizeMatrix(float* matrix, std::size_t M, std::size_t K, std::size_t* pointer_table, GENERATION_TYPE gen_type);
+void organizeMatrix(std::vector<float>& matrix, std::size_t rows, std::size_t cols, const std::vector<std::size_t>& pointer_table, GENERATION_TYPE gen_type);
 
-void organizeMatrixBack(float* matrix, std::size_t M, std::size_t K, std::size_t* pointer_table, GENERATION_TYPE gen_type);
+void organizeMatrixBack(std::vector<float>& matrix, std::size_t rows, std::size_t cols, const std::vector<std::size_t>& pointer_table,
+                        GENERATION_TYPE gen_type);
 
-std::size_t* calculateOrdering(float* matrix, std::size_t M, std::size_t K, GENERATION_TYPE gen_type, int num_ms);
+std::vector<std::size_t> calculateOrdering(const std::vector<float>& matrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, int num_ms);
 
 void sequential_layer(std::size_t R, std::size_t S, std::size_t C, std::size_t K, std::size_t G, std::size_t N, std::size_t X, std::size_t Y,
                       std::size_t strides, float* input, float* filters, float* outputs);

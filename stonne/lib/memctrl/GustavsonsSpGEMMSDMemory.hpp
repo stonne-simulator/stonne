@@ -142,8 +142,6 @@ class GustavsonsSpGEMMSDMemory : public MemoryController {
   //Aux functions
   void receive();
   void send();
-  bool doLoad(uint64_t addr, DataPackage* data_package);
-  bool doStore(uint64_t addr, DataPackage* data_package);
   void sendPackageToInputFifos(DataPackage* pck);
 
   std::vector<Connection*> getWritePortConnections() const { return this->write_port_connections; }

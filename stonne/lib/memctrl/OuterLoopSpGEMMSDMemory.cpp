@@ -157,16 +157,14 @@ void OuterLoopSpGEMMSDMemory::cycle() {
   this->local_cycle += 1;
   this->sdmemoryStats.total_cycles++;  //To track information
 
-  while (mem.get_read_buffer_size() > 0) {
-    DataPackage* pck = mem.get_read_buffer_front();
-    mem.pop_read_buffer();
+  while (mem.pendingLoads()) {
+    DataPackage* pck = mem.nextLoad();
     this->sendPackageToInputFifos(pck);  //This is for STA data
   }
 
   //Processing write memory requests
-  while (mem.get_write_buffer_size() > 0) {
-    DataPackage* pck = mem.get_write_buffer_front();
-    mem.pop_write_buffer();
+  while (mem.pendingStores()) {
+    DataPackage* pck = mem.nextStore();
 
     data_t data = pck->get_data();
     uint64_t addr = pck->get_address();
@@ -180,7 +178,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
   if (this->execution_finished)
     return;
 
-  if (mem.get_read_buffer_size() == 0) {
+  if (!mem.pendingLoads()) {
 
     if (current_state == CONFIGURING) {  //Initialize these for the first time
       this->n_str_data_received = 0;
@@ -216,7 +214,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
         uint64_t new_addr = input_dram_location + current_MK_row_id * this->data_width;
         data_t data = 0.0;
         DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, i, UNICAST, i, row, col);
-        doLoad(new_addr, pck_to_send);
+        mem.load(new_addr, pck_to_send);
         this->sdmemoryStats.n_SRAM_weight_reads++;
         //std::cout << "[Cycle " << this->local_cycle << "] Sending data with value " << data << std::endl;
         //Update variables
@@ -253,7 +251,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
           data_t data = 0.0;
           DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, IACTIVATION, i, UNICAST, i, row, KN_col_id[KN_row_pointer[row] + this->current_KN]);
           //std::cout << "[Cycle " << this->local_cycle << "] Sending STREAMING data with value " << data << std::endl;
-          doLoad(new_addr, pck_to_send);
+          mem.load(new_addr, pck_to_send);
           this->sdmemoryStats.n_SRAM_input_reads++;
         }
       }
@@ -359,7 +357,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
           pck_received->set_address(new_addr);
 
           // note: comment this store to hide write latency, but simulation won't return a result file
-          doStore(new_addr, pck_received);
+          mem.store(new_addr, pck_received);
           this->sdmemoryStats.n_DRAM_psum_writes++;
           n_values_stored++;
           //delete pck_received;
@@ -441,7 +439,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
   }
 
   //Transitions
-  if ((current_state == CONFIGURING) && ((mem.get_read_buffer_size() == 0))) {
+  if ((current_state == CONFIGURING) && !mem.pendingLoads()) {
     current_state = DIST_STA_MATRIX;
   }
 
@@ -514,7 +512,7 @@ void OuterLoopSpGEMMSDMemory::cycle() {
 }
 
 bool OuterLoopSpGEMMSDMemory::isExecutionFinished() {
-  return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
+  return ((this->execution_finished) && !mem.pendingStores());
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -668,14 +666,4 @@ void OuterLoopSpGEMMSDMemory::printEnergy(std::ofstream& out, std::size_t indent
   counter_t writes = this->sdmemoryStats.n_SRAM_psum_writes;
   out << ind(indent) << "GLOBALBUFFER READ=" << reads;  //Same line
   out << ind(indent) << " WRITE=" << writes << std::endl;
-}
-
-bool OuterLoopSpGEMMSDMemory::doLoad(uint64_t addr, DataPackage* data_package) {
-  mem.load(addr, data_package);
-  return 1;
-}
-
-bool OuterLoopSpGEMMSDMemory::doStore(uint64_t addr, DataPackage* data_package) {
-  mem.store(addr, data_package);
-  return 1;
 }

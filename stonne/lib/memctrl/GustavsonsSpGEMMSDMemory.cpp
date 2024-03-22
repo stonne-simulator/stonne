@@ -158,9 +158,8 @@ void GustavsonsSpGEMMSDMemory::cycle() {
   //std::vector<DataPackage*> psum_to_send; // psum temporal storage
   this->local_cycle += 1;
   this->sdmemoryStats.total_cycles++;  //To track information
-  while (mem.get_read_buffer_size() > 0) {
-    DataPackage* pck = mem.get_read_buffer_front();
-    mem.pop_read_buffer();
+  while (mem.pendingLoads()) {
+    DataPackage* pck = mem.nextLoad();
 
     if ((current_state == DIST_STR_MATRIX) || (current_state == WAITING_FOR_NEXT_STA_ITER)) {
       buffer_sync[pck->get_unicast_dest()].push(pck);  //To hidde the memory latency and send later all the elements at the same time
@@ -170,9 +169,8 @@ void GustavsonsSpGEMMSDMemory::cycle() {
   }
 
   //Processing write memory requests
-  while (mem.get_write_buffer_size() > 0) {
-    DataPackage* pck = mem.get_write_buffer_front();
-    mem.pop_write_buffer();
+  while (mem.pendingStores()) {
+    DataPackage* pck = mem.nextStore();
 
     data_t data = pck->get_data();
     uint64_t addr = pck->get_address();
@@ -186,7 +184,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
   if (this->execution_finished)
     return;
 
-  if (mem.get_read_buffer_size() == 0) {
+  if (!mem.pendingLoads()) {
 
     if (current_state == CONFIGURING) {
       //Initialize these for the first time
@@ -233,7 +231,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
         DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, this->current_sorting_iteration, UNICAST, i, row, col);
         //	   std::cout << "[Cycle " << this->local_cycle << "] Sending data with value " << data << std::endl;
         //this->sendPackageToInputFifos(pck_to_send);
-        doLoad(new_addr, pck_to_send);
+        mem.load(new_addr, pck_to_send);
         this->sdmemoryStats.n_SRAM_weight_reads++;
         //Update variables
         current_MK_col_id++;
@@ -272,7 +270,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
                                                      KN_col_id[KN_row_pointer[row] + this->current_KN]);
           //    std::cout << "[Cycle " << this->local_cycle << "] Sending STREAMING data with value " << data << std::endl;
           //this->sendPackageToInputFifos(pck_to_send);
-          doLoad(new_addr, pck_to_send);
+          mem.load(new_addr, pck_to_send);
           this->sdmemoryStats.n_SRAM_input_reads++;
           n_str_req_sent++;
         }
@@ -392,7 +390,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
           pck_received->set_address(new_addr);
 
           // note: comment this store to hide write latency, but simulation won't return a result file
-          doStore(new_addr, pck_received);
+          mem.store(new_addr, pck_received);
           this->sdmemoryStats.n_DRAM_psum_writes++;
           n_values_stored++;
           //delete pck_received;
@@ -406,7 +404,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
   else {  //If nothing is received
     waiting_idle_cycles++;
     if (((current_state == RECEIVING_SORT_TREE_UP) || (current_state == WAITING_FOR_NEXT_STA_ITER)) && this->sort_up_received_first_value &&
-        (mem.get_read_buffer_size() == 0) && (waiting_idle_cycles < 800)) {
+        !mem.pendingLoads() && (waiting_idle_cycles < 800)) {
       //std::cout << "Closing this iteration" << std::endl;
       this->sort_up_received_first_value = false;
       if (this->last_sta_iteration_completed && (this->sorting_iterations == 1)) {  //If the last iteration has been streamed down before
@@ -452,7 +450,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
   }
 
   //Transitions
-  if ((current_state == CONFIGURING) && ((mem.get_read_buffer_size() == 0))) {
+  if ((current_state == CONFIGURING) && !mem.pendingLoads()) {
     current_state = DIST_STA_MATRIX;
     //std::cout << "Controller transiting from CONFIGURING to DIST_STA_MATRIX" << std::endl;
   }
@@ -473,7 +471,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
     }
   }
 
-  else if ((current_state == WAITING_FOR_NEXT_STA_ITER) && ((mem.get_read_buffer_size() == 0))) {
+  else if ((current_state == WAITING_FOR_NEXT_STA_ITER) && !mem.pendingLoads()) {
     if (STR_complete) {
       //std::cout << "Running from WAITING FOR NEXT STA ITER" << std::endl;
       STR_complete = false;
@@ -565,7 +563,7 @@ void GustavsonsSpGEMMSDMemory::cycle() {
 }
 
 bool GustavsonsSpGEMMSDMemory::isExecutionFinished() {
-  return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
+  return ((this->execution_finished) && !mem.pendingStores());
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -719,14 +717,4 @@ void GustavsonsSpGEMMSDMemory::printEnergy(std::ofstream& out, std::size_t inden
   counter_t writes = this->sdmemoryStats.n_SRAM_psum_writes;
   out << ind(indent) << "GLOBALBUFFER READ=" << reads;  //Same line
   out << ind(indent) << " WRITE=" << writes << std::endl;
-}
-
-bool GustavsonsSpGEMMSDMemory::doLoad(uint64_t addr, DataPackage* data_package) {
-  mem.load(addr, data_package);
-  return 1;
-}
-
-bool GustavsonsSpGEMMSDMemory::doStore(uint64_t addr, DataPackage* data_package) {
-  mem.store(addr, data_package);
-  return 1;
 }

@@ -30,7 +30,7 @@
 #include "network/rn/TemporalRN.hpp"
 #include "tile_generator/TileGenerator.hpp"
 
-Stonne::Stonne(Config stonne_cfg, Memory<float> mem) : memHierarchy(mem) {
+Stonne::Stonne(Config stonne_cfg, std::unique_ptr<Memory<float>> mem) : memHierarchy(std::move(mem)) {
   this->stonne_cfg = stonne_cfg;
   this->ms_size = stonne_cfg.m_MSNetworkCfg.ms_size;
   this->layer_loaded = false;
@@ -78,22 +78,22 @@ Stonne::Stonne(Config stonne_cfg, Memory<float> mem) : memHierarchy(mem) {
   //switch(MemoryController). It is possible to create instances of other MemoryControllers
   switch (stonne_cfg.m_SDMemoryCfg.mem_controller_type) {
     case SIGMA_SPARSE_GEMM:
-      this->mem = new SparseSDMemory(0, "SparseSDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
+      this->mem = new SparseSDMemory(0, "SparseSDMemory", stonne_cfg, this->outputLTConnection, *this->memHierarchy);
       break;
     case MAERI_DENSE_WORKLOAD:
-      this->mem = new SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
+      this->mem = new SDMemory(0, "SDMemory", stonne_cfg, this->outputLTConnection, *this->memHierarchy);
       break;
     case TPU_OS_DENSE:
       this->mem = new OSMeshSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection);
       break;
     case MAGMA_SPARSE_DENSE:
-      this->mem = new SparseDenseSDMemory(0, "SparseDenseSDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
+      this->mem = new SparseDenseSDMemory(0, "SparseDenseSDMemory", stonne_cfg, this->outputLTConnection, *this->memHierarchy);
       break;
     case OUTER_PRODUCT_GEMM:
-      this->mem = new OuterLoopSpGEMMSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
+      this->mem = new OuterLoopSpGEMMSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection, *this->memHierarchy);
       break;
     case GUSTAVSONS_GEMM:
-      this->mem = new GustavsonsSpGEMMSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection, this->memHierarchy);
+      this->mem = new GustavsonsSpGEMMSDMemory(0, "OSMeshSDMemory", stonne_cfg, this->outputLTConnection, *this->memHierarchy);
       break;
     default:
       assert(false);

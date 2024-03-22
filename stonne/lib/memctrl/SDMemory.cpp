@@ -166,13 +166,14 @@ void SDMemory::setTile(Tile* current_tile) {
   this->iter_X = dnn_layer->get_X_() / current_tile->get_T_X_();  //Control the number of X iterations in the MemoryController
   this->iter_Y = dnn_layer->get_Y_() / current_tile->get_T_Y_();  //Control the number of Y iterations in the MemoryController
   std::size_t VNAT_iter_R =
-      1;  //Control the number of R iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms
+    1;  //Control the number of R iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms
   std::size_t VNAT_iter_S =
-      1;  //Control the number of S iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms
+    1;  //Control the number of S iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms
   std::size_t VNAT_iter_C =
-      1;  //Control the number of C iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms
-  if (current_tile
-          ->get_folding_enabled()) {  //If folding is managed by the multipliers (forwarding enabled) then the memory has to be aware and store and send the partial sums to the multipliers
+    1;  //Control the number of C iterations in the VNAT (when writing into the memory). Only neccesary if the memory have to forward psms
+  if (
+    current_tile
+      ->get_folding_enabled()) {  //If folding is managed by the multipliers (forwarding enabled) then the memory has to be aware and store and send the partial sums to the multipliers
     VNAT_iter_R = this->iter_R;
     VNAT_iter_S = this->iter_S;
     VNAT_iter_C = this->iter_C;
@@ -203,15 +204,15 @@ void SDMemory::setTile(Tile* current_tile) {
         for (unsigned x = 0; x < this->current_tile->get_T_X_(); x++) {
           for (unsigned y = 0; y < this->current_tile->get_T_Y_(); y++) {
             std::size_t current_vn =
-                n * this->current_tile->get_T_G() * this->current_tile->get_T_K() * this->current_tile->get_T_X_() * this->current_tile->get_T_Y_() +
-                g * this->current_tile->get_T_K() * this->current_tile->get_T_X_() * this->current_tile->get_T_Y_() +
-                k * this->current_tile->get_T_X_() * this->current_tile->get_T_Y_() + x * this->current_tile->get_T_Y_() + y;
+              n * this->current_tile->get_T_G() * this->current_tile->get_T_K() * this->current_tile->get_T_X_() * this->current_tile->get_T_Y_() +
+              g * this->current_tile->get_T_K() * this->current_tile->get_T_X_() * this->current_tile->get_T_Y_() +
+              k * this->current_tile->get_T_X_() * this->current_tile->get_T_Y_() + x * this->current_tile->get_T_Y_() + y;
 
             //The way of calculating the address is different since the data is storaged putting the different k channels consecutive in // memory
             std::size_t addr_offset =
-                n * this->dnn_layer->get_G() * this->dnn_layer->get_K() * this->dnn_layer->get_X_() * this->dnn_layer->get_Y_() * word_size +
-                x * this->dnn_layer->get_Y_() * this->dnn_layer->get_G() * this->dnn_layer->get_K() * word_size +
-                y * this->dnn_layer->get_G() * this->dnn_layer->get_K() * word_size + g * this->dnn_layer->get_K() + k * word_size;
+              n * this->dnn_layer->get_G() * this->dnn_layer->get_K() * this->dnn_layer->get_X_() * this->dnn_layer->get_Y_() * word_size +
+              x * this->dnn_layer->get_Y_() * this->dnn_layer->get_G() * this->dnn_layer->get_K() * word_size +
+              y * this->dnn_layer->get_G() * this->dnn_layer->get_K() * word_size + g * this->dnn_layer->get_K() + k * word_size;
             assert(current_vn < num_vn);  //Making sure it works
             this->VNAT[current_vn] = new VNAT_Register(current_vn, addr_offset, n, g, k, x, y, iter_N, iter_G, iter_K, iter_X, iter_Y, VNAT_iter_R, VNAT_iter_S,
                                                        VNAT_iter_C, this->dnn_layer, this->current_tile);
@@ -323,16 +324,14 @@ void SDMemory::cycle() {
   /* END CHANGES TO SAVE MEMORY */
 
   //Processing the memory requests
-  while (mem.get_read_buffer_size() > 0) {
-    DataPackage* pck = mem.get_read_buffer_front();
-    mem.pop_read_buffer();
+  while (mem.pendingLoads()) {
+    DataPackage* pck = mem.nextLoad();
     this->sendPackageToInputFifos(pck);  //This is for STA data
   }
 
   //Processing write memory requests
-  while (mem.get_write_buffer_size() > 0) {
-    DataPackage* pck = mem.get_write_buffer_front();
-    mem.pop_write_buffer();
+  while (mem.pendingStores()) {
+    DataPackage* pck = mem.nextStore();
 
     data_t data = pck->get_data();
     uint64_t addr = pck->get_address();
@@ -342,7 +341,7 @@ void SDMemory::cycle() {
     delete pck;
   }
 
-  if ((mem.get_read_buffer_size() == 0) && (mem.get_write_buffer_size() < this->n_write_mshr)) {
+  if (!mem.pendingLoads() && mem.pendingStores() < this->n_write_mshr) {
 
     if (!this->input_finished && (pck_iteration <= current_iteration)) {  //If
       //1. Weight distribution for the T_K filters
@@ -382,7 +381,7 @@ void SDMemory::cycle() {
                           unsigned desp_this_neuron = x * this->current_tile->get_T_Y_() * window_size + y * window_size;
                           vector_to_send[desp_n + desp_g + desp_k + desp_this_neuron + c * this->current_tile->get_T_S() * this->current_tile->get_T_R() +
                                          r * this->current_tile->get_T_S() + s + folding_shift] =
-                              true;  //+1 because we skip the first MS again for the folding issue
+                            true;  //+1 because we skip the first MS again for the folding issue
                         }
                       }
                     }
@@ -403,12 +402,12 @@ void SDMemory::cycle() {
                     DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, MULTICAST, vector_to_send, this->num_ms, 0, 0);
                     //index_K*this->current_tile->get_T_G() because even though index_K iterations have been calculated previously, there are G groups mapped, so really real index_K*T_G
                     pck_to_send->setIterationK(
-                        (index_G) * this->dnn_layer->get_K() +
-                        index_K *
-                            this->current_tile
-                                ->get_T_G());  //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
-                                               //this->sendPackageToInputFifos(pck_to_send);
-                    doLoad(new_addr, pck_to_send);
+                      (index_G) * this->dnn_layer->get_K() +
+                      index_K *
+                        this->current_tile
+                          ->get_T_G());  //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
+                                         //this->sendPackageToInputFifos(pck_to_send);
+                    mem.load(new_addr, pck_to_send);
                   }
                 }
               }
@@ -443,13 +442,13 @@ void SDMemory::cycle() {
                                                                                              //Creating the package with the data in memory and the destination
                     DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, UNICAST, receiver, 0, 0);
                     pck_to_send->setIterationK(
-                        (index_G) * this->dnn_layer->get_K() +
-                        index_K *
-                            this->current_tile
-                                ->get_T_G());  //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
+                      (index_G) * this->dnn_layer->get_K() +
+                      index_K *
+                        this->current_tile
+                          ->get_T_G());  //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
 
                     //this->sendPackageToInputFifos(pck_to_send);
-                    doLoad(new_address, pck_to_send);
+                    mem.load(new_address, pck_to_send);
                   }
                 }
               }
@@ -475,13 +474,13 @@ void SDMemory::cycle() {
       else {  //Input distributions.
         //std::cout << "Sending inputs in the cycle " << this->local_cycle << std::endl;
         unsigned y_inputs =
-            this->current_tile->get_T_S() +
-            (this->current_tile->get_T_Y_() - 1) *
-                this->dnn_layer
-                    ->get_strides();  //Number of input rows per batch of the ifmap obtained from the ofmap dimensions. i.e., filter size + number of extra Y_ Neurons mapped times the extra inputs (stride)
+          this->current_tile->get_T_S() +
+          (this->current_tile->get_T_Y_() - 1) *
+            this->dnn_layer
+              ->get_strides();  //Number of input rows per batch of the ifmap obtained from the ofmap dimensions. i.e., filter size + number of extra Y_ Neurons mapped times the extra inputs (stride)
         unsigned x_inputs = this->current_tile->get_T_R() +
                             (this->current_tile->get_T_X_() - 1) *
-                                (this->dnn_layer->get_strides());  // Nuumber of input cols per batch of the ifmap obtained from the ofmap dimensions
+                              (this->dnn_layer->get_strides());  // Nuumber of input cols per batch of the ifmap obtained from the ofmap dimensions
         //unsigned y_inputs = this->current_tile->get_T_Y_() + (this->current_tile->get_T_S()-1); //Number of input rows per batch of the ifmap obtained from the ofmap dimensions
         //unsigned x_inputs = this->current_tile->get_T_X_() + (this->current_tile->get_T_R()-1); // Nuumber of input cols per batch of the ifmap obtained from the ofmap dimensions
 
@@ -514,8 +513,8 @@ void SDMemory::cycle() {
             //Each input is replicated k times for this n
             //Creating bool for this element
             bool**** destinations =
-                new bool***[this->current_tile
-                                ->get_T_N()];  //One destination vector for each n and for each c since we are going to send one value (package) per each batch and channel
+              new bool***[this->current_tile
+                            ->get_T_N()];  //One destination vector for each n and for each c since we are going to send one value (package) per each batch and channel
 
             for (int i = 0; i < this->current_tile->get_T_N(); i++) {
               destinations[i] = new bool**[this->current_tile->get_T_G()];
@@ -576,7 +575,7 @@ void SDMemory::cycle() {
 
                     //std::cout << "Desp_total_inside_vn: " << desp_total_inside_vn << std::endl;
                     int current_receiver =
-                        current_vn * this->current_tile->get_VN_Size() + desp_total_inside_vn;  //Receiver for an arbitry n and k. //+1 for the folding
+                      current_vn * this->current_tile->get_VN_Size() + desp_total_inside_vn;  //Receiver for an arbitry n and k. //+1 for the folding
                     if (this->current_tile->get_folding_enabled()) {
                       current_receiver += 1;  //1 ms free for psum accumulation
                     }
@@ -592,7 +591,7 @@ void SDMemory::cycle() {
                           for (int c = 0; c < this->current_tile->get_T_C(); c++) {                          //For each channel //TODO the mistake is here
                             int desp_c = c * this->current_tile->get_T_R() * this->current_tile->get_T_S();  //jump channel size
                             destinations[n][g][c][desp_n + desp_g + desp_k + desp_c + current_receiver] =
-                                true;  //The package for n will have the desp_n+desp_k ms enabled to receive the activation
+                              true;  //The package for n will have the desp_n+desp_k ms enabled to receive the activation
                           }
 
                         }  //End K
@@ -622,25 +621,25 @@ void SDMemory::cycle() {
                   //std::cout << std::endl;
                   this->sdmemoryStats.n_SRAM_input_reads++;
                   uint64_t new_address =
-                      this->input_dram_location +
-                      data_width * ((index_N + i) * this->input_size +
-                                    ((index_X * this->dnn_layer->get_strides() + x) + index_R) * this->dnn_layer->get_Y() * this->dnn_layer->get_C() *
-                                        this->dnn_layer->get_G() +
-                                    ((index_Y * this->dnn_layer->get_strides() + y) + index_S) * this->dnn_layer->get_C() * this->dnn_layer->get_G() +
-                                    (index_G + g) * dnn_layer->get_C() + (index_C + c));
+                    this->input_dram_location +
+                    data_width * ((index_N + i) * this->input_size +
+                                  ((index_X * this->dnn_layer->get_strides() + x) + index_R) * this->dnn_layer->get_Y() * this->dnn_layer->get_C() *
+                                    this->dnn_layer->get_G() +
+                                  ((index_Y * this->dnn_layer->get_strides() + y) + index_S) * this->dnn_layer->get_C() * this->dnn_layer->get_G() +
+                                  (index_G + g) * dnn_layer->get_C() + (index_C + c));
                   data_t data = 0.0;
                   // old_data = input_address[(index_N+i)*this->input_size+((index_X*this->dnn_layer->get_strides()+ x) + index_R)*this->dnn_layer->get_Y()*this->dnn_layer->get_C()*this->dnn_layer->get_G()*word_size+((index_Y*this->dnn_layer->get_strides() + y) + index_S)*this->dnn_layer->get_C()*this->dnn_layer->get_G()*word_size + (index_G+g)*dnn_layer->get_C()*word_size + (index_C+c)*word_size]; //Read value input(x,y)
 
                   //Creating multicast package. Even though the package was unicast, multicast format is used anyway with just one element true in the destination vector
                   DataPackage* pck = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, MULTICAST, destination_vector, this->num_ms, 0, 0);
                   pck->setIterationK(
-                      (index_G) * this->dnn_layer->get_K() +
-                      index_K *
-                          this->current_tile
-                              ->get_T_G());  //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
+                    (index_G) * this->dnn_layer->get_K() +
+                    index_K *
+                      this->current_tile
+                        ->get_T_G());  //To avoid sending it to the architecture if the output psums of the previous k channels have not been calculated yet.
 
                   //this->sendPackageToInputFifos(pck);
-                  doLoad(new_address, pck);
+                  mem.load(new_address, pck);
                   //destinations[i][g][c] is not deleted as it is used in the package
 
                 }  //End C
@@ -726,7 +725,7 @@ void SDMemory::cycle() {
       //Generating the request
       addr_offset = this->output_dram_location + addr_offset * this->data_width;
       pck_received->set_address(addr_offset);  //Setting the address
-      doStore(addr_offset, pck_received);
+      mem.store(addr_offset, pck_received);
       //std::cout << "value written " << data << std::endl;
       current_output_pixel += 1;
       this->sdmemoryStats.n_SRAM_write_ports_use[pck_received->getOutputPort()]++;  //To track information
@@ -778,7 +777,7 @@ void SDMemory::cycle() {
 }
 
 bool SDMemory::isExecutionFinished() {
-  return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
+  return ((this->execution_finished) && !mem.pendingStores());
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -837,7 +836,7 @@ void SDMemory::sendPackageToInputFifos(DataPackage* pck) {
 
       if (thereis_receiver) {  //If this port have at least one ms to true then we send the data to this port i
         DataPackage* pck_new =
-            new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port, 0, 0);
+          new DataPackage(pck->get_size_package(), pck->get_data(), pck->get_data_type(), i, MULTICAST, local_dest, this->ms_size_per_input_port, 0, 0);
         if (pck->get_data_type() == PSUM) {
           psum_fifos[i].push(pck_new);
         }
@@ -942,14 +941,4 @@ void SDMemory::printEnergy(std::ofstream& out, std::size_t indent) {
   counter_t writes = this->sdmemoryStats.n_SRAM_psum_writes;
   out << ind(indent) << "GLOBALBUFFER READ=" << reads;  //Same line
   out << ind(indent) << " WRITE=" << writes << std::endl;
-}
-
-bool SDMemory::doLoad(uint64_t addr, DataPackage* data_package) {
-  mem.load(addr, data_package);
-  return 1;
-}
-
-bool SDMemory::doStore(uint64_t addr, DataPackage* data_package) {
-  mem.store(addr, data_package);
-  return 1;
 }

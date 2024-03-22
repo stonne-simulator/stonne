@@ -55,7 +55,7 @@ class SDMemory : public MemoryController {
   DNNLayer* dnn_layer;  // Layer loaded in the accelerator
   Tile* current_tile;   // Layer loaded in the tile
   ReduceNetwork*
-      reduce_network;  //This is not used in this controller as the configuration is performed in STONNEModel when the tile is loaded, and this is needed just once
+    reduce_network;  //This is not used in this controller as the configuration is performed in STONNEModel when the tile is loaded, and this is needed just once
   MultiplierNetwork* multiplier_network;  //Idem as reduce_network
   Connection* write_connection;
   //Connection* read_connection;
@@ -146,8 +146,6 @@ class SDMemory : public MemoryController {
   void receive();
   void sendPackageToInputFifos(DataPackage* pck);
   void send();
-  bool doLoad(uint64_t addr, DataPackage* data_package);
-  bool doStore(uint64_t addr, DataPackage* data_package);
 
   std::vector<Connection*> getWritePortConnections() const { return this->write_port_connections; }
 

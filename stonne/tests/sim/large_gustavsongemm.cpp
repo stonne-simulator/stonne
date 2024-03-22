@@ -47,17 +47,17 @@ Stonne init() {
   };
 
   // Preparing the main memory
-  Memory<float> main_memory(A_CSR_vals.size() + B_CSR_vals.size() + outputSize);
+  auto main_memory = std::make_unique<SimpleMem<float>>(A_CSR_vals.size() + B_CSR_vals.size() + outputSize);
   stonne_cfg.m_SDMemoryCfg.input_address = 0;
   stonne_cfg.m_SDMemoryCfg.weight_address = A_CSR_vals.size();
   stonne_cfg.m_SDMemoryCfg.output_address = B_CSR_vals.size() + A_CSR_vals.size();
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
-  std::copy(A_CSR_vals.begin(), A_CSR_vals.end(), main_memory.begin());
-  std::copy(B_CSR_vals.begin(), B_CSR_vals.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(A_CSR_vals.size()));
+  main_memory->fill(0, A_CSR_vals.begin(), A_CSR_vals.end());
+  main_memory->fill(A_CSR_vals.size(), B_CSR_vals.begin(), B_CSR_vals.end());
 
-  Stonne stonne(stonne_cfg, main_memory);
+  Stonne stonne(stonne_cfg, std::move(main_memory));
   stonne.loadSparseOuterProduct(layer_name, N, K, M, A_CSR_vals.data(), B_CSR_vals.data(), A_CSR_colidx.data(), A_CSR_rowp.data(), B_CSR_colidx.data(),
                                 B_CSR_rowp.data(), output.data());
 

@@ -6,7 +6,7 @@ add_library(${STONNE} STATIC)
 target_compile_features(${STONNE} PUBLIC cxx_std_20)
 # TODO: uncomment later
 #target_compile_options(${STONNE} PRIVATE -Wall -Wextra -Wpedantic)
-target_compile_options(${STONNE} PRIVATE -Wno-unused-parameter)
+target_compile_options(${STONNE} PRIVATE -O0 -Wno-unused-parameter)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
   target_compile_options(${STONNE} PRIVATE -g -fno-omit-frame-pointer)

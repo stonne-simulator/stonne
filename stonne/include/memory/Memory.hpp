@@ -6,45 +6,61 @@
 #include "comm/DataPackage.hpp"
 #include "common/types.hpp"
 
-template <typename T>
+/**
+ * @brief Interface for a memory module.
+ *
+ * This class defines an interface for a memory module that can handle load and store requests,
+ * track pending requests, and simulate memory cycles. Requests are queued and processed in FIFO order.
+ *
+ * @tparam T The type of data stored in the memory.
+ */
+template <typename T = float>
 class Memory {
  public:
-  Memory(std::size_t size) : memory(size, 0) {}
+  virtual ~Memory() = default;
 
-  void load(uint64_t addr, DataPackage* pck) {
-    pck->set_data(memory[addr]);
-    read_buffer.push(pck);
-  }
+  /**
+   * @brief Sends a load request to the memory
+   * @param addr Address to load from
+   * @param pck DataPackage to store the result
+   */
+  virtual void load(uint64_t addr, DataPackage* pck) = 0;
 
-  void store(uint64_t addr, DataPackage* pck) {
-    memory[addr] = pck->get_data();
-    write_buffer.push(pck);
-  }
+  /**
+   * @brief Sends a store request to the memory
+   * @param addr Address to store to
+   * @param pck DataPackage containing the data to store
+   */
+  virtual void store(uint64_t addr, DataPackage* pck) = 0;
 
-  typename std::vector<T>::iterator begin() { return memory.begin(); }
+  /**
+   * @brief Returns the number of pending load requests
+   * @return Number of pending load requests
+   */
+  [[nodiscard]] virtual std::size_t pendingLoads() const = 0;
 
-  typename std::vector<T>::iterator end() { return memory.end(); }
+  /**
+   * @brief Returns the number of pending store requests
+   * @return Number of pending store requests
+   */
+  [[nodiscard]] virtual std::size_t pendingStores() const = 0;
 
-  std::size_t size() { return memory.size(); }
+  /**
+   * @brief Returns the next completed load request, removing it from the queue
+   * @return Next completed load request
+   */
+  [[nodiscard]] virtual DataPackage* nextLoad() = 0;
 
-  void cycle() {}
+  /**
+   * @brief Returns the next completed store request, removing it from the queue
+   * @return Next completed store request
+   */
+  [[nodiscard]] virtual DataPackage* nextStore() = 0;
 
-  std::size_t get_read_buffer_size() { return read_buffer.size(); }
-
-  std::size_t get_write_buffer_size() { return write_buffer.size(); }
-
-  DataPackage* get_read_buffer_front() { return read_buffer.front(); }
-
-  DataPackage* get_write_buffer_front() { return write_buffer.front(); }
-
-  void pop_read_buffer() { read_buffer.pop(); }
-
-  void pop_write_buffer() { write_buffer.pop(); }
-
- private:
-  std::vector<T> memory;
-  std::queue<DataPackage*> read_buffer;
-  std::queue<DataPackage*> write_buffer;
+  /**
+   * @brief Simulates one cycle of the memory
+   */
+  virtual void cycle() = 0;
 };
 
 #endif  //STONNE_MEMORY_HPP

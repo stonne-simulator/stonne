@@ -35,19 +35,11 @@ void init_matrices() {
   prune<float>(A_dense_matrix, MK_sparsity / 100.0f);
   prune<float>(B_dense_matrix, KN_sparsity / 100.0f);
 
-  std::size_t* p_MK_bitmap = generateBitMapFromDense(A_dense_matrix.data(), M, K, GEN_BY_ROWS);
-  std::size_t* p_KN_bitmap = generateBitMapFromDense(B_dense_matrix.data(), K, N, GEN_BY_COLS);
-  MK_bitmap = std::vector<std::size_t>(p_MK_bitmap, p_MK_bitmap + MK_size);
-  KN_bitmap = std::vector<std::size_t>(p_KN_bitmap, p_KN_bitmap + KN_size);
-  delete[] p_MK_bitmap;
-  delete[] p_KN_bitmap;
+  MK_bitmap = generateBitMapFromDense(A_dense_matrix, M, K, GEN_BY_ROWS);
+  KN_bitmap = generateBitMapFromDense(B_dense_matrix, K, N, GEN_BY_COLS);
 
-  float* p_MK_sparse_matrix = generateMatrixSparseFromDense(A_dense_matrix.data(), MK_bitmap.data(), M, K, GEN_BY_ROWS, MK_sparse_size);
-  float* p_KN_sparse_matrix = generateMatrixSparseFromDense(B_dense_matrix.data(), KN_bitmap.data(), K, N, GEN_BY_COLS, KN_sparse_size);
-  MK_sparse_matrix = std::vector<float>(p_MK_sparse_matrix, p_MK_sparse_matrix + MK_sparse_size);
-  KN_sparse_matrix = std::vector<float>(p_KN_sparse_matrix, p_KN_sparse_matrix + KN_sparse_size);
-  delete[] p_MK_sparse_matrix;
-  delete[] p_KN_sparse_matrix;
+  MK_sparse_matrix = generateMatrixSparseFromDense(A_dense_matrix, MK_bitmap, M, K, GEN_BY_ROWS, MK_sparse_size);
+  KN_sparse_matrix = generateMatrixSparseFromDense(B_dense_matrix, KN_bitmap, K, N, GEN_BY_COLS, KN_sparse_size);
 }
 
 Stonne init() {
@@ -59,17 +51,17 @@ Stonne init() {
   };
 
   // Preparing the main memory
-  Memory<float> main_memory(MK_sparse_size + KN_sparse_size + outputSize);
+  auto main_memory = std::make_unique<SimpleMem<float>>(MK_sparse_size + KN_sparse_size + outputSize);
   stonne_cfg.m_SDMemoryCfg.weight_address = 0;
   stonne_cfg.m_SDMemoryCfg.input_address = KN_sparse_size;
   stonne_cfg.m_SDMemoryCfg.output_address = KN_sparse_size + MK_sparse_size;
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
-  std::copy(KN_sparse_matrix.begin(), KN_sparse_matrix.end(), main_memory.begin());
-  std::copy(MK_sparse_matrix.begin(), MK_sparse_matrix.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(KN_sparse_size));
+  main_memory->fill(0, KN_sparse_matrix.begin(), KN_sparse_matrix.end());
+  main_memory->fill(KN_sparse_size, MK_sparse_matrix.begin(), MK_sparse_matrix.end());
 
-  Stonne stonne(stonne_cfg, main_memory);
+  Stonne stonne(stonne_cfg, std::move(main_memory));
   stonne.loadGEMM(layer_name, N, K, M, MK_sparse_matrix.data(), KN_sparse_matrix.data(), MK_bitmap.data(), KN_bitmap.data(), output.data(), outputBitmap.data(),
                   dataflow);
 

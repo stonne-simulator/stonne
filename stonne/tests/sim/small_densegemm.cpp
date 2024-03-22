@@ -31,17 +31,17 @@ Stonne init() {
   stonne_cfg.print_stats_enabled = false;
 
   // Preparing the main memory
-  Memory<float> main_memory(MK_size + KN_size + outputSize);
+  auto main_memory = std::make_unique<SimpleMem<float>>(MK_size + KN_size + outputSize);
   stonne_cfg.m_SDMemoryCfg.weight_address = 0;
   stonne_cfg.m_SDMemoryCfg.input_address = KN_size;
   stonne_cfg.m_SDMemoryCfg.output_address = KN_size + MK_size;
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
-  std::copy(B_dense_matrix.begin(), B_dense_matrix.end(), main_memory.begin());
-  std::copy(A_dense_matrix.begin(), A_dense_matrix.end(), main_memory.begin() + static_cast<std::vector<float>::difference_type>(KN_size));
+  main_memory->fill(0, B_dense_matrix.begin(), B_dense_matrix.end());
+  main_memory->fill(KN_size, A_dense_matrix.begin(), A_dense_matrix.end());
 
-  Stonne stonne(stonne_cfg, main_memory);
+  Stonne stonne(stonne_cfg, std::move(main_memory));
   stonne.loadDenseGEMM(layer_name, N, K, M, A_dense_matrix.data(), B_dense_matrix.data(), output.data(), CNN_DATAFLOW);  //Loading the layer
   stonne.loadGEMMTile(T_N, T_K, T_M);
 

@@ -1,11 +1,12 @@
 #ifndef STONNEMODEL_H_
 #define STONNEMODEL_H_
 
+#include <memory>
 #include <string>
 #include "common/Config.hpp"
 #include "common/types.hpp"
 #include "common/utility.hpp"
-#include "memory/Memory.hpp"
+#include "memory/SimpleMem.hpp"
 #include "tile_generator/tile.hpp"
 #include "tile_generator/types.hpp"
 
@@ -69,11 +70,16 @@ class Stonne {
   std::size_t n_cycles;
 
   //SST variables and structures
-  Memory<float> memHierarchy;
+  std::unique_ptr<Memory<float>> memHierarchy;
 
  public:
-  Stonne(Config stonne_cfg, Memory<float> mem);
+  Stonne(Config stonne_cfg, std::unique_ptr<Memory<float>> mem);
   ~Stonne();
+
+  Stonne(const Stonne&) = delete;
+  Stonne& operator=(const Stonne&) = delete;
+  Stonne(Stonne&&) = default;
+  Stonne& operator=(Stonne&&) = default;
 
   void loadDNNLayer(Layer_t layer_type, std::string layer_name, std::size_t R, std::size_t S, std::size_t C, std::size_t K, std::size_t G, std::size_t N,
                     std::size_t X, std::size_t Y, std::size_t strides, address_t input_address, address_t filter_address, address_t output_address,

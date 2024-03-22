@@ -421,8 +421,8 @@ float* generatePrunnedMatrix(const float* src_matrix, std::size_t size, float pr
   return dst_matrix;
 }
 
-float* generateMatrixDense(std::size_t rows, std::size_t cols, std::size_t sparsity) {
-  float* matrix = new float[rows * cols];
+std::vector<float> generateMatrixDense(std::size_t rows, std::size_t cols, std::size_t sparsity) {
+  std::vector<float> matrix(rows * cols);
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
       float value;
@@ -442,8 +442,8 @@ float* generateMatrixDense(std::size_t rows, std::size_t cols, std::size_t spars
   return matrix;
 }
 
-std::size_t* generateBitMapFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
-  std::size_t* bitMap = new std::size_t[rows * cols];
+std::vector<std::size_t> generateBitMapFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
+  std::vector<std::size_t> bitMap(rows * cols);
   if (gen_type == GEN_BY_ROWS) {
     std::size_t non_zeros = 0;
     for (int i = 0; i < rows; i++) {
@@ -500,7 +500,8 @@ std::size_t* generateBitMapFromDense(float* denseMatrix, std::size_t rows, std::
 }
 
 /////
-float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size) {
+std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type,
+                                                         std::size_t& size) {
   std::vector<float> elements;
   if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
@@ -530,7 +531,7 @@ float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, std::size_t row
     }
   }
 
-  float* sparseMatrix = new float[elements.size()];
+  std::vector<float> sparseMatrix(elements.size());
   for (int i = 0; i < elements.size(); i++) {
     sparseMatrix[i] = elements[i];
   }
@@ -539,7 +540,8 @@ float* generateMatrixSparseFromDenseNoBitmap(float* denseMatrix, std::size_t row
   return sparseMatrix;
 }
 
-float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size) {
+std::vector<float> generateMatrixSparseFromDense(const std::vector<float>& denseMatrix, const std::vector<std::size_t>& bitmap, std::size_t rows,
+                                                 std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size) {
   std::vector<float> elements;
   if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
@@ -561,7 +563,7 @@ float* generateMatrixSparseFromDense(float* denseMatrix, std::size_t* bitmap, st
     }
   }
 
-  float* sparseMatrix = new float[elements.size()];
+  std::vector<float> sparseMatrix(elements.size());
   for (int i = 0; i < elements.size(); i++) {
     sparseMatrix[i] = elements[i];
   }
@@ -611,7 +613,8 @@ void denseToSparse(float* denseMatrix, std::size_t rows, std::size_t cols, std::
 }
 
 /////
-metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz, GENERATION_TYPE gen_type) {
+std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz,
+                                                  GENERATION_TYPE gen_type) {
   std::vector<int> elements;
   if (gen_type == GEN_BY_ROWS) {  //we need col_id
     for (int i = 0; i < rows; i++) {
@@ -641,7 +644,7 @@ metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows
     }
   }
 
-  metadata_address_t minor_id = new std::size_t[elements.size()];
+  std::vector<std::size_t> minor_id(elements.size());
   nnz = elements.size();
   for (int i = 0; i < elements.size(); i++) {
     minor_id[i] = elements[i];
@@ -682,7 +685,7 @@ metadata_address_t generateMinorIDFromDense(float* denseMatrix, std::size_t rows
 //}
 
 /////
-metadata_address_t generateMajorPointerFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
+std::vector<std::size_t> generateMajorPointerFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
   std::vector<int> elements;
   if (gen_type == GEN_BY_ROWS) {  //we need row_ptr
     int nnzp = 0;
@@ -727,7 +730,7 @@ metadata_address_t generateMajorPointerFromDense(float* denseMatrix, std::size_t
     elements.push_back(nnzp);
   }
 
-  metadata_address_t major_pointer = new std::size_t[elements.size()];
+  std::vector<std::size_t> major_pointer(elements.size());
   for (int i = 0; i < elements.size(); i++) {
     major_pointer[i] = elements[i];
   }
@@ -775,13 +778,10 @@ void printSparseMatrix(float* sparseMatrix, std::size_t* bitmap, std::size_t row
 //
 //
 
-void organizeMatrix(float* matrix, std::size_t rows, std::size_t cols, std::size_t* pointer_table, GENERATION_TYPE gen_type) {
+void organizeMatrix(std::vector<float>& matrix, std::size_t rows, std::size_t cols, const std::vector<std::size_t>& pointer_table, GENERATION_TYPE gen_type) {
 
   //Creating a copy
-  float* matrix_copy = new float[rows * cols];
-  for (int i = 0; i < rows * cols; i++) {
-    matrix_copy[i] = matrix[i];
-  }
+  std::vector<float> matrix_copy = matrix;
 
   if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
@@ -800,15 +800,11 @@ void organizeMatrix(float* matrix, std::size_t rows, std::size_t cols, std::size
       }
     }
   }
-
-  delete[] matrix_copy;
 }
 
-void organizeMatrixBack(float* matrix, std::size_t rows, std::size_t cols, std::size_t* pointer_table, GENERATION_TYPE gen_type) {
-  float* matrix_copy = new float[rows * cols];
-  for (int i = 0; i < rows * cols; i++) {
-    matrix_copy[i] = matrix[i];
-  }
+void organizeMatrixBack(std::vector<float>& matrix, std::size_t rows, std::size_t cols, const std::vector<std::size_t>& pointer_table,
+                        GENERATION_TYPE gen_type) {
+  std::vector<float> matrix_copy = matrix;
 
   if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
@@ -827,8 +823,6 @@ void organizeMatrixBack(float* matrix, std::size_t rows, std::size_t cols, std::
       }
     }
   }
-
-  delete[] matrix_copy;
 }
 
 /*
@@ -896,14 +890,12 @@ std::size_t* calculateOrdering (float* matrix, std::size_t rows, std::size_t col
     return pointer_table;
 }
 */
-std::size_t* calculateOrdering(float* matrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, int num_ms) {
+std::vector<std::size_t> calculateOrdering(const std::vector<float>& matrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type, int num_ms) {
   //calculating first the cluster size of each row
-  std::size_t* pointer_table;
-  std::size_t* size_rows;
-  if (gen_type == GEN_BY_ROWS) {
-    pointer_table = new std::size_t[rows];
-    size_rows = new std::size_t[rows];
+  std::vector<std::size_t> pointer_table = gen_type == GEN_BY_ROWS ? std::vector<std::size_t>(rows) : std::vector<std::size_t>(cols);
+  std::vector<std::size_t> size_rows = gen_type == GEN_BY_ROWS ? std::vector<std::size_t>(rows) : std::vector<std::size_t>(cols);
 
+  if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
       pointer_table[i] = i;
       size_rows[i] = 0;
@@ -919,9 +911,6 @@ std::size_t* calculateOrdering(float* matrix, std::size_t rows, std::size_t cols
   }
 
   else {
-    pointer_table = new std::size_t[cols];
-    size_rows = new std::size_t[cols];
-
     for (int j = 0; j < cols; j++) {
       pointer_table[j] = j;
       size_rows[j] = 0;
@@ -998,7 +987,6 @@ std::size_t* calculateOrdering(float* matrix, std::size_t rows, std::size_t cols
     }
   }
 
-  delete[] size_rows;
   return pointer_table;
 }
 

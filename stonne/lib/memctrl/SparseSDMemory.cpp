@@ -168,16 +168,14 @@ void SparseSDMemory::cycle() {
   this->sdmemoryStats.total_cycles++;  //To track information
 
   //Processing the memory requests
-  while (mem.get_read_buffer_size() > 0) {
-    DataPackage* pck = mem.get_read_buffer_front();
-    mem.pop_read_buffer();
+  while (mem.pendingLoads()) {
+    DataPackage* pck = mem.nextLoad();
     this->sendPackageToInputFifos(pck);  //This is for STA data
   }
 
   //Processing write memory requests
-  while (mem.get_write_buffer_size() > 0) {
-    DataPackage* pck = mem.get_write_buffer_front();
-    mem.pop_write_buffer();
+  while (mem.pendingStores()) {
+    DataPackage* pck = mem.nextStore();
 
     data_t data = pck->get_data();
     uint64_t addr = pck->get_address();
@@ -187,7 +185,7 @@ void SparseSDMemory::cycle() {
     delete pck;
   }
 
-  if ((mem.get_read_buffer_size() == 0)) {
+  if (!mem.pendingLoads()) {
 
     if (current_state == CONFIGURING) {    //If the architecture has not been configured
       int i = sta_current_index_metadata;  //Rows
@@ -365,7 +363,7 @@ void SparseSDMemory::cycle() {
           DataPackage* pck_to_send = new DataPackage(sizeof(data_t), data, WEIGHT, 0, UNICAST, dest, 0, 0);
           dest++;
           sub_address++;
-          doLoad(new_addr, pck_to_send);
+          mem.load(new_addr, pck_to_send);
         }
       }
 
@@ -389,7 +387,7 @@ void SparseSDMemory::cycle() {
         //std::cout << "Distributing streaming matrix" << std::endl;
         this->sdmemoryStats.n_SRAM_psum_reads++;  //To track information
         //this->sendPackageToInputFifos(pck);
-        doLoad(new_addr, pck);
+        mem.load(new_addr, pck);
       }
       for (int j = init_point_str; j < end_point_str; j++) {  //For each element in the current vector in the str matrix
         //Creating the bit vector for this value
@@ -418,7 +416,7 @@ void SparseSDMemory::cycle() {
           data = 0.0;
           sdmemoryStats.n_SRAM_input_reads++;
           DataPackage* pck = new DataPackage(sizeof(data_t), data, IACTIVATION, 0, MULTICAST, destinations, this->num_ms, 0, 0);
-          doLoad(new_addr, pck);
+          mem.load(new_addr, pck);
 
         } else {
           data = 0.0;  //If the STA matrix has a value then the STR matrix must be sent even if the value is 0
@@ -446,7 +444,7 @@ void SparseSDMemory::cycle() {
       pck_received->set_address(new_addr);
 
       // note: comment this store to hide write latency, but simulation won't return a result file
-      doStore(new_addr, pck_received);
+      mem.store(new_addr, pck_received);
       vnat_table[vn]++;
       //this->output_address[addr_offset]=data; //ofmap or psum, it does not matter.
       current_output++;
@@ -460,7 +458,7 @@ void SparseSDMemory::cycle() {
   }
 
   //Transitions
-  if ((current_state == CONFIGURING) && ((mem.get_read_buffer_size() == 0))) {
+  if ((current_state == CONFIGURING) && (!mem.pendingLoads())) {
     if (this->configurationVNs.size() > 0) {  // At least 1 VN has been configured
       current_state = DIST_STA_MATRIX;
     } else {
@@ -525,7 +523,7 @@ void SparseSDMemory::cycle() {
 }
 
 bool SparseSDMemory::isExecutionFinished() {
-  return ((this->execution_finished) && (mem.get_write_buffer_size() == 0));
+  return ((this->execution_finished) && !mem.pendingStores());
 }
 
 /* The traffic generation algorithm generates a package that contains a destination for all the ms. We have to divide it into smaller groups of ms since they are divided into several ports */
@@ -676,14 +674,4 @@ void SparseSDMemory::printEnergy(std::ofstream& out, std::size_t indent) {
   counter_t writes = this->sdmemoryStats.n_SRAM_psum_writes;
   out << ind(indent) << "GLOBALBUFFER READ=" << reads;  //Same line
   out << ind(indent) << " WRITE=" << writes << std::endl;
-}
-
-bool SparseSDMemory::doLoad(uint64_t addr, DataPackage* data_package) {
-  mem.load(addr, data_package);
-  return 1;
-}
-
-bool SparseSDMemory::doStore(uint64_t addr, DataPackage* data_package) {
-  mem.store(addr, data_package);
-  return 1;
 }
