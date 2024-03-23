@@ -193,20 +193,17 @@ bool runDenseGEMMCommand(int argc, char* argv[]) {
                             tileGenerator);  //Modify stonne_cfg and the variables according to user arguments
 
   //Creating arrays to store the matrices
-  std::size_t MK_size = M * K;
-  std::size_t KN_size = N * K;
-  std::size_t output_size = M * N;
-  std::vector<float> MK_matrix(MK_size);
-  std::vector<float> KN_matrix(KN_size);
-  std::vector<float> output(output_size);
-  std::vector<float> output_cpu(output_size);  //Used to store the CPU computed values to compare with the simulator version
+  std::vector<float> MK_matrix(M * K);
+  std::vector<float> KN_matrix(N * K);
+  std::vector<float> output(M * N);
+  std::vector<float> output_cpu(output.size());  //Used to store the CPU computed values to compare with the simulator version
 
   //Filling the arrays with random values
-  for (std::size_t i = 0; i < MK_size; i++) {
+  for (std::size_t i = 0; i < MK_matrix.size(); i++) {
     MK_matrix[i] = rand() % MAX_RANDOM;
   }
 
-  for (std::size_t i = 0; i < KN_size; i++) {
+  for (std::size_t i = 0; i < KN_matrix.size(); i++) {
     KN_matrix[i] = rand() % MAX_RANDOM;
   }
 
@@ -220,15 +217,15 @@ bool runDenseGEMMCommand(int argc, char* argv[]) {
   /** Configuring and running the accelerator  **/
 
   // Preparing the main memory
-  auto main_memory = std::make_unique<SimpleMem<float>>(MK_size + KN_size + output_size);
+  auto main_memory = std::make_unique<SimpleMem<float>>(MK_matrix.size() + KN_matrix.size() + output.size());
   stonne_cfg.m_SDMemoryCfg.weight_address = 0;
-  stonne_cfg.m_SDMemoryCfg.input_address = KN_size;
-  stonne_cfg.m_SDMemoryCfg.output_address = KN_size + MK_size;
+  stonne_cfg.m_SDMemoryCfg.input_address = KN_matrix.size();
+  stonne_cfg.m_SDMemoryCfg.output_address = KN_matrix.size() + MK_matrix.size();
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
   main_memory->fill(0, MK_matrix.begin(), MK_matrix.end());
-  main_memory->fill(MK_size, KN_matrix.begin(), KN_matrix.end());
+  main_memory->fill(MK_matrix.size(), KN_matrix.begin(), KN_matrix.end());
 
   //Computing the CNN Layer with the simulator
   Stonne stonne_instance(stonne_cfg, std::move(main_memory));                                                           //Creating instance of the simulator
@@ -247,7 +244,7 @@ bool runDenseGEMMCommand(int argc, char* argv[]) {
   /** CHECKING the results to make sure that the output is correct  **/
 
   //Comparing the results
-  for (std::size_t i = 0; i < output_size; i++) {
+  for (std::size_t i = 0; i < output.size(); i++) {
     float difference = fabs(output[i] - output_cpu[i]);
     if (difference > EPSILON) {
       std::cout << "ERROR position " << i << ": Value ofmap simulator: " << output[i] << ". Value ofmap CPU: " << output_cpu[i] << std::endl;
@@ -283,46 +280,35 @@ bool runSparseDenseCommand(int argc, char* argv[]) {
   configSparseDenseParameters(argc, argv, stonne_cfg, layer_name, M, N, K, MK_sparsity, T_N, T_K, tileGeneratorTarget, tileGenerator);
 
   //Creating MK matrix
-  std::size_t MK_size = M * K;
   std::vector<float> MK_dense_matrix_no_organized = generateMatrixDense(M, K, MK_sparsity);
-  std::vector<float> MK_dense_matrix(MK_size);
+  std::vector<float> MK_dense_matrix(MK_dense_matrix_no_organized);
 
   //KN matrix
-  std::size_t KN_size = K * N;
   std::vector<float> KN_dense_matrix_no_organized = generateMatrixDense(K, N, 0);
-  std::vector<float> KN_dense_matrix(KN_size);
-
-  for (std::size_t i = 0; i < M * K; i++) {
-    MK_dense_matrix[i] = MK_dense_matrix_no_organized[i];
-  }
-
-  for (std::size_t i = 0; i < K * N; i++) {
-    KN_dense_matrix[i] = KN_dense_matrix_no_organized[i];
-  }
+  std::vector<float> KN_dense_matrix(KN_dense_matrix_no_organized);
 
   //Creating outputs
-  std::size_t output_size = M * N;
-  std::vector<float> cpu_output(output_size);
-  std::vector<float> acc_output(output_size);
+  std::vector<float> cpu_output(M * N);
+  std::vector<float> acc_output(cpu_output.size());
 
   //Generating bitmaps
   std::size_t nnz = 0;
-  std::vector<std::size_t> MK_col_id = generateMinorIDFromDense(MK_dense_matrix, M, K, nnz, GEN_BY_ROWS);
+  std::vector<std::size_t> MK_col_id = generateMinorIDFromDense(MK_dense_matrix, M, K, GEN_BY_ROWS);
   std::vector<std::size_t> MK_row_pointer = generateMajorPointerFromDense(MK_dense_matrix, M, K, GEN_BY_ROWS);
 
   //Generating sparse matrix
-  std::vector<float> MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(MK_dense_matrix, M, K, GEN_BY_ROWS, MK_size);
+  std::vector<float> MK_sparse_matrix = generateMatrixSparseFromDenseNoBitmap(MK_dense_matrix, M, K, GEN_BY_ROWS);
 
   // Preparing the main memory
-  auto main_memory = std::make_unique<SimpleMem<float>>(MK_size + KN_size + output_size);
+  auto main_memory = std::make_unique<SimpleMem<float>>(MK_sparse_matrix.size() + KN_dense_matrix.size() + acc_output.size());
   stonne_cfg.m_SDMemoryCfg.weight_address = 0;
-  stonne_cfg.m_SDMemoryCfg.input_address = KN_size;
-  stonne_cfg.m_SDMemoryCfg.output_address = KN_size + MK_size;
+  stonne_cfg.m_SDMemoryCfg.input_address = KN_dense_matrix.size();
+  stonne_cfg.m_SDMemoryCfg.output_address = KN_dense_matrix.size() + MK_sparse_matrix.size();
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
   main_memory->fill(0, KN_dense_matrix.begin(), KN_dense_matrix.end());
-  main_memory->fill(KN_size, MK_dense_matrix.begin(), MK_dense_matrix.end());
+  main_memory->fill(KN_dense_matrix.size(), MK_dense_matrix.begin(), MK_dense_matrix.end());
 
   Stonne stonne_instance(stonne_cfg, std::move(main_memory));  //Creating instance of the simulator
   stonne_instance.loadSparseDense(layer_name, N, K, M, MK_sparse_matrix.data(), KN_dense_matrix.data(), MK_col_id.data(), MK_row_pointer.data(),
@@ -375,19 +361,11 @@ bool runSparseGEMMCommand(int argc, char* argv[]) {
 
   //Creating MK matrix
   std::vector<float> MK_dense_matrix_no_organized = generateMatrixDense(M, K, MK_sparsity);
-  std::vector<float> MK_dense_matrix(M * K);
+  std::vector<float> MK_dense_matrix(MK_dense_matrix_no_organized);
 
   //KN matrix
   std::vector<float> KN_dense_matrix_no_organized = generateMatrixDense(K, N, KN_sparsity);
-  std::vector<float> KN_dense_matrix(K * N);
-
-  for (std::size_t i = 0; i < M * K; i++) {
-    MK_dense_matrix[i] = MK_dense_matrix_no_organized[i];
-  }
-
-  for (std::size_t i = 0; i < K * N; i++) {
-    KN_dense_matrix[i] = KN_dense_matrix_no_organized[i];
-  }
+  std::vector<float> KN_dense_matrix(KN_dense_matrix_no_organized);
 
   //See if it is necessary to reorganize
   std::vector<std::size_t> order_table;
@@ -411,21 +389,19 @@ bool runSparseGEMMCommand(int argc, char* argv[]) {
   std::vector<std::size_t> KN_bitmap = generateBitMapFromDense(KN_dense_matrix, K, N, GEN_BY_COLS);
 
   //Generating sparse matrix
-  std::size_t MK_size, KN_size;
-  std::size_t output_size = M * N;
-  std::vector<float> MK_sparse_matrix = generateMatrixSparseFromDense(MK_dense_matrix, MK_bitmap, M, K, GEN_BY_ROWS, MK_size);
-  std::vector<float> KN_sparse_matrix = generateMatrixSparseFromDense(KN_dense_matrix, KN_bitmap, K, N, GEN_BY_COLS, KN_size);
+  std::vector<float> MK_sparse_matrix = generateMatrixSparseFromDense(MK_dense_matrix, MK_bitmap, M, K, GEN_BY_ROWS);
+  std::vector<float> KN_sparse_matrix = generateMatrixSparseFromDense(KN_dense_matrix, KN_bitmap, K, N, GEN_BY_COLS);
 
   // Preparing the main memory
-  auto main_memory = std::make_unique<SimpleMem<float>>(MK_size + KN_size + output_size);
+  auto main_memory = std::make_unique<SimpleMem<float>>(MK_sparse_matrix.size() + KN_sparse_matrix.size() + acc_output.size());
   stonne_cfg.m_SDMemoryCfg.weight_address = 0;
-  stonne_cfg.m_SDMemoryCfg.input_address = KN_size;
-  stonne_cfg.m_SDMemoryCfg.output_address = KN_size + MK_size;
+  stonne_cfg.m_SDMemoryCfg.input_address = KN_sparse_matrix.size();
+  stonne_cfg.m_SDMemoryCfg.output_address = KN_sparse_matrix.size() + MK_sparse_matrix.size();
   stonne_cfg.m_SDMemoryCfg.data_width = 1;     // TODO IMPORTANT: this is only used for STONNE fake memory
   stonne_cfg.m_SDMemoryCfg.n_write_mshr = 16;  // default value
   // Copying the data to the main memory
   main_memory->fill(0, KN_dense_matrix.begin(), KN_dense_matrix.end());
-  main_memory->fill(KN_size, MK_dense_matrix.begin(), MK_dense_matrix.end());
+  main_memory->fill(KN_sparse_matrix.size(), MK_dense_matrix.begin(), MK_dense_matrix.end());
 
   //Running STONNE
   Stonne stonne_instance(stonne_cfg, std::move(main_memory));  //Creating instance of the simulator
@@ -608,8 +584,8 @@ bool runHelpCommand() {
   std::cout << "[Examples of use]" << std::endl;
   std::cout << "- Running a CONV layer (manual mapping)" << std::endl;
   std::cout
-      << "  ./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -T_R=3 -T_S=3 -T_C=1 -T_G=1 -T_K=1 -T_N=1 -T_X_=3 -T_Y_=1 -num_ms=64 -dn_bw=8 -rn_bw=8"
-      << std::endl;
+    << "  ./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -T_R=3 -T_S=3 -T_C=1 -T_G=1 -T_K=1 -T_N=1 -T_X_=3 -T_Y_=1 -num_ms=64 -dn_bw=8 -rn_bw=8"
+    << std::endl;
   std::cout << "- Running a CONV layer using STONNE Mapper (energy target)" << std::endl;
   std::cout << "  ./stonne -CONV -R=3 -S=3 -C=6 -G=1 -K=6 -N=1 -X=20 -Y=20 -generate_tile=energy -num_ms=64 -dn_bw=8 -rn_bw=8 -accumulation_buffer=1"
             << std::endl;

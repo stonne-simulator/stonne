@@ -500,8 +500,7 @@ std::vector<std::size_t> generateBitMapFromDense(const std::vector<float>& dense
 }
 
 /////
-std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type,
-                                                         std::size_t& size) {
+std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
   std::vector<float> elements;
   if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
@@ -536,12 +535,11 @@ std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float
     sparseMatrix[i] = elements[i];
   }
 
-  size = elements.size();
   return sparseMatrix;
 }
 
 std::vector<float> generateMatrixSparseFromDense(const std::vector<float>& denseMatrix, const std::vector<std::size_t>& bitmap, std::size_t rows,
-                                                 std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size) {
+                                                 std::size_t cols, GENERATION_TYPE gen_type) {
   std::vector<float> elements;
   if (gen_type == GEN_BY_ROWS) {
     for (int i = 0; i < rows; i++) {
@@ -562,14 +560,8 @@ std::vector<float> generateMatrixSparseFromDense(const std::vector<float>& dense
       }
     }
   }
-
-  std::vector<float> sparseMatrix(elements.size());
-  for (int i = 0; i < elements.size(); i++) {
-    sparseMatrix[i] = elements[i];
-  }
-
-  size = elements.size();
-  return sparseMatrix;
+  
+  return elements;
 }
 
 void transpose(float* matrix, std::size_t rows, std::size_t cols) {
@@ -613,9 +605,8 @@ void denseToSparse(float* denseMatrix, std::size_t rows, std::size_t cols, std::
 }
 
 /////
-std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz,
-                                                  GENERATION_TYPE gen_type) {
-  std::vector<int> elements;
+std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type) {
+  std::vector<std::size_t> elements;
   if (gen_type == GEN_BY_ROWS) {  //we need col_id
     for (int i = 0; i < rows; i++) {
       int non_zeros = 0;
@@ -644,13 +635,7 @@ std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& dens
     }
   }
 
-  std::vector<std::size_t> minor_id(elements.size());
-  nnz = elements.size();
-  for (int i = 0; i < elements.size(); i++) {
-    minor_id[i] = elements[i];
-  }
-
-  return minor_id;
+  return elements;
 }
 
 /////

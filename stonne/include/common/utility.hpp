@@ -59,19 +59,17 @@ std::vector<float> generateMatrixDense(std::size_t rows, std::size_t cols, std::
 
 std::vector<std::size_t> generateBitMapFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
-std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type,
-                                                         std::size_t& size);
+std::vector<float> generateMatrixSparseFromDenseNoBitmap(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 
 std::vector<float> generateMatrixSparseFromDense(const std::vector<float>& denseMatrix, const std::vector<std::size_t>& bitmap, std::size_t rows,
-                                                 std::size_t cols, GENERATION_TYPE gen_type, std::size_t& size);
+                                                 std::size_t cols, GENERATION_TYPE gen_type);
 
 void transpose(float* matrix, std::size_t rows, std::size_t cols);
 
 void denseToSparse(float* denseMatrix, std::size_t rows, std::size_t cols, std::vector<std::size_t>& rowPointer, std::vector<std::size_t>& colIndex,
                    std::vector<float>& values);
 
-std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, std::size_t& nnz,
-                                                  GENERATION_TYPE gen_type);
+std::vector<std::size_t> generateMinorIDFromDense(const std::vector<float>& denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 /////
 //int* generateMajorIDFromDense(float* denseMatrix, std::size_t rows, std::size_t cols, GENERATION_TYPE gen_type);
 /////
