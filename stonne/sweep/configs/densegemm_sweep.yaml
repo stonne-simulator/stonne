@@ -1,0 +1,20 @@
+binary: "./stonne/stonne/stonne"
+output_root: "./experiment_runs"
+operation: "DenseGEMM"
+
+fixed:
+  M: 20
+  N: 20
+  K: 256
+  num_ms: 256
+  dn_bw: 64
+  rn_bw: 64
+  print_stats: 1
+
+# NOTE:
+# This sweep intentionally includes some invalid tile combinations.
+# Some runs may fail due to STONNE constraints on tile sizes.
+sweep:
+  T_M: [1, 2, 4]
+  T_N: [1, 2]
+  T_K: [32, 64]
